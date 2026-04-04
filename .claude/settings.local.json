@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find /d/Games/Pokemon-Stadium/src -type f -name *.c)",
+      "Bash(grep -l \"GameState\\\\|FRAGMENT\" /d/Games/Pokemon-Stadium/src/fragments/*/fragment*.h)",
+      "Bash(grep -n \"func_80001474\\\\|func_800052B4\\\\|func_8000D564\\\\|func_800019C8\\\\|SoftReset_CreateThread\\\\|Game_Thread\" /d/Games/Pokemon-Stadium/src/*.c /d/Games/Pokemon-Stadium/include/*.h)",
+      "Bash(grep -r \"GameState\\\\|STATE_\" /d/Games/Pokemon-Stadium/src/*.c)",
+      "Bash(xargs sed:*)",
+      "Bash(sed -i 's/unk_D_800A7450/FrameDesc/g' src/stage_loader.c src/stage_loader.h)",
+      "Bash(sed -i 's/unk_D_80068CA0/DebugTextNode/g' src/stage_loader.c src/stage_loader.h)",
+      "Bash(make)",
+      "Bash(command -v make)",
+      "Read(//usr/bin/**)",
+      "Read(//mingw64/bin/**)",
+      "Bash(grep -rl \"func_8000D1\\\\|func_8000D2\\\\|func_8000D3\\\\|func_8000D5\" D:GamesPokemon-Stadiumsrc D:GamesPokemon-Stadiumfragments --include=*.c --include=*.h)",
+      "Bash(FILES=\"./include/global.h ./src/29BA0.c ./src/5580.c ./src/5580.h ./src/E1C0.c ./src/E1C0.h ./src/fragments/1/fragment1.h ./src/fragments/1/fragment1_7F9A0.c ./src/fragments/53/fragment53.c ./src/fragments/53/fragment53.h\")",
+      "Bash(sed -i -e 's/UnkInputStruct8000D738/GBTowerState/g' -e 's/unk_D_800AA660/GBMainCtx/g' -e 's/unk_D_800AA664/GBSecondaryCtx/g' -e 's/func_8000D5C0/GBThread_Secondary/g' -e 's/func_8000D678/GBThread_Main/g' -e 's/func_8000D738/GBTower_Start/g' -e 's/func_8000D8A8/GBTower_WaitResult/g' -e 's/func_8000D8DC/GBTower_Teardown/g' $FILES)"
+    ]
+  }
+}

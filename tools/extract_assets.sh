@@ -2,6 +2,12 @@
 
 # Unpack assets from ROM extraction.
 
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd -- "$SCRIPT_DIR/.." && pwd)"
+
+# Prefer the project's virtualenv so helper scripts can import build deps.
+export PATH="$REPO_ROOT/.venv/bin:$PATH"
+
 # TODO: The packed bins do not depend on their extracted contents yet so modifying these files will do nothing. Add dependencies
 
 # Unpack/move any multi or single asset bins.
