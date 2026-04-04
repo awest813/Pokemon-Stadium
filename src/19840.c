@@ -19,7 +19,6 @@ typedef struct ret_func_unk_D_800ABE10 {
 
 unk_D_800ABE10 D_800ABE10;
 
-#ifdef NON_MATCHING
 void func_80018C40(unk_D_86002F34* arg0, arg1_func_80010CA8 arg1) {
     s32 i;
     s32 j;
@@ -57,9 +56,6 @@ void func_80018C40(unk_D_86002F34* arg0, arg1_func_80010CA8 arg1) {
         }
     }
 }
-#else
-#pragma GLOBAL_ASM("asm/us/nonmatchings/19840/func_80018C40.s")
-#endif
 
 Fragment* func_80018DE8(MemoryBlock* arg0, PRESJPEG* arg1, PRESJPEG* arg2) {
     Fragment* sp1C;

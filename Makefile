@@ -163,6 +163,9 @@ EXTRACT_ASSETS  := tools/extract_assets.sh
 IINC := -Iinclude -Isrc -Isrc/libnaudio -Iassets/$(VERSION) -I. -I$(BUILD_DIR)
 IINC += -Ilib/ultralib/include -Ilib/ultralib/include/PR -Ilib/ultralib/include/ido
 IINC += -Iinclude/
+IDO_SANITIZED_ROOT := $(BUILD_DIR)/ido_sanitized
+IDO_SANITIZED_LIBULTRA_INCLUDE_DIR := $(IDO_SANITIZED_ROOT)/lib/ultralib/include
+IDO_IINC := -I$(IDO_SANITIZED_ROOT)/include -I$(IDO_SANITIZED_ROOT)/src -I$(IDO_SANITIZED_ROOT) -I$(IDO_SANITIZED_LIBULTRA_INCLUDE_DIR) -I$(IDO_SANITIZED_LIBULTRA_INCLUDE_DIR)/PR -I$(IDO_SANITIZED_LIBULTRA_INCLUDE_DIR)/ido $(IINC)
 
 ifeq ($(KEEP_MDEBUG),0)
   RM_MDEBUG = $(OBJCOPY) --remove-section .mdebug $@
@@ -256,6 +259,15 @@ DEP_FILES := $(O_FILES:.o=.d) \
 
 # create build directories
 $(shell mkdir -p $(BUILD_DIR)/linker_scripts/$(VERSION) $(BUILD_DIR)/linker_scripts/$(VERSION)/auto $(foreach dir,$(SRC_DIRS) $(ASM_DIRS) $(ASSET_DIRS) $(LIB_DIRS),$(BUILD_DIR)/$(dir)))
+
+$(IDO_SANITIZED_ROOT)/.stamp:
+	@rm -rf $(IDO_SANITIZED_ROOT)
+	@mkdir -p $(IDO_SANITIZED_ROOT)/include $(IDO_SANITIZED_ROOT)/src $(IDO_SANITIZED_ROOT)/lib/ultralib/include
+	@cp -r include/. $(IDO_SANITIZED_ROOT)/include/
+	@cp -r src/. $(IDO_SANITIZED_ROOT)/src/
+	@cp -r lib/ultralib/include/. $(IDO_SANITIZED_LIBULTRA_INCLUDE_DIR)/
+	@find $(IDO_SANITIZED_ROOT)/include $(IDO_SANITIZED_ROOT)/src $(IDO_SANITIZED_LIBULTRA_INCLUDE_DIR) -type f \( -name "*.h" -o -name "*.inc" \) -exec sed -i 's/\r$$//' {} +
+	@touch $@
 
 
 # directory flags
@@ -424,10 +436,10 @@ $(BUILD_DIR)/%.o: %.s
 	$(V)$(ICONV) $(ICONV_FLAGS) $< | $(AS) $(ASFLAGS) $(ENDIAN) $(IINC) -I $(dir $*) -o $@
 	$(V)$(OBJDUMP_CMD)
 
-$(BUILD_DIR)/%.o: %.c
+$(BUILD_DIR)/%.o: %.c | $(IDO_SANITIZED_ROOT)/.stamp
 	$(call print,Compiling:,$<,$@)
 	$(V)$(CC_CHECK) $(CC_CHECK_FLAGS) $(IINC) -I $(dir $*) $(CHECK_WARNINGS) $(BUILD_DEFINES) $(COMMON_DEFINES) $(RELEASE_DEFINES) $(GBI_DEFINES) $(LIBULTRA_DEFINES) $(C_DEFINES) $(MIPS_BUILTIN_DEFS) -o $@ $<
-	$(V)$(PREPROCESS) $(CC) -c $(CFLAGS) $(BUILD_DEFINES) $(IINC) $(WARNINGS) $(MIPS_VERSION) $(ENDIAN) $(COMMON_DEFINES) $(RELEASE_DEFINES) $(GBI_DEFINES) $(LIBULTRA_DEFINES) $(C_DEFINES) $(OPTFLAGS) -o $@ $<
+	$(V)$(PREPROCESS) $(CC) -c $(CFLAGS) $(BUILD_DEFINES) $(IDO_IINC) $(WARNINGS) $(MIPS_VERSION) $(ENDIAN) $(COMMON_DEFINES) $(RELEASE_DEFINES) $(GBI_DEFINES) $(LIBULTRA_DEFINES) $(C_DEFINES) $(OPTFLAGS) -o $@ $<
 	$(V)$(OBJDUMP_CMD)
 	$(V)$(RM_MDEBUG)
 
