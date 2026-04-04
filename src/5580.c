@@ -160,7 +160,7 @@ void Sched_Noop(void) {
 }
 
 void Sched_BroadcastVBlank(u32 arg0) {
-    unk_D_800AA660* var_s0 = D_800A62E0.clients;
+    GBMainCtx* var_s0 = D_800A62E0.clients;
 
     while (var_s0 != NULL) {
         if (D_800A62E0.pre_nmi == 0) {
@@ -200,7 +200,7 @@ s32 Sched_YieldGFX(void) {
 }
 
 void Sched_HandlePreNMI(void) {
-    unk_D_800AA660* var_s0 = D_800A62E0.clients;
+    GBMainCtx* var_s0 = D_800A62E0.clients;
 
     while (var_s0 != NULL) {
         if (var_s0->unk_01DC == 0) {
@@ -210,7 +210,7 @@ void Sched_HandlePreNMI(void) {
     }
     D_800A62E0.pre_nmi = 1;
     Audio_StopAll();
-    func_8002B310();
+    Game_OnPreNMI();
 }
 
 void Sched_HandleVBlank(void) {
@@ -335,9 +335,9 @@ void Sched_Init(void) {
     osStartThread(&D_800A62E0.thread);
 }
 
-void Sched_RegisterClient(unk_D_800AA660* arg0) {
-    unk_D_800AA660* var_v1;
-    unk_D_800AA660* var_a1;
+void Sched_RegisterClient(GBMainCtx* arg0) {
+    GBMainCtx* var_v1;
+    GBMainCtx* var_a1;
 
     if (D_800A62E0.clients == NULL) {
         D_800A62E0.clients = arg0;
@@ -354,9 +354,9 @@ void Sched_RegisterClient(unk_D_800AA660* arg0) {
     arg0->unk_01D8 = NULL;
 }
 
-void Sched_UnregisterClient(unk_D_800AA660* arg0) {
-    unk_D_800AA660** var_v0 = &D_800A62E0.clients;
-    unk_D_800AA660* var_v1 = D_800A62E0.clients;
+void Sched_UnregisterClient(GBMainCtx* arg0) {
+    GBMainCtx** var_v0 = &D_800A62E0.clients;
+    GBMainCtx* var_v1 = D_800A62E0.clients;
 
     while (var_v1 != NULL) {
         if (var_v1 == arg0) {

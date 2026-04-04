@@ -18,7 +18,7 @@ typedef struct Scheduler {
     /* 0x9B0 */ u8 stack[64];
     /* 0x9F0 */ OSMesgQueue queue;
     /* 0xA08 */ u64 time;
-    /* 0xA10 */ unk_D_800AA660* clients;
+    /* 0xA10 */ GBMainCtx* clients;
     /* 0xA14 */ RSPTask* cur_task;
     /* 0xA18 */ RSPTask* cur_audio;
     /* 0xA1C */ RSPTask* cur_gfx;
@@ -86,10 +86,10 @@ void SchedClient_Init(DisplayCtx*, s32, s32);
 s32 SchedClient_WaitMsg(DisplayCtx*);
 s32 SchedClient_PollMsg(DisplayCtx*);
 void Sched_Init(void);
-void Sched_RegisterClient(unk_D_800AA660*);
+void Sched_RegisterClient(GBMainCtx*);
 void RSPTask_Reset(RSPTask* arg0);
 void RSPTask_WaitDone(RSPTask* arg0);
-void Sched_UnregisterClient(unk_D_800AA660* arg0);
+void Sched_UnregisterClient(GBMainCtx* arg0);
 void Sched_QueueTask(RSPTask* arg0, s32 arg1);
 
 

@@ -297,7 +297,7 @@ s32 func_821009B4(void) {
             }
         }
 
-        func_800290B4();
+        Game_PollControllers();
 
         if ((gPlayer1Controller->buttonPressed & 0x9000) && (D_82100EC8 != 0)) {
             func_80048B90(0xF);
@@ -321,7 +321,7 @@ void func_82100AB8(void) {
     if (Stage_GetFadeMode() == 1) {
         Stage_FadeOut(0xA);
         while (Stage_GetFadeMode() != 0) {
-            func_800290B4();
+            Game_PollControllers();
             func_821005EC();
         }
     }
@@ -337,7 +337,7 @@ void func_82100B1C(s32 arg0) {
     Stage_FadeIn(8);
 
     while (Stage_GetFadeMode() != 1) {
-        func_800290B4();
+        Game_PollControllers();
         func_821005EC();
     }
 }

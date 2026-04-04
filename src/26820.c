@@ -876,11 +876,11 @@ s32 func_80027C24(s32 arg0, s32 arg1, s32 arg2, void* arg3) {
     return sp34;
 }
 
-void func_80027F24(unk_func_8002A728* arg0) {
+void func_80027F24(unk_GameState_GBTower* arg0) {
     *arg0 = D_800AE4E8[2].unk_04.unk2->unk_1EA0.unk_04;
 }
 
-void func_80027F40(unk_func_8002A728* arg0) {
+void func_80027F40(unk_GameState_GBTower* arg0) {
     if (bcmp(arg0, &D_800AE4E8[2].unk_04.unk2->unk_1EA0.unk_04, 8) != 0) {
         D_800AE4E8[2].unk_04.unk2->unk_1EA0.unk_04 = *arg0;
         func_800264DC(0x14, 0, 2);

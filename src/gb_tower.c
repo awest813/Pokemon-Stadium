@@ -72,7 +72,7 @@ s32 func_8000A798(s32 arg0, u8* arg1, u8* arg2) {
     }
 
     if (osGbpakReadId(&D_800A8100[arg0], &gbpakId, &status) != 0) {
-        func_8002B274(arg0, 1);
+        Game_PostBattle(arg0, 1);
     }
     if ((status & OS_GBPAK_RSTB_STATUS) && (osGbpakCheckConnector(&D_800A8100[arg0], &status) == 0)) {
         osGbmbcRamEnable(&D_800A8100[arg0]);
@@ -87,7 +87,7 @@ s32 func_8000A888(s32 arg0, u8 arg1) {
     s32 temp_v1;
 
     if (osGbpakGetStatus(&D_800A8100[arg0], &status) != 0) {
-        func_8002B274(arg0, 1);
+        Game_PostBattle(arg0, 1);
     }
 
     temp_v1 = !((status & OS_GBPAK_RSTB_DETECTION) != 0);
@@ -152,7 +152,7 @@ s32 func_8000AA7C(void) {
                 temp_v0 = osGbpakReadId(&D_800A8100[i], &sp4C, &status);
                 if (temp_v0 == 0) {
                     if (!(status & 8)) {
-                        func_8002B274(i, 2);
+                        Game_PostBattle(i, 2);
                     }
                     if (func_8000A9D0(&sp4C) != 0) {
                         if (temp_v0 == 4) {
@@ -163,7 +163,7 @@ s32 func_8000AA7C(void) {
                             D_800A82A0[i] = 1;
                             D_800A82A5 |= (1 << i);
                         } else {
-                            func_8002B274(i, 2);
+                            Game_PostBattle(i, 2);
                         }
                     } else {
                         D_800A82A5 |= (1 << i);
@@ -172,7 +172,7 @@ s32 func_8000AA7C(void) {
                 } else {
                     D_800A82A0[i] = 0;
                     if (temp_v0 == 4) {
-                        func_8002B274(i, 2);
+                        Game_PostBattle(i, 2);
                     }
                 }
             }
@@ -189,7 +189,7 @@ s32 func_8000AC7C(s32 arg0) {
     // check the error code returned (if applicable) by the osGbpakGetStatus
     // call.
     if ((ret == PFS_ERR_NOPACK) || (ret == PFS_ERR_DEVICE) || (ret == PFS_ERR_CONTRFAIL)) {
-        func_8002B274(arg0, 1);
+        Game_PostBattle(arg0, 1);
     }
     return !((status & OS_GBPAK_GBCART_ON) != 0);
 }
@@ -199,7 +199,7 @@ s32 func_8000ACF4(s32 arg0) {
     s32 ret = osGbpakGetStatus(&D_800A8100[arg0], &status);
 
     if ((ret == PFS_ERR_NOPACK) || (ret == PFS_ERR_DEVICE) || (ret == PFS_ERR_CONTRFAIL)) {
-        func_8002B274(arg0, 1);
+        Game_PostBattle(arg0, 1);
     }
     return ((status & OS_GBPAK_GBCART_ON) != 0);
 }
@@ -364,7 +364,7 @@ void func_8000B330(void) {
                 D_800A82AC[D_800697D0]++;
                 if (D_800A82AC[D_800697D0] == 3) {
                     D_800A82A8 = 1;
-                    func_8002B274(D_800697D0, 1);
+                    Game_PostBattle(D_800697D0, 1);
                 }
             }
         }

@@ -263,7 +263,7 @@ void func_83200700(s16 arg0, s16 arg1) {
 
 void func_832007A4(char* arg0, s32 arg1) {
     while (arg1-- > 0) {
-        func_800290B4();
+        Game_PollControllers();
         func_8320058C(0);
         func_83200684(0x1E, 0x20, 0x104, 0x30);
         func_8001F3F4();
@@ -281,7 +281,7 @@ void func_8320084C(char* arg0, s32 arg1) {
     D_832025C8.unk_00 = 0x10;
 
     do {
-        func_800290B4();
+        Game_PollControllers();
         func_8320058C(0);
         func_83200684(0x1E, 0x20, 0x104, 0x30);
         func_8001F3F4();
@@ -308,7 +308,7 @@ void func_83200934(s8* arg0) {
     s32 y2 = 0x48;
 
     for (i = 1; i < 9; i++) {
-        func_800290B4();
+        Game_PollControllers();
         func_8320058C(0);
         func_83200684(0x1E, 0x20, 0x104, 0x30);
 
@@ -336,7 +336,7 @@ s32 func_83200ADC(char* arg0) {
     var_s1 = 0;
 
     while (var_s2 != 0) {
-        func_800290B4();
+        Game_PollControllers();
         if (BTN_IS_PRESSED(gPlayer1Controller, BTN_DUP | BTN_DDOWN)) {
             func_80048B90(1);
             var_s1 ^= 1;
@@ -395,7 +395,7 @@ s32 func_83200CD8(char* arg0) {
     var_s0 = 0;
 
     while (var_s4 != 0) {
-        func_800290B4();
+        Game_PollControllers();
 
         if (BTN_IS_PRESSED(gPlayer1Controller, BTN_DUP)) {
             func_80048B90(1);
@@ -512,7 +512,7 @@ void func_8320118C(void) {
     D_83202028->unk_01E.y = 0x1000;
 
     for (i = 0; i < 120; i++) {
-        func_800290B4();
+        Game_PollControllers();
         temp_s1->unk_60.at.y = 0x320 - ((i * 0x1E0) / 120);
         temp_s1->unk_60.eye.y = 0x320 - ((i * 0x1E0) / 120);
         D_83202028->unk_01E.y += 0x200;
@@ -529,7 +529,7 @@ s32 func_8320126C(void) {
     func_8001BD04(D_83202028, 8);
 
     for (i = 0; i < 8; i++) {
-        func_800290B4();
+        Game_PollControllers();
         func_8320058C(0);
         func_83200684(0xA0 - (var_s0 / 2), 0x38 - (var_s1 / 2), var_s0, var_s1);
         Stage_AdvanceFrame();

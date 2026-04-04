@@ -672,7 +672,7 @@ void func_84002430(void) {
         Stage_FadeOut(8);
 
         for (i = 0; i < 10; i++) {
-            func_800290B4();
+            Game_PollControllers();
             Stage_ActivateFramebuffer();
             func_8001D924(D_84002D0C);
             Stage_AdvanceFrame();
@@ -686,7 +686,7 @@ void func_840024B0(void) {
     Stage_FadeIn(8);
 
     while (Stage_GetFadeMode() != 1) {
-        func_800290B4();
+        Game_PollControllers();
         Stage_ActivateFramebuffer();
         func_8001D924(D_84002D0C);
         Stage_AdvanceFrame();

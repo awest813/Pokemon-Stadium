@@ -91,7 +91,7 @@ static s16 D_822031D8;
 static s16 D_822031DA;
 static s16 D_822031DC;
 static unk_func_80027FA0 D_822031E0;
-static unk_func_8002A728 D_822031E8;
+static unk_GameState_GBTower D_822031E8;
 
 s32 func_82200020(s32 arg0) {
     u32 temp_a0 = osSetIntMask(1);

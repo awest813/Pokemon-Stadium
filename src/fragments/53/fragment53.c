@@ -40,9 +40,9 @@ s32 func_82A000F0(u8 arg0) {
     return 0;
 }
 
-void func_82A00144(UnkInputStruct8000D738* arg0) {
+void func_82A00144(GBTowerState* arg0) {
     s32 i;
-    unk_func_8002A728 sp34;
+    unk_GameState_GBTower sp34;
     u16(*var_s1)[0x640] = arg0->unk_04[0];
 
     func_80027F24(&sp34);
@@ -59,7 +59,7 @@ void func_82A00144(UnkInputStruct8000D738* arg0) {
     }
 }
 
-s32 func_82A00224(s32 arg0, UnkInputStruct8000D738* arg1) {
+s32 func_82A00224(s32 arg0, GBTowerState* arg1) {
     RenderContext* sp24;
 
     main_pool_push_state('PREP');

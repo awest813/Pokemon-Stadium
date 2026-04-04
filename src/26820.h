@@ -5,10 +5,10 @@
 #include "22630.h"
 #include "29BA0.h"
 
-typedef struct unk_func_8002A728 {
+typedef struct unk_GameState_GBTower {
     /* 0x00 */ s16 unk_00;
-    /* 0x04 */ struct unk_func_8002A728* unk_04;
-} unk_func_8002A728; // size = 0x8
+    /* 0x04 */ struct unk_GameState_GBTower* unk_04;
+} unk_GameState_GBTower; // size = 0x8
 
 typedef struct unk_func_80027FA0 {
     /* 0x00 */ u16 unk_00;
@@ -52,7 +52,7 @@ typedef struct unk_D_800AE4E8_004_1 {
 typedef struct unk_D_800AE4E8_004_2_1EA0 {
     /* 0x00 */ u8 unk_00;
     /* 0x02 */ u16 unk_02;
-    /* 0x04 */ unk_func_8002A728 unk_04;
+    /* 0x04 */ unk_GameState_GBTower unk_04;
     /* 0x0C */ unk_func_80027FA0 unk_0C[1];
     /* 0x14 */ char unk14[0x8];
     /* 0x1C */ u16 unk_1C;
@@ -187,8 +187,8 @@ void func_800276F0(s32 arg0, s32 arg1, s32 arg2);
 void func_8002782C(s32 arg0, s32 arg1);
 s32 func_8002797C(s32 arg0, s32 arg1, s32 arg2, void* arg3);
 s32 func_80027C24(s32 arg0, s32 arg1, s32 arg2, void* arg3);
-void func_80027F24(unk_func_8002A728* arg0);
-void func_80027F40(unk_func_8002A728* arg0);
+void func_80027F24(unk_GameState_GBTower* arg0);
+void func_80027F40(unk_GameState_GBTower* arg0);
 void func_80027FA0(unk_func_80027FA0* arg0, s16 arg1);
 void func_80027FE0(unk_func_80027FA0* arg0, s16 arg1);
 void func_80028070(u16* arg0);

@@ -1214,7 +1214,7 @@ void func_8431493C(s16 arg0, s16 arg1, s16 arg2, s32 arg3) {
     UNUSED s32 pad[2];
     s32 var_v1;
 
-    if (func_80029074()[arg2].unk_000 & 2) {
+    if (Game_GetPlayers()[arg2].unk_000 & 2) {
         var_v1 = 4;
     } else {
         var_v1 = arg2;

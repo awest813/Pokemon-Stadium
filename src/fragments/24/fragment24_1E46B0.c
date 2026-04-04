@@ -941,7 +941,7 @@ void func_88316BEC(unk_func_8830867C_02C_154* arg0, MemoryPool* arg1) {
     s32 i;
 
     arg0->unk_00 = 0x23;
-    arg0->unk_01 = func_80029080();
+    arg0->unk_01 = Game_GetSelectedPlayer();
     arg0->unk_02 = 0;
     arg0->unk_04 = 1;
     func_8002C758(&arg0[0].unk_0C, 2, 0x14, arg1);

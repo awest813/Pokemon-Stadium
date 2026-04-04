@@ -168,7 +168,7 @@ void func_82B00BC8(void) {
     if (Stage_GetFadeMode != NULL) {
         Stage_FadeOut(8);
         while (Stage_GetFadeMode() != 0) {
-            func_800290B4();
+            Game_PollControllers();
             func_82B00B3C(0);
         }
     }
@@ -183,7 +183,7 @@ void func_82B00C24(void) {
     Stage_FadeIn(8);
 
     while (Stage_GetFadeMode() != 1) {
-        func_800290B4();
+        Game_PollControllers();
         func_82B00B3C(0);
     }
 
@@ -200,18 +200,18 @@ s16 func_82B00CB4(void) {
     func_80048B90(4);
 
     for (i = 1; i < 8; i++) {
-        func_800290B4();
+        Game_PollControllers();
         func_82B00B3C(i);
     }
 
     while (temp_s1 == 'exec') {
-        func_800290B4();
+        Game_PollControllers();
         temp_s1 = func_82B00A50();
         func_82B00B3C(i);
     }
 
     for (i = 7; i >= 0; i--) {
-        func_800290B4();
+        Game_PollControllers();
         func_82B00B3C(i);
     }
 

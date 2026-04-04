@@ -235,7 +235,7 @@ void func_88200C44(unk_func_88200FA0* arg0, s32 arg1, s32 arg2, s32 arg3, Memory
     ((func8850068C)Memmap_GetFragmentVaddr(func_8850068C))(sp4C, arg0->unk_2C);
 
     sp44 = mem_pool_alloc(arg4, sizeof(unk_func_88509A2C));
-    ((func88509A2C)Memmap_GetFragmentVaddr(func_88509A2C))(sp44, 0x38, 0x22, func_80029080(),
+    ((func88509A2C)Memmap_GetFragmentVaddr(func_88509A2C))(sp44, 0x38, 0x22, Game_GetSelectedPlayer(),
                                                            func_8002D7C0(NULL, 0, D_88224F90, 0));
     ((func8850068C)Memmap_GetFragmentVaddr(func_8850068C))(arg0->unk_2C, sp44);
 

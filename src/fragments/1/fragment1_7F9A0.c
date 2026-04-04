@@ -538,7 +538,7 @@ void func_81204A84(s32);
 s32 func_8120572C(s32);
 #pragma GLOBAL_ASM("asm/us/nonmatchings/fragments/1/fragment1_7F9A0/func_8120572C.s")
 
-void func_81206D9C(unk_D_800AA660* arg0) {
+void func_81206D9C(GBMainCtx* arg0) {
   D_8122C4FC = 0;
   D_8122C4E2 = arg0->unk_2204.unk_02;
   if ((D_8122C4E2 < 0) || (D_8122C4E2 >= 3)) {
@@ -549,10 +549,10 @@ void func_81206D9C(unk_D_800AA660* arg0) {
   func_81203E30();
   D_8122C740 = arg0->font1 + 0x90;
   D_8122C744 = arg0->font2 + 0x90;
-  func_812033F4(0, func_80029080(), 5, 0x50, &gSIEventMesgQueue, arg0->unk_2204.unk_04);
+  func_812033F4(0, Game_GetSelectedPlayer(), 5, 0x50, &gSIEventMesgQueue, arg0->unk_2204.unk_04);
 }
 
-void func_81206E64(unk_D_800AA660* arg0) {
+void func_81206E64(GBMainCtx* arg0) {
   if (func_8120572C(0) != 0) {
       arg0->unk_2204.unk_00 = ((D_8122C4FA.unk_01 - 1) & 0xFF) | (D_8122C4FA.unk_00 << 8);
       IO_WRITE(SP_STATUS_REG, 0x8000);
@@ -570,7 +570,7 @@ void func_81206E64(unk_D_800AA660* arg0) {
   }
 }
 
-void func_81206F38(UNUSED unk_D_800AA664* arg0) {
+void func_81206F38(UNUSED GBSecondaryCtx* arg0) {
   if ((D_800A62E0.unk_A38 == 0) && (D_8122C4FC == 2) && ((D_8122C4DC == 0) || (D_8122C4DC == 6))) {
       func_81209078();
   }

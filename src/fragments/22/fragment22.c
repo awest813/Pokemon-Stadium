@@ -2699,7 +2699,7 @@ void func_88001300(unk_func_88001300* arg0, s32 arg1, s32 arg2, s32 arg3, u8* ar
     unk_func_88001300_03C* tmp3C;
 
     arg0->unk_54 = arg3;
-    arg0->unk_40 = func_80029080();
+    arg0->unk_40 = Game_GetSelectedPlayer();
     arg0->unk_50 = 1;
 
     if ((arg0->unk_40 != -1) && (func_80024F00(arg0->unk_40) == 0)) {
@@ -2762,7 +2762,7 @@ void func_88001300(unk_func_88001300* arg0, s32 arg1, s32 arg2, s32 arg3, u8* ar
     ((func8850068C)Memmap_GetFragmentVaddr(func_8850068C))(&arg0->unk_2C->unk_00, &temp_s0->unk_00);
 
     sp68 = mem_pool_alloc(arg6, sizeof(unk_func_88509A2C));
-    ((func88509A2C)Memmap_GetFragmentVaddr(func_88509A2C))(sp68, 0xE, 8, func_80029080(),
+    ((func88509A2C)Memmap_GetFragmentVaddr(func_88509A2C))(sp68, 0xE, 8, Game_GetSelectedPlayer(),
                                                            func_8002D7C0(NULL, 0, D_88016CF0, 0));
     ((func8850068C)Memmap_GetFragmentVaddr(func_8850068C))(&temp_s0->unk_00, &sp68->unk_00.unk_00);
 

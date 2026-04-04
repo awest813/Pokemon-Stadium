@@ -520,7 +520,7 @@ void func_8002EF44(void) {
 
     FRAGMENT_LOAD_AND_CALL(fragment33, 1, 0);
 
-    if (func_80029080() == -1) {
+    if (Game_GetSelectedPlayer() == -1) {
         gCurrentGameState = STATE_AREA_SELECT;
         return;
     }
@@ -532,9 +532,9 @@ void func_8002EF44(void) {
         if (game_state == STATE_POKEMON_LAB) {
             main_pool_push_state('PLAB');
 
-            if (func_80029080() != -1) {
+            if (Game_GetSelectedPlayer() != -1) {
                 func_80028AFC(3);
-                func_80023D60(func_80029080());
+                func_80023D60(Game_GetSelectedPlayer());
             }
 
             DLBuf_Init(0x16000, 0);
@@ -542,10 +542,10 @@ void func_8002EF44(void) {
 
             FRAGMENT_LOAD_AND_CALL2(fragment22, var_s4, 0);
 
-            while ((game_state == STATE_POKEMON_LAB) && (D_800AE520.unk_00 != 0)) {
-                D_800AE520.unk_00 = 0;
-                game_state = func_80029008(D_800AE520.fragment_id, D_800AE520.rom_start, D_800AE520.rom_end,
-                                           D_800AE520.arg0, D_800AE520.arg1);
+            while ((game_state == STATE_POKEMON_LAB) && (gDeferredFragment.unk_00 != 0)) {
+                gDeferredFragment.unk_00 = 0;
+                game_state = Fragment_LoadAndCall(gDeferredFragment.fragment_id, gDeferredFragment.rom_start, gDeferredFragment.rom_end,
+                                           gDeferredFragment.arg0, gDeferredFragment.arg1);
             }
 
             Stage_FreeRenderContext();

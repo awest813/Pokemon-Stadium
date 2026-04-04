@@ -605,12 +605,12 @@ s32 func_80023A04(s32 arg0) {
     if (D_800AC910[arg0].unk_50 != NULL) {
         D_800AC910[arg0].unk_00 |= 1;
         if (func_8000A798(arg0, &sp2F, D_800AC910[arg0].unk_19) == 0) {
-            func_8002B274(arg0, 2);
+            Game_PostBattle(arg0, 2);
         }
 
         sp28 = func_80023480(arg0);
         if (func_8000A888(arg0, sp2F) == 0) {
-            func_8002B274(arg0, 2);
+            Game_PostBattle(arg0, 2);
         }
 
         if (sp28 == 0) {
@@ -627,7 +627,7 @@ s32 func_80023AF8(s32 arg0) {
     if (((1 << arg0) & D_800ACA70) && (D_800AC910[arg0].unk_03 == 0)) {
         sp1C = func_80023A04(arg0);
         if (sp1C == 0) {
-            func_8002B274(arg0, 2);
+            Game_PostBattle(arg0, 2);
         }
     }
 
@@ -655,7 +655,7 @@ s32 func_80023B7C(s32 arg0) {
         D_800AC910[arg0].unk_00 |= 2;
         if (func_8002513C(arg0) > 0) {
             if (func_8000A798(arg0, &sp37, D_800AC910[arg0].unk_19) == 0) {
-                func_8002B274(arg0, 2);
+                Game_PostBattle(arg0, 2);
             }
 
             if (func_80023740(arg0, 0) != 0) {
@@ -663,7 +663,7 @@ s32 func_80023B7C(s32 arg0) {
             }
 
             if (func_8000A888(arg0, sp37) == 0) {
-                func_8002B274(arg0, 2);
+                Game_PostBattle(arg0, 2);
             }
 
             if (sp2C == 0) {
@@ -690,14 +690,14 @@ s32 func_80023D60(s32 arg0) {
     if ((1 << arg0) & D_800ACA70) {
         if (D_800AC910[arg0].unk_03 == 0) {
             if (func_8000A798(arg0, &sp2F, D_800AC910[arg0].unk_19) == 0) {
-                func_8002B274(arg0, 2);
+                Game_PostBattle(arg0, 2);
             }
 
             temp_s1 = func_80023AF8(arg0);
             temp_s1 &= func_80023B7C(arg0);
 
             if (func_8000A888(arg0, sp2F) == 0) {
-                func_8002B274(arg0, 2);
+                Game_PostBattle(arg0, 2);
             }
 
             if (temp_s1 != 0) {
@@ -807,7 +807,7 @@ s32 func_800240A0(void) {
             if (var_s0->unk_02) {
                 D_800ACA70 |= (1 << i);
                 if (func_8000A6D8(i, var_s0->unk_19) == 0) {
-                    func_8002B274(i, 2);
+                    Game_PostBattle(i, 2);
                 }
                 func_80023F78(i);
             }
@@ -836,7 +836,7 @@ s32 func_80024270(s32 arg0) {
 
     if (D_800AC910[arg0].unk_00 & 2) {
         if (func_8000A798(arg0, &sp2F, D_800AC910[arg0].unk_19) == 0) {
-            func_8002B274(arg0, 2);
+            Game_PostBattle(arg0, 2);
         }
 
         sp28 = func_800237C8(arg0, 0);
@@ -855,7 +855,7 @@ s32 func_8002431C(s32 arg0) {
 
     if (D_800AC910[arg0].unk_00 & 1) {
         if (func_8000A798(arg0, &sp2F, D_800AC910[arg0].unk_19) == 0) {
-            func_8002B274(arg0, 2);
+            Game_PostBattle(arg0, 2);
         }
 
         sp28 = func_80023574(arg0);
@@ -874,7 +874,7 @@ s32 func_800243D8(s32 arg0) {
     s32 sp28;
 
     if (func_8000A798(arg0, &sp2F, D_800AC910[arg0].unk_19) == 0) {
-        func_8002B274(arg0, 2);
+        Game_PostBattle(arg0, 2);
     }
 
     sp28 = func_80023658(arg0);
@@ -894,17 +894,17 @@ void func_8002447C(s32 arg0) {
     u8 sp27;
 
     if (func_8000A798(arg0, &sp27, D_800AC910[arg0].unk_19) == 0) {
-        func_8002B274(arg0, 2);
+        Game_PostBattle(arg0, 2);
     }
 
     if (func_800233F4(arg0) == 0) {
-        func_8002B274(arg0, 1);
+        Game_PostBattle(arg0, 1);
     }
 }
 
 void func_800244F4(s32 arg0) {
     if (func_8000A888(arg0, 0) == 0) {
-        func_8002B274(arg0, 2);
+        Game_PostBattle(arg0, 2);
     }
 }
 

@@ -3108,7 +3108,7 @@ s32 func_88311C64(s32 arg0, s32 arg1) {
 
     var_v1 = &D_80070FA0[arg0 - 1];
 
-    if (func_80024F68(func_80029080()) == 7) {
+    if (func_80024F68(Game_GetSelectedPlayer()) == 7) {
         for (i = 0; i < 9; i++) {
             if (arg0 == D_8831757C[i].unk_00) {
                 var_v1 = &D_8831757C[i];

@@ -9,13 +9,13 @@
 #include "util.h"
 #include "src/fragments/1/fragment1.h"
 
-extern unk_D_800AA660* D_800AA660;
-extern unk_D_800AA664* D_800AA664;
+extern GBMainCtx* D_800AA660;
+extern GBSecondaryCtx* D_800AA664;
 extern char D_800AA668;
 
 extern u8 D_81200000[];
 
-void func_8000D5C0(UNUSED void* arg0) {
+void GBThread_Secondary(UNUSED void* arg0) {
     void (*func)(void*) = Util_ConvertAddrToVirtAddr(&func_81206F38);
 
     __osSetFpcCsr(0x01000C01);
@@ -24,14 +24,14 @@ void func_8000D5C0(UNUSED void* arg0) {
 
     while (1) {
         SchedClient_WaitMsg(D_800AA664);
-        if (D_800A62E0.unk_A38 >= 0x15) {
+        if (D_800A62E0.pre_nmi >= 0x15) {
             continue;
         }
         func(D_800AA664);
     }
 }
 
-void func_8000D678(UNUSED void* arg0) {
+void GBThread_Main(UNUSED void* arg0) {
     void (*func1)(void* func) = Util_ConvertAddrToVirtAddr(&func_81206D9C);
     void (*func2)(void* func) = Util_ConvertAddrToVirtAddr(&func_81206E64);
 
@@ -43,14 +43,14 @@ void func_8000D678(UNUSED void* arg0) {
 
     while (1) {
         SchedClient_WaitMsg(D_800AA660);
-        if (D_800A62E0.unk_A38 >= 0x15) {
+        if (D_800A62E0.pre_nmi >= 0x15) {
             continue;
         }
         func2(D_800AA660);
     }
 }
 
-void func_8000D738(UnkInputStruct8000D738* arg0) {
+void GBTower_Start(GBTowerState* arg0) {
     s32 temp_v0;
 
     main_pool_push_state('GBEM');
@@ -64,20 +64,20 @@ void func_8000D738(UnkInputStruct8000D738* arg0) {
     D_800AA660->font2 = func_8000484C(temp_v0, 1);
     D_800AA660->unk_2204 = *arg0;
     osCreateMesgQueue(&D_800AA660->queue2, &D_800AA660->mesg, 1);
-    osCreateThread(&D_800AA664->thread, 10, func_8000D5C0, NULL, (u32)D_800AA664 + 0x21E0, 0x11);
-    osCreateThread(&D_800AA660->thread, 8, func_8000D678, NULL, (u32)D_800AA660 + 0x21E0, 0xF);
+    osCreateThread(&D_800AA664->thread, 10, GBThread_Secondary, NULL, (u32)D_800AA664 + 0x21E0, 0x11);
+    osCreateThread(&D_800AA660->thread, 8, GBThread_Main, NULL, (u32)D_800AA660 + 0x21E0, 0xF);
     D_800AA668 = func_8000B318(0);
     osStartThread(&D_800AA660->thread);
 }
 
-OSMesg* func_8000D8A8(void) {
+OSMesg* GBTower_WaitResult(void) {
     OSMesg mesg;
 
     osRecvMesg(&D_800AA660->queue2, &mesg, OS_MESG_BLOCK);
     return mesg;
 }
 
-void func_8000D8DC(UnkInputStruct8000D738* arg0) {
+void GBTower_Teardown(GBTowerState* arg0) {
     *arg0 = D_800AA660->unk_2204;
     func_8000B318(D_800AA668);
     osViBlack(1U);

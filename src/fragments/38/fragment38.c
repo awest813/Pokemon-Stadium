@@ -1143,7 +1143,7 @@ void func_82304224(s16 arg0) {
 void func_82304358(void) {
     s16 i;
 
-    func_800290B4();
+    Game_PollControllers();
     func_82301C30(&D_82305A30);
     func_823031B0(&D_82305A38);
     func_82303CA0(&D_82305A40);

@@ -363,7 +363,7 @@ void func_84202208(void) {
     while (func_8420DB48(0x10) == -1) {
         func_8420D9B0();
         func_84201F04(0x8C, 0xBC, 9);
-        func_800290B4();
+        Game_PollControllers();
     }
 }
 
@@ -409,18 +409,18 @@ s16 func_842023E4(void) {
     func_80048B90(4);
 
     for (i = 0; i < 9; i++) {
-        func_800290B4();
+        Game_PollControllers();
         func_84201F04(0x8C, 0xBC, i);
     }
 
     do {
-        func_800290B4();
+        Game_PollControllers();
         temp_s0 = func_84202284();
         func_84201F04(0x8C, 0xBC, 9);
     } while (temp_s0 == 'exec');
 
     for (i = 8; i >= 0; i--) {
-        func_800290B4();
+        Game_PollControllers();
         func_84201F04(0x8C, 0xBC, i);
     }
 
@@ -526,7 +526,7 @@ s16 func_84202844(s16 arg0, s16 arg1, s16 arg2, s32 arg3) {
     func_84205D48(arg0, arg3);
 
     while (temp_s1 == -1) {
-        func_800290B4();
+        Game_PollControllers();
         func_8420570C();
         func_8420D9B0();
         temp_s1 = func_84205E54();
@@ -574,7 +574,7 @@ void func_84202A64(s16 arg0, s32 arg1, s16 arg2) {
         func_842079B4(&D_84211B50, 0);
         func_8420B1D0(&D_842168A0, 0);
     }
-    func_800290B4();
+    Game_PollControllers();
     func_84202974(arg0, 0);
     func_84202718(arg0, arg1, arg2);
 }
@@ -585,7 +585,7 @@ void func_84202AF4(s16 arg0, s16 arg1, s16 arg2) {
     func_8001F738(&gControllers[D_842168A0.unk_00003]);
 
     while (var_s0 != 0) {
-        func_800290B4();
+        Game_PollControllers();
         func_84202974(arg0, func_8001F750() & 0xFFFF);
         func_84202718(arg0, arg1, arg2);
 
@@ -693,7 +693,7 @@ void func_8420305C(s32 arg0) {
     Stage_FadeIn(8);
 
     for (i = 0; i < 8; i++) {
-        func_800290B4();
+        Game_PollControllers();
         Stage_ActivateFramebuffer();
         func_8001D924(D_84211B34);
         if (arg0 != 0) {
@@ -711,7 +711,7 @@ void func_84203100(void) {
     if (Stage_GetFadeMode() == 1) {
         Stage_FadeOut(8);
         for (i = 0; i < 10; i++) {
-            func_800290B4();
+            Game_PollControllers();
             Stage_ActivateFramebuffer();
             func_8001D924(D_84211B34);
             func_842024DC(0, -1);
@@ -950,13 +950,13 @@ void func_842039B4(void) {
     D_84210D44 |= func_8421089C(&D_84229EB0, &D_84211B50, &D_842168A0, &D_8423D3A8, 1, 0x2C, 0x54, 0);
 
     func_84210A18(&D_84229EB0);
-    func_800290B4();
+    Game_PollControllers();
     func_84202974(4, 0);
     func_84202718(4, 2, 0);
     func_8001F738(&gControllers[D_842168A0.unk_00003]);
 
     do {
-        func_800290B4();
+        Game_PollControllers();
         func_84202974(4, func_8001F750() & 0xFFFF);
         func_84202718(4, 2, 0);
     } while (func_84210B54(&D_84229EB0) == 0);
@@ -966,13 +966,13 @@ void func_84203AB8(void) {
     D_84210D44 |= func_8421089C(&D_84229EB0, &D_84211B50, &D_842168A0, &D_8423D3A8, 2, 0x2C, 0x54, 0);
 
     func_84210A18(&D_84229EB0);
-    func_800290B4();
+    Game_PollControllers();
     func_84202974(4, 0);
     func_84202718(4, 3, 0);
     func_8001F738(&gControllers[D_842168A0.unk_00003]);
 
     do {
-        func_800290B4();
+        Game_PollControllers();
         func_84202974(4, func_8001F750() & 0xFFFF);
         func_84202718(4, 3, 0);
     } while (func_84210B54(&D_84229EB0) == 0);

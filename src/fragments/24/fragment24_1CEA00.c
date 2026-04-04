@@ -720,7 +720,7 @@ void func_88302C7C(unk_func_8830867C_02C* arg0, MemoryPool* arg1) {
     UNUSED s32 pad;
 
     arg0->unk_0E4[0].unk_00 = 0x20;
-    arg0->unk_0E4[0].unk_04 = func_80029080();
+    arg0->unk_0E4[0].unk_04 = Game_GetSelectedPlayer();
     arg0->unk_0E4[0].unk_08 = 0;
     arg0->unk_0E4[0].unk_1C = 6;
     func_8002C758(&arg0->unk_0E4[0].unk_0C, 0x1C, 1, arg1);
@@ -2391,7 +2391,7 @@ void func_88306FEC(unk_func_8830867C_02C_048* arg0, unk_func_8830867C_02C* arg1)
 }
 
 void func_88307038(unk_func_8830867C_02C* arg0, s32 arg1) {
-    s32 sp24 = func_80029080();
+    s32 sp24 = Game_GetSelectedPlayer();
 
     ((func88500A6C)Memmap_GetFragmentVaddr(func_88500A6C))(arg0->unk_0B0->unk_40, 2);
 
@@ -3023,7 +3023,7 @@ void func_8830867C(unk_func_8830867C* arg0, s32 arg1, s32 arg2, MemoryPool* arg3
     ((func8850068C)Memmap_GetFragmentVaddr(func_8850068C))(&sp8C->unk_00, &sp7C->unk_00.unk_00);
 
     sp78 = mem_pool_alloc(arg3, sizeof(unk_func_88509A2C));
-    ((func88509A2C)Memmap_GetFragmentVaddr(func_88509A2C))(sp78, 0x38, 0x22, func_80029080(),
+    ((func88509A2C)Memmap_GetFragmentVaddr(func_88509A2C))(sp78, 0x38, 0x22, Game_GetSelectedPlayer(),
                                                            func_8002D7C0(NULL, 0, D_8831A4C0, 0));
     ((func8850068C)Memmap_GetFragmentVaddr(func_8850068C))(&sp7C->unk_00.unk_00, &sp78->unk_00.unk_00);
 

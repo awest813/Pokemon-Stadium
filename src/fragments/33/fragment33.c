@@ -124,7 +124,7 @@ s32 func_81300020(s32 arg0, GraphNode* arg1) {
 }
 
 s32 func_813001C0(void) {
-    unk_func_8002A728 sp18;
+    unk_GameState_GBTower sp18;
 
     func_80028AFC(2);
     func_80027F24(&sp18);
@@ -594,7 +594,7 @@ void func_81302630(void) {
         return;
     }
 
-    D_81304000 = func_80029080();
+    D_81304000 = Game_GetSelectedPlayer();
 
     if (sp28 == 0) {
         D_81304000 = 0;
@@ -728,7 +728,7 @@ s32 func_81302A70(s32 arg0) {
     }
 
     if ((var_s1 != -1) && (D_81304000 >= 0)) {
-        func_8002908C(D_81304000);
+        Game_SetSelectedPlayer(D_81304000);
     }
 
     return var_s1;

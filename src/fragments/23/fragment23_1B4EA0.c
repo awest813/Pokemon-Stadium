@@ -97,7 +97,7 @@ void func_8820CBA0(unk_func_8821421C_02C_030* arg0, unk_func_8850143C* arg1, spE
     arg0->unk_00.unk_14.unk_00 = arg1->unk_00.unk_14.unk_00;
     arg0->unk_00.unk_14.unk_02 = arg1->unk_00.unk_14.unk_02;
     arg0->unk_2C = arg1;
-    arg0->unk_30 = func_8002EC08(func_80024F68(func_80029080()));
+    arg0->unk_30 = func_8002EC08(func_80024F68(Game_GetSelectedPlayer()));
     arg0->unk_34 = -1;
     arg0->unk_38 = arg2;
 }
@@ -2238,7 +2238,7 @@ void func_882121E0(unk_func_8821421C_02C* arg0, s32 arg1, s32 arg2, unk_func_882
     char* temp_s1;
     char* sp6C;
 
-    temp_s0 = func_80029080();
+    temp_s0 = Game_GetSelectedPlayer();
 
     spE8 = mem_pool_alloc(argB, sizeof(spE8_func_882121E0));
     temp_s1 = mem_pool_alloc(argB, sizeof(char) * 40);
@@ -2649,7 +2649,7 @@ s32 func_882138D4(unk_func_8821421C_02C* arg0) {
     s32 var_v1_2;
     unk_func_8821421C_03C* temp_v0_2;
 
-    sp24 = func_80029080();
+    sp24 = Game_GetSelectedPlayer();
     sp20 = 0;
 
     if (func_882137B4(&arg0->unk_78[0], 0x23, sp24, 0) != 0) {
@@ -2675,7 +2675,7 @@ s32 func_882138D4(unk_func_8821421C_02C* arg0) {
 }
 
 void func_882139C0(unk_func_8821421C_02C* arg0, s32 arg1) {
-    s32 sp4C = func_80029080();
+    s32 sp4C = Game_GetSelectedPlayer();
     char sp40[11];
 
     ((func88500A6C)Memmap_GetFragmentVaddr(func_88500A6C))(arg0->unk_A0->unk_40, 2);
@@ -2919,7 +2919,7 @@ void func_8821421C(unk_func_8821421C* arg0, s32 arg1, s32 arg2, MemoryPool* arg3
     unk_func_88509A2C* sp60;
     unk_func_88509E34* sp5C;
 
-    sp84 = func_80029080();
+    sp84 = Game_GetSelectedPlayer();
     ((func885007CC)Memmap_GetFragmentVaddr(func_885007CC))(arg0, sizeof(unk_func_8821421C));
     arg0->unk_00.unk_10.unk_00 = arg1;
     arg0->unk_00.unk_10.unk_02 = arg2;
@@ -2957,7 +2957,7 @@ void func_8821421C(unk_func_8821421C* arg0, s32 arg1, s32 arg2, MemoryPool* arg3
     ((func8850068C)Memmap_GetFragmentVaddr(func_8850068C))(sp8C, sp64);
 
     sp60 = mem_pool_alloc(arg3, sizeof(unk_func_88509A2C));
-    ((func88509A2C)Memmap_GetFragmentVaddr(func_88509A2C))(sp60, 0x38, 0x22, func_80029080(),
+    ((func88509A2C)Memmap_GetFragmentVaddr(func_88509A2C))(sp60, 0x38, 0x22, Game_GetSelectedPlayer(),
                                                            func_8002D7C0(NULL, 0, D_88224FC0, 0));
     ((func8850068C)Memmap_GetFragmentVaddr(func_8850068C))(sp64, sp60);
 

@@ -209,13 +209,13 @@ s32 func_82C00E10(s32 arg0) {
 
     if (arg0 == 0) {
         for (i = 1; i < 8; i++) {
-            func_800290B4();
+            Game_PollControllers();
             func_82C00D98(8, i, arg0, 1);
         }
     }
 
     while (var_s2 != 0) {
-        func_800290B4();
+        Game_PollControllers();
         if (BTN_IS_PRESSED(gPlayer1Controller, BTN_DUP | BTN_DDOWN)) {
             func_80048B90(1);
             var_s1 ^= 1;
@@ -241,7 +241,7 @@ s32 func_82C00E10(s32 arg0) {
 
     if ((arg0 == 1) || (var_s1 == 1)) {
         for (i = 7; i > 0; i--) {
-            func_800290B4();
+            Game_PollControllers();
             func_82C00D98(8, i, arg0, var_s1);
         }
     }
@@ -252,19 +252,19 @@ void func_82C00F88(void) {
     s16 i;
 
     for (i = 1; i < 8; i++) {
-        func_800290B4();
+        Game_PollControllers();
         func_82C00D98(8, i, 2, 0);
     }
 
     do {
-        func_800290B4();
+        Game_PollControllers();
         func_82C00D98(8, 8, 2, 0);
     } while (!BTN_IS_PRESSED(gPlayer1Controller, BTN_A));
 
     func_80048B90(2);
 
     for (i = 7; i > 0; i--) {
-        func_800290B4();
+        Game_PollControllers();
         func_82C00D98(8, i, 2, 0);
     }
 }
@@ -368,17 +368,17 @@ void func_82C012FC(void) {
 
     Stage_FadeOut(8);
     while (Stage_GetFadeMode() != 0) {
-        func_800290B4();
+        Game_PollControllers();
         func_82C00D98(0, 0, 0, 0);
     }
 
     for (i = 1; i < 8; i++) {
-        func_800290B4();
+        Game_PollControllers();
         func_82C00D98(i, 0, 0, 0);
     }
 
     while (var_s1 == 0) {
-        func_800290B4();
+        Game_PollControllers();
         if (BTN_IS_PRESSED(gPlayer1Controller, BTN_DUP)) {
             D_82C01664 = (D_82C01664 + 3) % 4;
             func_80048B90(1);
@@ -395,7 +395,7 @@ void func_82C012FC(void) {
     }
 
     for (i = 7; i > 0; i--) {
-        func_800290B4();
+        Game_PollControllers();
         func_82C00D98(i, 0, 0, 0);
     }
 
@@ -403,7 +403,7 @@ void func_82C012FC(void) {
     Stage_FadeIn(8);
 
     while (Stage_GetFadeMode() != 1) {
-        func_800290B4();
+        Game_PollControllers();
         func_82C00D98(0, 0, 0, 0);
     }
 }

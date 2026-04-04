@@ -12,14 +12,14 @@ typedef struct arg1_func_80019420 {
     /* 0x04 */ void* unk_04;
 } arg1_func_80019420; // size = 0x8
 
-typedef struct unk_D_800AE520 {
+typedef struct DeferredFragment {
     /* 0x00 */ s16 unk_00;
     /* 0x02 */ s16 fragment_id;
     /* 0x04 */ u8* rom_start;
     /* 0x08 */ u8* rom_end;
     /* 0x0C */ s32 arg0;
     /* 0x10 */ s32 arg1;
-} unk_D_800AE520; // size >= 0x14
+} DeferredFragment; // size >= 0x14
 
 typedef struct unk_func_80026268_arg0_000 {
     /* 0x00 */ u8 unk_00;
@@ -125,47 +125,47 @@ typedef struct unk_D_800AE540 {
 } unk_D_800AE540; // size = 0x11F8
 
 extern s32 gCurrentGameState;
-extern unk_D_800AE520 D_800AE520;
+extern DeferredFragment gDeferredFragment;
 extern unk_D_800AE540 D_800AE540;
 extern BinArchive* D_800AF738;
 
 s32 Game_DoCopyProtection(s32 state);
-s32 func_80029008(s32 arg0, u8* romStart, u8* romEnd, u32 arg3, u32 arg4);
-void func_80029048(s32 arg0, u8* arg1, u8* arg2, s32 arg3, s32 arg4);
-unk_D_800AE540_0004* func_80029074(void);
-s32 func_80029080(void);
-void func_8002908C(s32 arg0);
-void func_800290B4(void);
-s32 func_800290E4(s16 arg0);
-void func_800291E0(void);
-void func_80029310(void);
-void func_800293CC(void);
-void func_800296AC(void);
-void func_800296E0(void);
-void func_80029828(void);
-void func_80029884(void);
-void func_800298D4(void);
-void func_80029924(void);
-s16 func_80029984(s16 arg0);
-void func_80029BC0(void);
-s32 func_80029E78(s16 arg0);
-void func_8002A06C(void);
-s16 func_8002A260(s16 arg0);
-void func_8002A400(void);
-void func_8002A670(void);
-void func_8002A698(void);
-void func_8002A6C0(void);
-void func_8002A728(void);
-s16 func_8002A8A0(s16 arg0, s16 arg1);
-void func_8002AAA8(void);
-void func_8002ADE8(s32 arg0);
-void func_8002AF38(void);
-void func_8002B07C(void);
-void func_8002B180(void);
+s32 Fragment_LoadAndCall(s32 arg0, u8* romStart, u8* romEnd, u32 arg3, u32 arg4);
+void Fragment_DeferAndCall(s32 arg0, u8* arg1, u8* arg2, s32 arg3, s32 arg4);
+unk_D_800AE540_0004* Game_GetPlayers(void);
+s32 Game_GetSelectedPlayer(void);
+void Game_SetSelectedPlayer(s32 arg0);
+void Game_PollControllers(void);
+s32 Game_RunDemo(s16 arg0);
+void Game_RunIntroSequence(void);
+void GameState_Intro(void);
+void GameState_TitleScreen(void);
+void GameState_N64DDBoot(void);
+void GameState_Debug(void);
+void GameState_AreaSelect(void);
+void GameState_EventBattle(void);
+void GameState_Options(void);
+void GameState_MenuSelect(void);
+s16 Stadium_RunCupSelect(s16 arg0);
+void GameState_Stadium(void);
+s32 FreeBattle_RunLoop(s16 arg0);
+void GameState_FreeBattle(void);
+s16 VsMewtwo_RunLoop(s16 arg0);
+void GameState_VsMewtwo(void);
+void GameState_KidsClub(void);
+void GameState_Gallery(void);
+void GameState_VictoryPalace(void);
+void GameState_GBTower(void);
+s16 GymLeaderCastle_RunLoop(s16 arg0, s16 arg1);
+void GameState_GymLeaderCastle(void);
+void GameState_BattleNow(s32 arg0);
+void GameState_BattleFromEvent(void);
+void GameState_FastIntro(void);
+void GameState_FastBattle(void);
 void func_8002B244(void);
-void func_8002B24C(void);
-void func_8002B274(s32 arg0, s32 arg1);
-void func_8002B310(void);
+void GameState_KidsClubTitle(void);
+void Game_PostBattle(s32 arg0, s32 arg1);
+void Game_OnPreNMI(void);
 void Game_Thread(UNUSED LEODiskID* arg);
 
 #endif // _29BA0_H_

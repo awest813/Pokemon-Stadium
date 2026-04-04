@@ -1556,17 +1556,17 @@ s32 func_82D03174(void) {
     Stage_FadeOut(8);
 
     for (j = 0; j < 7; j++) {
-        func_800290B4();
+        Game_PollControllers();
         func_82D02ED0(-0xA, 0xFF);
     }
 
     for (i = -9; i < 0; i++) {
-        func_800290B4();
+        Game_PollControllers();
         func_82D02ED0(i, 0xFF);
     }
 
     while (var_s2 == 0) {
-        func_800290B4();
+        Game_PollControllers();
         func_82D02ED0(i, 0xFF);
 
         if (BTN_IS_PRESSED(gPlayer1Controller, BTN_A)) {
@@ -1580,12 +1580,12 @@ s32 func_82D03174(void) {
         func_80048B90(0x17);
 
         for (i = 0; i < 10; i++) {
-            func_800290B4();
+            Game_PollControllers();
             func_82D02ED0(i, 0xFF);
         }
 
         for (j = 0xE0; j >= 0x20; j -= 0x20) {
-            func_800290B4();
+            Game_PollControllers();
             func_82D02ED0(i, j);
         }
     } else {
@@ -1594,7 +1594,7 @@ s32 func_82D03174(void) {
         Stage_SetFillColor(0xFFFF);
         Stage_FadeIn(8);
         while (Stage_GetFadeMode() != 1) {
-            func_800290B4();
+            Game_PollControllers();
             func_82D02ED0(i, 0xFF);
         }
     }
@@ -1786,12 +1786,12 @@ s32 func_82D0442C(unk_func_800281D4* arg0) {
     s16 var_s1 = 1;
 
     for (i = 1; i < 8; i++) {
-        func_800290B4();
+        Game_PollControllers();
         func_82D043CC(8, 2, arg0, i, 1);
     }
 
     while (var_s2 != 0) {
-        func_800290B4();
+        Game_PollControllers();
         if (gPlayer1Controller->buttonPressed & 0xC00) {
             func_80048B90(1);
             var_s1 ^= 1;
@@ -1811,7 +1811,7 @@ s32 func_82D0442C(unk_func_800281D4* arg0) {
     }
 
     for (i = 7; i > 0; i--) {
-        func_800290B4();
+        Game_PollControllers();
         func_82D043CC(8, 2, arg0, i, var_s1);
     }
 
@@ -1832,14 +1832,14 @@ s16 func_82D04590(unk_func_800281D4* arg0) {
     func_80048B90(4);
 
     for (i = 1; i < 8; i++) {
-        func_800290B4();
+        Game_PollControllers();
         func_82D043CC(i, 0, arg0, 0, 0);
     }
 
     while (var_s6 != 0) {
         var_s1 = -1;
         while (var_s1 == -1) {
-            func_800290B4();
+            Game_PollControllers();
 
             if (BTN_IS_PRESSED(gPlayer1Controller, BTN_A)) {
                 var_s1 = var_s0;
@@ -1887,7 +1887,7 @@ s16 func_82D04590(unk_func_800281D4* arg0) {
     }
 
     for (i = 7; i >= 0; i--) {
-        func_800290B4();
+        Game_PollControllers();
         func_82D043CC(i, var_s0, arg0, 0, 0);
     }
 
@@ -1900,7 +1900,7 @@ s16 func_82D04590(unk_func_800281D4* arg0) {
         Stage_FadeIn(8);
 
         while (Stage_GetFadeMode() != 1) {
-            func_800290B4();
+            Game_PollControllers();
             func_82D043CC(0, 0, arg0, 0, 0);
         }
 
@@ -1920,7 +1920,7 @@ s16 func_82D04590(unk_func_800281D4* arg0) {
         Stage_SetFillColor(0xFFFF);
         Stage_FadeIn(8);
         while (Stage_GetFadeMode() != 1) {
-            func_800290B4();
+            Game_PollControllers();
             func_82D043CC(0, var_s0, arg0, 0, 0);
         }
     }
@@ -2659,19 +2659,19 @@ s16 func_82D067A0(void) {
     if (Stage_GetFadeMode() != 0) {
         Stage_FadeOut(8);
         while (Stage_GetFadeMode() != 0) {
-            func_800290B4();
+            Game_PollControllers();
             func_82D053F4(0, 0);
         }
     }
 
     for (i = 0; i < 10; i++) {
-        func_800290B4();
+        Game_PollControllers();
         func_82D053F4(i, 0);
     }
 
     while (var_s0 == -1) {
         while (var_s0 < 0) {
-            func_800290B4();
+            Game_PollControllers();
             if (var_s0 == -1) {
                 var_s0 = func_82D063E4();
             } else {
@@ -2683,7 +2683,7 @@ s16 func_82D067A0(void) {
 
         if (D_82D06FA0 == 4) {
             for (i = 11; i < 26; i++) {
-                func_800290B4();
+                Game_PollControllers();
                 func_82D053F4(i, 0);
             }
 
@@ -2691,7 +2691,7 @@ s16 func_82D067A0(void) {
 
             var_s0 = -1;
             while (var_s0 < 0) {
-                func_800290B4();
+                Game_PollControllers();
                 if (var_s0 == -1) {
                     var_s0 = func_82D063E4();
                 } else {
@@ -2703,7 +2703,7 @@ s16 func_82D067A0(void) {
 
             if (D_82D06FA0 == 7) {
                 for (i = 25; i >= 11; i--) {
-                    func_800290B4();
+                    Game_PollControllers();
                     func_82D053F4(i, 0);
                 }
                 D_82D06FA0 = 4;
@@ -2714,7 +2714,7 @@ s16 func_82D067A0(void) {
 
     if (D_82D06FA0 < 7) {
         for (i = 27; i < 36; i++) {
-            func_800290B4();
+            Game_PollControllers();
             func_82D053F4(i, 0);
         }
     }
@@ -2729,7 +2729,7 @@ s16 func_82D067A0(void) {
         Stage_SetFillColor(0xFFFF);
         Stage_FadeIn(8);
         while (Stage_GetFadeMode() != 1) {
-            func_800290B4();
+            Game_PollControllers();
             func_82D053F4(i, 0);
         }
     }

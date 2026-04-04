@@ -539,7 +539,7 @@ s32 func_84A0207C(void) {
         var_s1 = -1;
         temp_s0 = &D_84A02F00[D_84A030E0];
 
-        func_800290B4();
+        Game_PollControllers();
 
         if (func_84A02074() == 0) {
             if (Stage_GetFadeMode() == 0) {
@@ -642,7 +642,7 @@ void func_84A02434(s16 arg0, s16 arg1, s16 arg2, s16 arg3) {
         for (i = arg0; i <= arg1; i++) {
             D_84A03138[i].unk_02 += arg3;
         }
-        func_800290B4();
+        Game_PollControllers();
         func_84A01EE0();
     }
 }
@@ -659,7 +659,7 @@ s32 func_84A02580(void) {
 
     for (i = 3; i >= 0; i--) {
         D_84A030E8 = i << 6;
-        func_800290B4();
+        Game_PollControllers();
         func_84A01EE0();
     }
 
@@ -674,7 +674,7 @@ s32 func_84A02580(void) {
     }
 
     while (var_s1_2 == 0) {
-        func_800290B4();
+        Game_PollControllers();
         func_84A01EE0();
         if (BTN_IS_PRESSED(gPlayer1Controller, BTN_A)) {
             var_s1_2 = 1;
@@ -722,7 +722,7 @@ s32 func_84A02580(void) {
 
         for (i = 1; i < 5; i++) {
             D_84A030E8 = (i << 6) - 1;
-            func_800290B4();
+            Game_PollControllers();
             func_84A01EE0();
         }
     }
@@ -742,12 +742,12 @@ s32 func_84A02898(void) {
 
     for (i = 1; i < 5; i++) {
         D_84A030EC = i * 0x14;
-        func_800290B4();
+        Game_PollControllers();
         func_84A01EE0();
     }
 
     do {
-        func_800290B4();
+        Game_PollControllers();
         func_84A01EE0();
     } while (!BTN_IS_PRESSED(gPlayer1Controller, BTN_A | BTN_B));
 
@@ -766,7 +766,7 @@ s32 func_84A02898(void) {
 
     for (i = 3; i >= 0; i--) {
         D_84A030EC = i * 0x14;
-        func_800290B4();
+        Game_PollControllers();
         func_84A01EE0();
     }
 
@@ -782,7 +782,7 @@ s16 func_84A02A34(s16 arg0) {
     if (Stage_GetFadeMode() == 1) {
         Stage_FadeOut(8);
         for (i = 0; i < 9; i++) {
-            func_800290B4();
+            Game_PollControllers();
             func_84A01EE0();
         }
     }
