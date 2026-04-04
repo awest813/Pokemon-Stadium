@@ -1115,7 +1115,7 @@ void func_82303FE8(void) {
 void func_82304224(s16 arg0) {
     s16 i;
 
-    func_800079C4();
+    Stage_ActivateFramebuffer();
     func_82303FE8();
     func_82301A10();
     func_82301B0C(&D_82305A30);
@@ -1137,7 +1137,7 @@ void func_82304224(s16 arg0) {
                       D_82305920[arg0].unk_06);
     }
 
-    func_80007778();
+    Stage_AdvanceFrame();
 }
 
 void func_82304358(void) {
@@ -1214,8 +1214,8 @@ void func_823045D8(unk_D_82305A28* arg0) {
     s16 i;
     s16 j;
 
-    func_8000D1F0(0x2D);
-    func_80006C6C(8);
+    Audio_PlayTrack(0x2D);
+    Stage_FadeOut(8);
 
     for (i = 0; i < 6; i++) {
         func_82304358();
@@ -1252,11 +1252,11 @@ void func_823046C8(unk_D_82305A28* arg0) {
         func_82304224(-1);
     }
 
-    func_8000D278(0x10);
-    func_80007990(0xFFFF);
-    func_80006CB4(8);
+    Audio_StopTrack(0x10);
+    Stage_SetFillColor(0xFFFF);
+    Stage_FadeIn(8);
 
-    while (func_80007604() != 1) {
+    while (Stage_GetFadeMode() != 1) {
         func_82304358();
         func_82304224(-1);
     }
@@ -1411,11 +1411,11 @@ void func_82304D30(unk_D_82305A28* arg0) {
         func_82304224(-1);
     }
 
-    func_8000D278(0x10);
-    func_80007990(0xFFFF);
-    func_80006CB4(8);
+    Audio_StopTrack(0x10);
+    Stage_SetFillColor(0xFFFF);
+    Stage_FadeIn(8);
 
-    while (func_80007604() != 1) {
+    while (Stage_GetFadeMode() != 1) {
         func_82304358();
         func_82304224(-1);
     }
@@ -1628,12 +1628,12 @@ s16 func_823056C4(void) {
     func_8001B058();
     func_80023AF8(0);
     func_80023AF8(1);
-    func_80007754();
+    Stage_SetSegments();
     func_82305370(&D_82305A28, D_823059CC);
     func_8230527C(&D_82305A28);
     D_823059CC = D_82305A28.unk_02;
-    func_8000771C();
-    func_80005EAC();
+    Stage_WaitFrame();
+    DLBuf_Free();
 
     main_pool_pop_state('EVSL');
 
@@ -1645,8 +1645,8 @@ s32 func_823057E4(UNUSED s32 arg0, UNUSED s32 arg1) {
 
     main_pool_push_state('EBTL');
 
-    func_80005E40(0x10000, 0);
-    func_80007678(func_80007444(1, 0, 2, 0, 2, 1));
+    DLBuf_Init(0x10000, 0);
+    Stage_SetRenderContext(Stage_CreateRenderContext(1, 0, 2, 0, 2, 1));
     func_8002D510();
     D_82305A20 = func_8002D5AC(0x10);
     D_82305A24 = func_8002D5AC(6);
@@ -1658,8 +1658,8 @@ s32 func_823057E4(UNUSED s32 arg0, UNUSED s32 arg1) {
         }
     }
 
-    func_800076C0();
-    func_80005EAC();
+    Stage_FreeRenderContext();
+    DLBuf_Free();
 
     main_pool_pop_state('EBTL');
 

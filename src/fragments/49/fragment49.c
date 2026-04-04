@@ -13,11 +13,11 @@ static s32 D_83A00B70;
 static BinArchive* D_83A00B74;
 static u8* D_83A00B78;
 static s32 D_83A00B7C;
-static unk_D_80068BB0* D_83A00B80;
+static ColorBuffer* D_83A00B80;
 
 void func_83A00020(void) {
     D_83A00B70 = 0;
-    D_83A00B80 = func_80006314(0, 2, 0x280, 0x1E0, 0);
+    D_83A00B80 = ColorBuffer_Alloc(0, 2, 0x280, 0x1E0, 0);
     D_83A00B7C = -1;
 }
 
@@ -96,7 +96,7 @@ void func_83A00754(void) {
         main_pool_push_state('mksl');
 
         D_83A00B78 = func_8000484C(D_83A00B74, D_83A00B58[D_83A00B7C]);
-        func_80006498(&gDisplayListHead, D_83A00B80);
+        ColorBuffer_Activate(&gDisplayListHead, D_83A00B80);
 
         gSPDisplayList(gDisplayListHead++, D_8006F518);
         gDPSetRenderMode(gDisplayListHead++, G_RM_OPA_SURF, G_RM_OPA_SURF2);
@@ -104,9 +104,9 @@ void func_83A00754(void) {
         func_83A0031C(D_83A00B7C, D_83A00B78);
     }
 
-    func_800079C4();
+    Stage_ActivateFramebuffer();
     func_83A00068(0, 0);
-    func_80007778();
+    Stage_AdvanceFrame();
 
     if (D_83A00B7C >= 0) {
         main_pool_pop_state('mksl');
@@ -129,7 +129,7 @@ s32 func_83A00880(void) {
 
     switch (D_83A00B70) {
         case 0:
-            if (func_80007604() == 0) {
+            if (Stage_GetFadeMode() == 0) {
                 D_83A00B68--;
                 if (D_83A00B68 <= 0) {
                     D_83A00B70 = 1;
@@ -150,12 +150,12 @@ s32 func_83A00880(void) {
             if ((D_83A00B7C == -1) && (func_83A00858() != 0)) {
                 D_83A00B70 = 2;
                 func_80048B90(3);
-                func_80006CB4(8);
+                Stage_FadeIn(8);
             }
             break;
 
         case 2:
-            if (func_80007604() == 1) {
+            if (Stage_GetFadeMode() == 1) {
                 sp1C = 0;
             }
             break;
@@ -173,10 +173,10 @@ void func_83A009C0(void) {
 }
 
 void func_83A009C8(void) {
-    func_80006498(&gDisplayListHead, D_83A00B80);
-    func_800065B4(&gDisplayListHead, 0, 0, 0x280, 0x1E0, 0xFFFF);
-    func_80007778();
-    func_80006C6C(8);
+    ColorBuffer_Activate(&gDisplayListHead, D_83A00B80);
+    GFX_FillRect(&gDisplayListHead, 0, 0, 0x280, 0x1E0, 0xFFFF);
+    Stage_AdvanceFrame();
+    Stage_FadeOut(8);
     do {
         func_83A00990();
         func_83A00754();
@@ -184,21 +184,21 @@ void func_83A009C8(void) {
 }
 
 s32 func_83A00A4C(s32 arg0, s32 arg1) {
-    unk_func_80007444* sp24;
+    RenderContext* sp24;
 
     main_pool_push_state('BNVW');
 
-    func_80005E40(0x10000, 0);
-    sp24 = func_80007444(1, 0, 2, 0, 2, 1);
+    DLBuf_Init(0x10000, 0);
+    sp24 = Stage_CreateRenderContext(1, 0, 2, 0, 2, 1);
     func_8001E94C(8, 0);
     ASSET_LOAD(D_1000000, common_menu1_ui, 0);
     D_83A00B74 = ASSET_LOAD2(backgrounds, 1, 1);
     func_83A00020();
-    func_80007678(sp24);
+    Stage_SetRenderContext(sp24);
     func_83A009C8();
-    func_800076C0();
+    Stage_FreeRenderContext();
     func_8001E9CC();
-    func_80005EAC();
+    DLBuf_Free();
 
     main_pool_pop_state('BNVW');
 

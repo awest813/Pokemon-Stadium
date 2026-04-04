@@ -213,7 +213,7 @@ void func_87901C98(void) {
     gSPMatrix(gDisplayListHead++, D_87906054->unk_24.mtx, G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_PROJECTION);
     gSPMatrix(gDisplayListHead++, D_87906054->unk_60.p_mtxf, G_MTX_NOPUSH | G_MTX_MUL | G_MTX_PROJECTION);
 
-    D_8140E620 = func_80005F5C(sizeof(unk_D_8140E620));
+    D_8140E620 = DLBuf_AllocTemp(sizeof(unk_D_8140E620));
     D_8140E624 = 0;
 
     gSPDisplayList(gDisplayListHead++, D_8140DB30);
@@ -595,7 +595,7 @@ void func_87902D3C(Gfx* arg0, unk_D_86002F34_000_014* arg1, UNUSED u16 arg2) {
 
 void func_87902F80(s32 arg0, arg1_func_87902F80* arg1) {
     if (arg0 == 2) {
-        arg1->unk_18 = func_80005F5C(sizeof(Gfx) * 30);
+        arg1->unk_18 = DLBuf_AllocTemp(sizeof(Gfx) * 30);
         func_87902D3C(arg1->unk_18, arg1->unk_00.unk_14, D_8006F084);
     }
 }
@@ -623,7 +623,7 @@ void func_87902FC8(Gfx* arg0, unk_D_86002F34_000_014* arg1, UNUSED u16 arg2) {
 
 void func_8790320C(s32 arg0, arg1_func_87902F80* arg1) {
     if (arg0 == 2) {
-        arg1->unk_18 = func_80005F5C(sizeof(Gfx) * 30);
+        arg1->unk_18 = DLBuf_AllocTemp(sizeof(Gfx) * 30);
         func_87902FC8(arg1->unk_18, arg1->unk_00.unk_14, D_8006F084);
     }
 }

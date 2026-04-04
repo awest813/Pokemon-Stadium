@@ -2985,7 +2985,7 @@ void func_8800233C(unk_func_88001300* arg0) {
     UNUSED s32 pad;
     func88506074 temp_s0;
 
-    while (func_80007604() != 0) {
+    while (Stage_GetFadeMode() != 0) {
         func_8002EEA8(NULL);
     }
 
@@ -2994,8 +2994,8 @@ void func_8800233C(unk_func_88001300* arg0) {
     }
 
     if (arg0->unk_40 == -1) {
-        func_80007990(1);
-        func_80006CB4(8);
+        Stage_SetFillColor(1);
+        Stage_FadeIn(8);
 
         i = 10;
         while (i-- > 0) {
@@ -3038,8 +3038,8 @@ void func_8800233C(unk_func_88001300* arg0) {
     arg0->unk_00.unk_24(arg0, 1);
     sp34 = func_88001D94(arg0);
 
-    func_80007990(1);
-    func_80006CB4(8);
+    Stage_SetFillColor(1);
+    Stage_FadeIn(8);
 
     if ((sp34 == 0x11) || (sp34 == 0x10001)) {
         func_8004B9C4(0x10);
@@ -3059,7 +3059,7 @@ void func_88002580(unk_func_88001300* arg0) {
     func885008C4 func1;
     func88500828 func2;
 
-    func_800079C4();
+    Stage_ActivateFramebuffer();
 
     func1 = Memmap_GetFragmentVaddr((u32)func_885008C4);
     func1(arg0);
@@ -3067,7 +3067,7 @@ void func_88002580(unk_func_88001300* arg0) {
     func2 = Memmap_GetFragmentVaddr((u32)func_88500828);
     func2(arg0, 0, 0);
 
-    func_80007778();
+    Stage_AdvanceFrame();
 }
 
 s32 func_880025D8(unk_func_88001300* arg0) {
@@ -3116,10 +3116,10 @@ s32 func_88002628(s32 arg0, UNUSED s32 arg1) {
     func_8001F738(gPlayer1Controller);
     osStartThread(&sp30->thread);
 
-    func_80007754();
-    func_80006C6C(8);
+    Stage_SetSegments();
+    Stage_FadeOut(8);
     sp3C = func_880025D8(sp38);
-    func_8000771C();
+    Stage_WaitFrame();
 
     osDestroyThread(&sp30->thread);
 

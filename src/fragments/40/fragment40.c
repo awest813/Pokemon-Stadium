@@ -299,7 +299,7 @@ void func_83100784(void) {
     s16 sp38;
     s32 temp_ft2;
 
-    func_800060E0(&gDisplayListHead, 0, 0, 0x280, 0x1E0);
+    GFX_SetScissor(&gDisplayListHead, 0, 0, 0x280, 0x1E0);
     if (D_83102218.unk_00 == 0) {
         return;
     }
@@ -519,14 +519,14 @@ void func_83101608(void) {
 }
 
 void func_83101674(void) {
-    func_800079C4();
+    Stage_ActivateFramebuffer();
     func_8310102C();
     func_80015094(D_83101EF4);
     if (D_83101EEC != 0) {
         func_831013FC();
     }
     func_83100784();
-    func_80007778();
+    Stage_AdvanceFrame();
 }
 
 s32 func_831016D0(void) {
@@ -534,7 +534,7 @@ s32 func_831016D0(void) {
 
     switch (D_83101EE8) {
         case 0:
-            if (func_80007604() == 0) {
+            if (Stage_GetFadeMode() == 0) {
                 D_83101EE8 = 1;
                 D_83101EEA = 0;
                 func_831010E0(D_83102210, 1);
@@ -558,7 +558,7 @@ s32 func_831016D0(void) {
                             D_83101EE8 = 2;
                             D_83101EEA = 0;
                             func_83100C78(0xF);
-                            func_80007990(1);
+                            Stage_SetFillColor(1);
                         }
                         break;
                 }
@@ -577,7 +577,7 @@ s32 func_831016D0(void) {
 
 void func_83101818(void) {
     func_83101608();
-    func_80006C6C(0xF);
+    Stage_FadeOut(0xF);
 
     do {
         func_831010B0();
@@ -635,12 +635,12 @@ void func_83101870(void) {
 }
 
 s32 func_83101A98(UNUSED s32 arg0, UNUSED s32 arg1) {
-    unk_func_80007444* sp24;
+    RenderContext* sp24;
 
     main_pool_push_state('CLRG');
 
-    func_80005E40(0x10000, 0);
-    sp24 = func_80007444(1, 0, 2, 0, 2, 1);
+    DLBuf_Init(0x10000, 0);
+    sp24 = Stage_CreateRenderContext(1, 0, 2, 0, 2, 1);
     func_8001E94C(0x10, 0);
 
     ASSET_LOAD(D_1000000, common_menu1_ui, 0);
@@ -649,12 +649,12 @@ s32 func_83101A98(UNUSED s32 arg0, UNUSED s32 arg1) {
     D_83101EE4 = func_8000484C(D_83101EE0, 0xE);
 
     func_83101870();
-    func_80007678(sp24);
+    Stage_SetRenderContext(sp24);
     func_83101818();
-    func_800077B4(2);
-    func_800076C0();
+    Stage_AdvanceFrames(2);
+    Stage_FreeRenderContext();
     func_8001E9CC();
-    func_80005EAC();
+    DLBuf_Free();
 
     main_pool_pop_state('CLRG');
 

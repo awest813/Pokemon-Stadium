@@ -739,7 +739,7 @@ void func_838043F8(s32 arg0) {
             var_s0 = -0x194;
         }
 
-        func_800060E0(&gDisplayListHead, spC4 + 0x24, spC0 + 4, 0x18C, 0x124);
+        GFX_SetScissor(&gDisplayListHead, spC4 + 0x24, spC0 + 4, 0x18C, 0x124);
         func_83803F34(temp_s2_2 + 0x24, spC0 + 4, ptr->unk_0160->unk_268C);
         func_83803F34((var_s0 + temp_s2_2) + 0x24, spC0 + 4, ptr->unk_0160);
 
@@ -764,13 +764,13 @@ void func_838043F8(s32 arg0) {
             var_s2 = var_s2->unk_2688;
         }
 
-        func_800060E0(&gDisplayListHead, 0, 0, 0x280, 0x1E0);
+        GFX_SetScissor(&gDisplayListHead, 0, 0, 0x280, 0x1E0);
     } else if (ptr->unk_0000 == 4) {
         s32 sp80 = spC0 - ((ptr->unk_002C * 0x2C) / 4);
         s32 pad[2];
 
         func_83803F34(spC4 + 0x24, spC0 + 4, ptr->unk_0160);
-        func_800060E0(&gDisplayListHead, spC4 + 0x24, spC0 + 0x20, 0x18C, 0x108);
+        GFX_SetScissor(&gDisplayListHead, spC4 + 0x24, spC0 + 0x20, 0x18C, 0x108);
         if (ptr->unk_0030 > 0) {
             var_s2 = ptr->unk_0160->unk_268C;
             for (i = 0; i < 7; i++) {
@@ -784,7 +784,7 @@ void func_838043F8(s32 arg0) {
                 var_s2 = var_s2->unk_2688;
             }
         }
-        func_800060E0(&gDisplayListHead, 0, 0, 0x280, 0x1E0);
+        GFX_SetScissor(&gDisplayListHead, 0, 0, 0x280, 0x1E0);
     } else {
         func_83803F34(spC4 + 0x24, spC0 + 4, ptr->unk_0160);
         var_s2 = ptr->unk_0160;

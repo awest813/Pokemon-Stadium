@@ -29,8 +29,8 @@ static void* D_8438E780;
 static GraphNode* D_8438E784;
 static GraphNode* D_8438E788;
 static GraphNode* D_8438E78C;
-static unk_D_80068BB0* D_8438E790;
-static unk_D_80068BB0* D_8438E794;
+static ColorBuffer* D_8438E790;
+static ColorBuffer* D_8438E794;
 static unk_D_800AE540_1194* D_8438E798;
 static s32 D_8438E79C;
 static s32 D_8438E7A0;
@@ -148,17 +148,17 @@ void func_84300340(void) {
     s16 sp44;
 
     if ((u32)D_8438E780 == NULL) {
-        func_800067E4(&gDisplayListHead, 0, 0, 0x140, 0xF0);
+        GFX_ClearDepth(&gDisplayListHead, 0, 0, 0x140, 0xF0);
         return;
     }
 
     if ((u32)D_8438E780 == -1) {
-        func_8000699C(&gDisplayListHead, 1);
+        GFX_ClearScreen(&gDisplayListHead, 1);
         return;
     }
 
     if ((u32)D_8438E780 < 0x10000) {
-        func_8000699C(&gDisplayListHead, func_84300208(D_8438E780));
+        GFX_ClearScreen(&gDisplayListHead, func_84300208(D_8438E780));
         return;
     }
 
@@ -170,9 +170,9 @@ void func_84300340(void) {
     sp44 = 0x10000 / (D_8438E440.unk_18.height / 2);
 
     if ((D_8438E440.unk_18.width < 0x140) || (D_8438E440.unk_18.height < 0xF0)) {
-        func_8000699C(&gDisplayListHead, 1);
+        GFX_ClearScreen(&gDisplayListHead, 1);
     } else {
-        func_800067E4(&gDisplayListHead, 0, 0, 0x140, 0xF0);
+        GFX_ClearDepth(&gDisplayListHead, 0, 0, 0x140, 0xF0);
     }
 
     gDPSetCycleType(gDisplayListHead++, G_CYC_1CYCLE);
@@ -190,7 +190,7 @@ void func_84300340(void) {
     gSPDisplayList(gDisplayListHead++, D_8006F630);
 }
 
-void func_84300750(GraphNode* arg0, unk_D_80068BB0* arg1) {
+void func_84300750(GraphNode* arg0, ColorBuffer* arg1) {
     unk_D_86002F34_00C* sp2C = arg0->unk_0C;
     unk_D_86002F34_00C_018 sp20;
 
@@ -202,8 +202,8 @@ void func_84300750(GraphNode* arg0, unk_D_80068BB0* arg1) {
         sp2C->unk_18.width = 0x4C;
         sp2C->unk_18.height = 0x4C;
 
-        func_80006498(&gDisplayListHead, arg1);
-        func_8000699C(&gDisplayListHead, 0x10D);
+        ColorBuffer_Activate(&gDisplayListHead, arg1);
+        GFX_ClearScreen(&gDisplayListHead, 0x10D);
         func_80015094(arg0);
 
         sp2C->unk_00.unk_01 &= ~0x10;
@@ -213,13 +213,13 @@ void func_84300750(GraphNode* arg0, unk_D_80068BB0* arg1) {
 }
 
 void func_84300810(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-    unk_D_800A7440 sp38;
+    ScissorRect sp38;
     u16 tmp5;
     u16 tmp6;
 
-    func_80005FC0(&sp38, arg0, arg1, arg2, arg3);
+    ScissorRect_Set(&sp38, arg0, arg1, arg2, arg3);
 
-    if (func_80006030(&sp38) != 0) {
+    if (ScissorRect_Clip(&sp38) != 0) {
         if (!arg2) {}
 
         tmp5 = ((sp38.x1 - arg0) << 5);
@@ -243,7 +243,7 @@ void func_84300938(s32 arg0, s32 arg1, s32 arg2, s32 arg3, u8* arg4, s32 arg5) {
     func_84300810(arg0, arg1, (arg0 + arg2) - 1, (arg1 + arg3) - 1);
 }
 
-void func_84300B34(GraphNode* arg0, unk_D_80068BB0* arg1) {
+void func_84300B34(GraphNode* arg0, ColorBuffer* arg1) {
     s32 temp_s2;
     s32 temp_s3;
     unk_D_86002F34_00C* temp_v1 = arg0->unk_0C;
@@ -337,7 +337,7 @@ s32 func_84300E88(s32 arg0) {
     func_8432D0D8(2, &D_8438E440);
     func_84300750(D_8438E788, D_8438E790);
     func_84300750(D_8438E78C, D_8438E794);
-    func_800079C4();
+    Stage_ActivateFramebuffer();
     func_84300340();
     func_80015094(D_8438E784);
     func_84307394(5, D_8438E798);
@@ -363,7 +363,7 @@ s32 func_84300FBC(s32 arg0) {
         sp1C = func_84300E88(arg0);
     } else {
         func_80032570();
-        func_800079C4();
+        Stage_ActivateFramebuffer();
         func_84300340();
         func_80015094(D_8438E784);
         func_84307394(5, D_8438E798);
@@ -490,14 +490,14 @@ void func_843013E4(unk_D_800AE540_1194* arg0, unk_D_86002F30* arg1) {
     func_8001C07C(arg0);
 }
 
-void func_84301430(unk_func_80007444* arg0) {
+void func_84301430(RenderContext* arg0) {
     MemoryBlock* sp44;
     u32* temp_v0_4;
     FragmentEntry sp3C;
     unk_D_8690A610_018* temp_v0_7;
     s32 pad;
     s16 sp32;
-    unk_D_80068BB0* sp2C;
+    ColorBuffer* sp2C;
     unk_D_86002F30* sp28;
 
     func_84300184(0xFF, 0xFF, 0xFF);
@@ -516,12 +516,12 @@ void func_84301430(unk_func_80007444* arg0) {
     func_8001987C();
 
     sp2C = main_pool_alloc(0x10, 0);
-    func_800062E4(sp2C, 0, 2, 0x4C, 0x4C, arg0->unk_18[0]->depth_p->img_p);
-    D_8438E790 = func_80006314(0, 2, 0x4C, 0x4C, 0);
-    D_8438E794 = func_80006314(0, 2, 0x4C, 0x4C, 0);
+    ColorBuffer_Init(sp2C, 0, 2, 0x4C, 0x4C, arg0->unk_18[0]->depth_p->img_p);
+    D_8438E790 = ColorBuffer_Alloc(0, 2, 0x4C, 0x4C, 0);
+    D_8438E794 = ColorBuffer_Alloc(0, 2, 0x4C, 0x4C, 0);
 
-    func_80006414(D_8438E790, sp2C);
-    func_80006414(D_8438E794, sp2C);
+    ColorBuffer_AttachDepth(D_8438E790, sp2C);
+    ColorBuffer_AttachDepth(D_8438E794, sp2C);
 
     D_8438E778 = D_8438E790->img_p;
     D_8438E77C = D_8438E794->img_p;
@@ -611,22 +611,22 @@ void func_84301A24(void) {
 }
 
 s32 func_84301A2C(s32 arg0, unk_D_800AE540* arg1) {
-    unk_func_80007444* sp24;
+    RenderContext* sp24;
 
     D_8438E798 = D_800AE540.unk_1194;
     D_8438E7AC = -2;
 
     main_pool_push_state('BATL');
 
-    func_80005E40(0x20000, 0);
-    sp24 = func_80007444(0, 1, 3, 1, 2, 1);
+    DLBuf_Init(0x20000, 0);
+    sp24 = Stage_CreateRenderContext(0, 1, 3, 1, 2, 1);
     func_84301430(sp24);
-    func_80007678(sp24);
-    func_800077B4(1);
-    func_800078D4(func_843010EC, 0x20, 0x10);
-    func_800077B4(2);
-    func_800076C0();
-    func_80005EAC();
+    Stage_SetRenderContext(sp24);
+    Stage_AdvanceFrames(1);
+    Stage_RunFadeLoop(func_843010EC, 0x20, 0x10);
+    Stage_AdvanceFrames(2);
+    Stage_FreeRenderContext();
+    DLBuf_Free();
 
     main_pool_pop_state('BATL');
 

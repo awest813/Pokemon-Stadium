@@ -3119,12 +3119,12 @@ void func_88308D60(unk_func_8830867C* arg0) {
     s32 sp34 = 0;
 
     while (sp34 == 0) {
-        func_800079C4();
+        Stage_ActivateFramebuffer();
 
         ((func885008C4)Memmap_GetFragmentVaddr(func_885008C4))(&arg0->unk_00);
         ((func88500828)Memmap_GetFragmentVaddr(func_88500828))(&arg0->unk_00, 0, 0);
 
-        func_80007778();
+        Stage_AdvanceFrame();
         func_8002EF18(&sp34);
     }
 }
@@ -3193,12 +3193,12 @@ s32 func_88308E84(UNUSED s32 arg0, UNUSED s32 arg1) {
 
     osStartThread(&sp44->thread);
 
-    func_80007754();
+    Stage_SetSegments();
     func_88308D60(sp4C);
 
     osDestroyThread(&sp44->thread);
 
-    func_8000771C();
+    Stage_WaitFrame();
 
     main_pool_pop_state('PCHK');
 

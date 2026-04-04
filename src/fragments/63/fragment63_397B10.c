@@ -1365,11 +1365,11 @@ s32 func_84B05B04(s32 arg0, unk_func_80011B94* arg1) {
 }
 
 void func_84B05CE0(s32 arg0) {
-    unk_D_80068BB0 sp40;
+    ColorBuffer sp40;
     u32 sp3C = Util_ConvertAddrToVirtAddr(&D_3017F00);
 
-    func_800062E4(&sp40, 0, 2, 0x40, 0x40, arg0);
-    func_80006498(&gDisplayListHead, &sp40);
+    ColorBuffer_Init(&sp40, 0, 2, 0x40, 0x40, arg0);
+    ColorBuffer_Activate(&gDisplayListHead, &sp40);
 
     gSPDisplayList(gDisplayListHead++, D_8006F518);
     gDPSetEnvColor(gDisplayListHead++, 255, 50, 20, 160);
@@ -1449,7 +1449,7 @@ void func_84B05FCC(unk_D_84B259E8* arg0) {
         func_84B05CE0(arg0->unk_10[D_800AE540.unk_0003 - 1]);
 
         if (D_800AE540.unk_0000 == 7) {
-            func_80006498(&gDisplayListHead, arg0->unk_30[D_800AE540.unk_0003 - 1]);
+            ColorBuffer_Activate(&gDisplayListHead, arg0->unk_30[D_800AE540.unk_0003 - 1]);
 
             gSPDisplayList(gDisplayListHead++, D_8006F4E0);
 
@@ -1535,7 +1535,7 @@ void func_84B06364(unk_D_84B259E8* arg0, unk_D_86002F58_004_000* arg1, s16 arg2)
 }
 
 void func_84B064FC(unk_D_84B259E8* arg0, s16 arg1, char* arg2) {
-    func_80006498(&gDisplayListHead, arg0->unk_30[arg1]);
+    ColorBuffer_Activate(&gDisplayListHead, arg0->unk_30[arg1]);
 
     gSPDisplayList(gDisplayListHead++, D_8006F4E0);
 
@@ -1640,7 +1640,7 @@ void func_84B067B4(unk_D_84B259E8* arg0, BinArchive* arg1, BinArchive* arg2) {
             if (i < (D_800AE540.unk_0003 - 1)) {
                 func_84B05CE0(arg0->unk_10[i]);
             }
-            arg0->unk_30[i] = func_80006314(0, 2, 0x40, 0x60, 0);
+            arg0->unk_30[i] = ColorBuffer_Alloc(0, 2, 0x40, 0x60, 0);
             func_84B064FC(arg0, i, ptr->unk_010);
         }
     } else {
@@ -1669,7 +1669,7 @@ void func_84B06A54(unk_D_84B259E8* arg0, BinArchive* arg1, BinArchive* arg2) {
     arg0->unk_04 = 0;
 
     for (i = 0; i < 4; i++) {
-        arg0->unk_30[i] = func_80006314(0, 2, 0x40, 0x60, 0);
+        arg0->unk_30[i] = ColorBuffer_Alloc(0, 2, 0x40, 0x60, 0);
     }
 
     temp_v0 = func_80002D10(main_pool_get_available(), 0);

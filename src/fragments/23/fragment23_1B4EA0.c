@@ -2993,12 +2993,12 @@ void func_88214720(unk_func_8821421C* arg0) {
     s32 sp34 = 0;
 
     while (sp34 == 0) {
-        func_800079C4();
+        Stage_ActivateFramebuffer();
 
         ((func885008C4)Memmap_GetFragmentVaddr(func_885008C4))(arg0);
         ((func88500828)Memmap_GetFragmentVaddr(func_88500828))(arg0, 0, 0);
 
-        func_80007778();
+        Stage_AdvanceFrame();
         func_8002EF18(&sp34);
     }
 }

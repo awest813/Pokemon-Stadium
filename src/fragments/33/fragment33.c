@@ -541,7 +541,7 @@ void func_81302498(void) {
 }
 
 void func_813024C8(s32 arg0) {
-    func_800079C4();
+    Stage_ActivateFramebuffer();
     if (gCurrentGameState == 0x25) {
         func_8130306C(D_81303FA0);
     } else {
@@ -554,7 +554,7 @@ void func_813024C8(s32 arg0) {
 
     func_81301E8C();
     func_80015094(D_8130464C);
-    func_80007778();
+    Stage_AdvanceFrame();
 }
 
 void func_81302548(void) {
@@ -679,9 +679,9 @@ s32 func_81302A70(s32 arg0) {
     s32 var_s1 = 0;
     s32 i;
 
-    func_80006C6C(8);
+    Stage_FadeOut(8);
 
-    while (func_80007604() != 0) {
+    while (Stage_GetFadeMode() != 0) {
         func_81302498();
         func_81302798();
         func_813024C8(0);
@@ -718,10 +718,10 @@ s32 func_81302A70(s32 arg0) {
         func_8004B9C4(0x20);
     }
 
-    func_80007990(1);
-    func_80006CB4(8);
+    Stage_SetFillColor(1);
+    Stage_FadeIn(8);
 
-    while (func_80007604() != 1) {
+    while (Stage_GetFadeMode() != 1) {
         func_81302498();
         func_81302798();
         func_813024C8(0);
@@ -794,13 +794,13 @@ void func_81302DD8(void) {
 }
 
 s32 func_81302E58(s32 arg0, UNUSED s32 arg1) {
-    unk_func_80007444* sp24;
+    RenderContext* sp24;
     s32 sp20;
 
     main_pool_push_state('GBSL');
 
-    func_80005E40(0x10000, 0);
-    sp24 = func_80007444(1, 0, 2, 0, 2, 1);
+    DLBuf_Init(0x10000, 0);
+    sp24 = Stage_CreateRenderContext(1, 0, 2, 0, 2, 1);
     func_8001E94C(0x1C, 0);
 
     ASSET_LOAD(D_1000000, common_menu1_ui, 0);
@@ -822,10 +822,10 @@ s32 func_81302E58(s32 arg0, UNUSED s32 arg1) {
 
     D_81303FA0 = ASSET_LOAD(0, fragment33_misc, 0);
 
-    func_80007678(sp24);
+    Stage_SetRenderContext(sp24);
     sp20 = func_81302A70(arg0);
-    func_800076C0();
-    func_80005EAC();
+    Stage_FreeRenderContext();
+    DLBuf_Free();
 
     main_pool_pop_state('GBSL');
 

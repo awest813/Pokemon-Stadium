@@ -337,7 +337,7 @@ Gfx* func_8436CE34(Gfx* arg0) {
 
             var_s2 = &var_fp->unk_0B0[0];
 
-            var_fp->unk_018 = func_80005F5C(sizeof(Vtx) * 90);
+            var_fp->unk_018 = DLBuf_AllocTemp(sizeof(Vtx) * 90);
 
             var_s0 = var_fp->unk_018;
             for (j = 0; j < 10; j++, var_s2++) {

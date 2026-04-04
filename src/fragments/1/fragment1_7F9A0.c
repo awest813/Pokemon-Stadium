@@ -46,8 +46,8 @@ typedef struct unk_D_8122C748 {
   /* 0x9990 */ s32 unk_9990;
 } unk_D_8122C748; // size = 0x9994
 
-extern unk_D_80068BB0* D_8122B1E0;
-extern unk_D_80068BB0* D_8122B1E4;
+extern ColorBuffer* D_8122B1E0;
+extern ColorBuffer* D_8122B1E4;
 extern u8 D_8120D820[200];
 extern u8 D_8120DD70;
 extern unk_D_8122B1E8 D_8122B1E8[2];
@@ -55,7 +55,7 @@ extern s32 D_8122B224[];
 extern s32 D_8122B2B8;
 extern unk_D_8122B2C0* D_8122B2C0;
 extern unk_D_8122B2F8* D_8122B2C8[3];
-extern unk_D_80068BB0* D_8122B2D8[2];
+extern ColorBuffer* D_8122B2D8[2];
 extern void* D_8122B2EC;
 extern s32 D_8122B2F0;
 extern u8* D_8122B2F4;

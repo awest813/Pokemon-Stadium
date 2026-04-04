@@ -324,7 +324,7 @@ void func_84201F04(s16 arg0, s16 arg1, s16 arg2) {
     s16 temp_a3;
     s16 temp_v0;
 
-    func_800079C4();
+    Stage_ActivateFramebuffer();
     func_8001D924(D_84211B34);
     func_84201D6C();
     if (arg2 > 0) {
@@ -353,7 +353,7 @@ void func_84201F04(s16 arg0, s16 arg1, s16 arg2) {
         }
     }
     func_8420D4F8(0);
-    func_80007778();
+    Stage_AdvanceFrame();
 }
 
 void func_84202208(void) {
@@ -477,7 +477,7 @@ void func_842024DC(s16 arg0, s16 arg1) {
 void func_84202718(UNUSED s16 arg0, s16 arg1, s16 arg2) {
     s32 temp_s0 = D_84210D40 > 0;
 
-    func_800079C4();
+    Stage_ActivateFramebuffer();
 
     if (temp_s0 != 0) {
         D_84210D40--;
@@ -509,7 +509,7 @@ void func_84202718(UNUSED s16 arg0, s16 arg1, s16 arg2) {
         func_8420D4F8(temp_s0);
     }
 
-    func_80007778();
+    Stage_AdvanceFrame();
 }
 
 s16 func_84202844(s16 arg0, s16 arg1, s16 arg2, s32 arg3) {
@@ -688,34 +688,34 @@ s32 func_84202EB0(unk_D_8423D3D8* arg0, s16 arg1) {
 void func_8420305C(s32 arg0) {
     s32 i;
 
-    func_80007990(1);
-    func_8000D278(0x10);
-    func_80006CB4(8);
+    Stage_SetFillColor(1);
+    Audio_StopTrack(0x10);
+    Stage_FadeIn(8);
 
     for (i = 0; i < 8; i++) {
         func_800290B4();
-        func_800079C4();
+        Stage_ActivateFramebuffer();
         func_8001D924(D_84211B34);
         if (arg0 != 0) {
             func_842024DC(0, -1);
         }
-        func_80007778();
+        Stage_AdvanceFrame();
     }
 
-    func_800077B4(2);
+    Stage_AdvanceFrames(2);
 }
 
 void func_84203100(void) {
     s32 i;
 
-    if (func_80007604() == 1) {
-        func_80006C6C(8);
+    if (Stage_GetFadeMode() == 1) {
+        Stage_FadeOut(8);
         for (i = 0; i < 10; i++) {
             func_800290B4();
-            func_800079C4();
+            Stage_ActivateFramebuffer();
             func_8001D924(D_84211B34);
             func_842024DC(0, -1);
-            func_80007778();
+            Stage_AdvanceFrame();
         }
     }
 }
@@ -744,19 +744,19 @@ s32 func_84203210(void) {
 
     switch (D_800AE540.unk_0000) {
         case 0:
-            func_8000D1F0(0x2D);
+            Audio_PlayTrack(0x2D);
             break;
 
         case 7:
-            func_8000D1F0(0x2B);
+            Audio_PlayTrack(0x2B);
             break;
 
         case 8:
-            func_8000D1F0(0x30);
+            Audio_PlayTrack(0x30);
             break;
 
         default:
-            func_8000D1F0(0x15);
+            Audio_PlayTrack(0x15);
             break;
     }
 
@@ -826,19 +826,19 @@ s32 func_842034E4(void) {
 
     switch (D_800AE540.unk_0000) {
         case 0:
-            func_8000D1F0(0x2D);
+            Audio_PlayTrack(0x2D);
             break;
 
         case 7:
-            func_8000D1F0(0x2B);
+            Audio_PlayTrack(0x2B);
             break;
 
         case 8:
-            func_8000D1F0(0x30);
+            Audio_PlayTrack(0x30);
             break;
 
         default:
-            func_8000D1F0(0x15);
+            Audio_PlayTrack(0x15);
             break;
     }
 
@@ -1107,7 +1107,7 @@ s32 func_84203E6C(s32 arg0, UNUSED s32 arg1) {
     func_84203D74();
     func_8001B058();
     func_84203C90();
-    func_80007754();
+    Stage_SetSegments();
 
     if (arg0 == 1) {
         var_v1 = func_84203BBC();
@@ -1119,7 +1119,7 @@ s32 func_84203E6C(s32 arg0, UNUSED s32 arg1) {
         var_v1 = func_84203210();
     }
 
-    func_8000771C();
+    Stage_WaitFrame();
 
     main_pool_pop_state('PICK');
 

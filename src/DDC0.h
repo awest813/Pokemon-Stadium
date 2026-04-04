@@ -3,20 +3,20 @@
 
 #include "global.h"
 
-void func_8000D1C0(void);
-void func_8000D1C8(void);
-void func_8000D1D0(void);
-void func_8000D1D8(void);
-void func_8000D1E0(void);
-void func_8000D1F0(s32 arg0);
-void func_8000D23C(s32 arg0);
-void func_8000D278(s32 arg0);
-s32 func_8000D2B4(s32 arg0);
-void func_8000D338(void);
-void func_8000D358(void);
-void func_8000D380(void);
-void func_8000D3A8(void*);
-void func_8000D564(void);
+void Audio_OnStart(void);
+void Audio_OnStop(void);
+void Audio_OnPause(void);
+void Audio_OnResume(void);
+void Audio_ResetTrack(void);
+void Audio_PlayTrack(s32 arg0);
+void Audio_SwitchTrack(s32 arg0);
+void Audio_StopTrack(s32 arg0);
+s32 Audio_WaitDone(s32 arg0);
+void Audio_StopAll(void);
+void Audio_Disable(void);
+void Audio_Enable(void);
+void AudioThread_Main(void*);
+void Audio_Init(void);
 
 
 #endif // _DDC0_H_

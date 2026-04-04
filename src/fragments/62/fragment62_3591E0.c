@@ -205,7 +205,7 @@ Gfx* func_8436ECB0(Gfx* arg0, unk_D_843C49C0_004* arg1, MtxF* arg2) {
 
     guScale(&sp38, spC0, spC0, spC0);
     guTranslate(&sp78, spCC, spC8, spC4);
-    spBC = func_80005F5C(sizeof(Mtx) * 1);
+    spBC = DLBuf_AllocTemp(sizeof(Mtx) * 1);
     guMtxCatL(&sp38, &sp78, spBC);
     guMtxCatL(arg2, spBC, spBC);
 

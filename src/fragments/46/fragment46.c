@@ -13,7 +13,7 @@
 
 static s32 D_837004C0;
 static BinArchive* D_837004C4;
-static unk_func_80007444* D_837004C8;
+static RenderContext* D_837004C8;
 
 static unk_func_80031270* D_837004B0 = NULL;
 
@@ -33,11 +33,11 @@ void func_83700090(void) {
 void func_83700098(void) {
     static s16 D_837004B4 = 0;
 
-    func_800079C4();
+    Stage_ActivateFramebuffer();
     if (D_837004B0->unk_00 == 2) {
         func_834018C0(D_837004B0->unk_08->img_p, 0, 0, D_837004B0->unk_04, D_837004B0->unk_06, 1, 0);
     }
-    func_80007778();
+    Stage_AdvanceFrame();
     D_837004B4 += 0x1000;
 }
 
@@ -62,7 +62,7 @@ s32 func_83700174(void) {
 
     switch (D_837004C0) {
         case 0:
-            if (func_80007604() == 0) {
+            if (Stage_GetFadeMode() == 0) {
                 D_837004B8--;
                 if (D_837004B8 <= 0) {
                     D_837004C0 = 1;
@@ -74,12 +74,12 @@ s32 func_83700174(void) {
             if (func_83700114() != 0) {
                 D_837004C0 = 2;
                 func_80048B90(0x1A);
-                func_80006CB4(1);
+                Stage_FadeIn(1);
             }
             break;
 
         case 2:
-            if (func_80007604() == 1) {
+            if (Stage_GetFadeMode() == 1) {
                 sp1C = 0;
             }
             break;
@@ -98,7 +98,7 @@ void func_8370026C(void) {
         func_80031660(D_837004B0);
     } while (D_837004B0->unk_00 != 2);
 
-    func_80006C6C(1);
+    Stage_FadeOut(1);
 
     do {
         func_8370023C();
@@ -107,13 +107,13 @@ void func_8370026C(void) {
 }
 
 s32 func_837002EC(UNUSED s32 arg0, UNUSED s32 arg1) {
-    unk_func_80007444* sp24;
+    RenderContext* sp24;
 
     main_pool_push_state('ELRG');
 
-    func_80005E40(0x10000, 0);
+    DLBuf_Init(0x10000, 0);
 
-    sp24 = func_80007444(1, 0, 1, 0, 2, 1);
+    sp24 = Stage_CreateRenderContext(1, 0, 1, 0, 2, 1);
     D_837004C8 = sp24;
 
     func_8001E94C(0x18, 0);
@@ -130,11 +130,11 @@ s32 func_837002EC(UNUSED s32 arg0, UNUSED s32 arg1) {
     D_837004C4 = ASSET_LOAD2(stadium_models, 1, 1);
 
     func_83700020();
-    func_80007678(sp24);
+    Stage_SetRenderContext(sp24);
     func_8370026C();
-    func_800076C0();
+    Stage_FreeRenderContext();
     func_8001E9CC();
-    func_80005EAC();
+    DLBuf_Free();
 
     main_pool_pop_state('ELRG');
 

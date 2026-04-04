@@ -477,8 +477,8 @@ void func_84A01DAC(void) {
 
         D_84A030E4--;
         if ((D_84A030E4 == 0) && ((D_84A030E0 == 8) || (D_84A030E0 == 9))) {
-            func_80007990(1);
-            func_80006CB4(8);
+            Stage_SetFillColor(1);
+            Stage_FadeIn(8);
         }
     }
 
@@ -486,7 +486,7 @@ void func_84A01DAC(void) {
 }
 
 void func_84A01EE0(void) {
-    func_800079C4();
+    Stage_ActivateFramebuffer();
 
     if (D_84A030E0 < 9) {
         if (D_84A030F0 == 0) {
@@ -519,7 +519,7 @@ void func_84A01EE0(void) {
     func_84A00B44();
     func_84A00E98();
     func_84A008A8();
-    func_80007778();
+    Stage_AdvanceFrame();
 }
 
 s32 func_84A02074(void) {
@@ -542,7 +542,7 @@ s32 func_84A0207C(void) {
         func_800290B4();
 
         if (func_84A02074() == 0) {
-            if (func_80007604() == 0) {
+            if (Stage_GetFadeMode() == 0) {
                 if (D_84A030E4 == 0) {
                     D_84A03188 = D_84A030E0;
                     if (D_84A030E0 == 0xB) {
@@ -577,7 +577,7 @@ s32 func_84A0207C(void) {
                         D_84A030E4 = 3;
                     }
                 }
-            } else if (func_80007604() == 1) {
+            } else if (Stage_GetFadeMode() == 1) {
                 if (D_84A030E0 == 8) {
                     D_84A030E0 = 0xA;
                 }
@@ -585,7 +585,7 @@ s32 func_84A0207C(void) {
                 if (D_84A030E0 == 9) {
                     D_84A030E0 = 7;
                 }
-                func_80006C6C(8);
+                Stage_FadeOut(8);
             }
         }
         func_84A01EE0();
@@ -655,7 +655,7 @@ s32 func_84A02580(void) {
     main_pool_push_state('itro');
 
     func_84A02304();
-    func_8000D278(8);
+    Audio_StopTrack(8);
 
     for (i = 3; i >= 0; i--) {
         D_84A030E8 = i << 6;
@@ -663,7 +663,7 @@ s32 func_84A02580(void) {
         func_84A01EE0();
     }
 
-    func_8000D1F0(0x2B);
+    Audio_PlayTrack(0x2B);
     if (D_84A030E0 == 0xB) {
         func_84A02434(0, 0, 6, -0x40);
     } else {
@@ -703,7 +703,7 @@ s32 func_84A02580(void) {
     } else {
         func_80048B90(3);
         var_s1 = 2;
-        func_8000D278(0x12);
+        Audio_StopTrack(0x12);
         if (D_84A030E0 == 0xB) {
             func_84A02434(0, 0, 6, 0x40);
         } else {
@@ -715,9 +715,9 @@ s32 func_84A02580(void) {
         func_84A02410();
 
         if (D_84A03180.unk_04 < 8) {
-            func_8000D1F0(0x2A);
+            Audio_PlayTrack(0x2A);
         } else {
-            func_8000D1F0(0x27);
+            Audio_PlayTrack(0x27);
         }
 
         for (i = 1; i < 5; i++) {
@@ -779,8 +779,8 @@ s32 func_84A02898(void) {
 s16 func_84A02A34(s16 arg0) {
     s16 i;
 
-    if (func_80007604() == 1) {
-        func_80006C6C(8);
+    if (Stage_GetFadeMode() == 1) {
+        Stage_FadeOut(8);
         for (i = 0; i < 9; i++) {
             func_800290B4();
             func_84A01EE0();
@@ -877,17 +877,17 @@ s32 func_84A02D14(s32 arg0, UNUSED s32 arg1) {
     D_84A03174 = func_8000484C(D_84A03170, 0xD);
     D_84A03178 = func_8000484C(D_84A03170, 0x10);
     D_84A0317C = func_8000484C(D_84A03170, 0xE);
-    func_80007754();
+    Stage_SetSegments();
 
     sp1E = func_84A02B70(arg0);
     if (D_84A03180.unk_04 < 8) {
-        func_8000D1F0(0x2A);
+        Audio_PlayTrack(0x2A);
     } else {
-        func_8000D1F0(0x27);
+        Audio_PlayTrack(0x27);
     }
 
     sp1E = func_84A02A34(sp1E);
-    func_8000771C();
+    Stage_WaitFrame();
     func_8001E9CC();
 
     main_pool_pop_state('PNLV');

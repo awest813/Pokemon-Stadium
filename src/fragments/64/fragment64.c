@@ -128,13 +128,13 @@ void func_84800184(void) {
     s32 var_s4;
     s8 temp_v0;
     s8* var_v0;
-    unk_D_80068BB0* sp58;
+    ColorBuffer* sp58;
     Color_RGB8 sp54;
     Color_RGB8 sp50;
 
     var_s4 = 0x30 - (D_8480379A % 24);
     var_s2 = D_8480379A / 24;
-    sp58 = func_80007A2C();
+    sp58 = Stage_GetFramebuffer();
     sp54 = D_8480367C;
     sp50 = D_84803680;
     func_8002053C(0x228, 0x20, 0x2E, 0x186, &sp54, &sp50);
@@ -1089,7 +1089,7 @@ s32 func_84802C40(s32 arg0) {
     func_8001F730();
     func_84802350();
     func_80015348();
-    func_800079C4();
+    Stage_ActivateFramebuffer();
 
     if (D_84803798 != 0) {
         func_84800020();
@@ -1107,8 +1107,8 @@ s32 func_84802C40(s32 arg0) {
     if (arg0 == 0) {
         if (var_s2 == D_8480379C) {
             sp30 = 1;
-            func_80007990(0xFFFF);
-            func_8000D278(0x10);
+            Stage_SetFillColor(0xFFFF);
+            Audio_StopTrack(0x10);
         }
 
         if (D_84803798 > 0) {
@@ -1251,12 +1251,12 @@ void func_84803110(unk_D_800AE540* arg0) {
 }
 
 s32 func_84803368(s32 arg0, s32 arg1) {
-    unk_func_80007444* sp24;
+    RenderContext* sp24;
 
     main_pool_push_state('MSEL');
 
-    func_80005E40(0x10000, 0);
-    sp24 = func_80007444(1, 1, 2, 0, 2, 1);
+    DLBuf_Init(0x10000, 0);
+    sp24 = Stage_CreateRenderContext(1, 1, 2, 0, 2, 1);
     func_8002D510();
     func_8001E94C(0x3C, 0);
     func_8001B058();
@@ -1273,13 +1273,13 @@ s32 func_84803368(s32 arg0, s32 arg1) {
     D_84803794 = func_8002D5AC(6);
 
     func_84803110(&D_800AE540);
-    func_8000D1F0(7);
-    func_80007678(sp24);
-    func_800078D4(func_84802C40, 8, 8);
-    func_800076C0();
+    Audio_PlayTrack(7);
+    Stage_SetRenderContext(sp24);
+    Stage_RunFadeLoop(func_84802C40, 8, 8);
+    Stage_FreeRenderContext();
     func_84802E18();
     func_8001E9CC();
-    func_80005EAC();
+    DLBuf_Free();
 
     main_pool_pop_state('MSEL');
     return 0;

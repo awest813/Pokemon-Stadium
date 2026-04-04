@@ -230,7 +230,7 @@ Gfx* func_8436032C(Gfx* arg0) {
     if (ptr->unk_28 < 2) {
         return arg0;
     }
-    ptr->unk_2C = func_80005F5C(ptr->unk_28 * 2 * sizeof(Vtx));
+    ptr->unk_2C = DLBuf_AllocTemp(ptr->unk_28 * 2 * sizeof(Vtx));
     vtx = ptr->unk_2C;
     var_a0 = &D_84397648[0];
 
@@ -871,7 +871,7 @@ Gfx* func_84362084(Gfx* arg0) {
         switch (sp1B4->unk_008) {
             case 0:
             case 3:
-                vtx = func_80005F5C(sizeof(Vtx) * 40);
+                vtx = DLBuf_AllocTemp(sizeof(Vtx) * 40);
                 sp1B4->unk_01C = vtx;
 
                 for (j = 0; j < 20; j++, var_s2++) {
@@ -899,7 +899,7 @@ Gfx* func_84362084(Gfx* arg0) {
                 break;
 
             case 1:
-                vtx = func_80005F5C(sizeof(Vtx) * 60);
+                vtx = DLBuf_AllocTemp(sizeof(Vtx) * 60);
                 sp1B4->unk_01C = vtx;
 
                 for (j = 0; j < 20; j++, var_s2++) {
@@ -945,7 +945,7 @@ Gfx* func_84362084(Gfx* arg0) {
                 break;
 
             case 5:
-                vtx = func_80005F5C(sizeof(Vtx) * 60);
+                vtx = DLBuf_AllocTemp(sizeof(Vtx) * 60);
                 sp1B4->unk_01C = vtx;
 
                 for (j = 0; j < 20; j++, var_s2++) {
@@ -992,7 +992,7 @@ Gfx* func_84362084(Gfx* arg0) {
 
             case 6:
             case 7:
-                vtx = func_80005F5C(sizeof(Vtx) * 20 * 6);
+                vtx = DLBuf_AllocTemp(sizeof(Vtx) * 20 * 6);
                 sp1B4->unk_01C = vtx;
 
                 for (j = 0; j < 20; j++, var_s2++) {
@@ -1013,7 +1013,7 @@ Gfx* func_84362084(Gfx* arg0) {
                 break;
 
             case 8:
-                vtx = func_80005F5C(sizeof(Vtx) * 20 * 3 * 3);
+                vtx = DLBuf_AllocTemp(sizeof(Vtx) * 20 * 3 * 3);
                 sp1B4->unk_01C = vtx;
 
                 for (j = 0; j < 20; j++, var_s2++) {
@@ -1048,7 +1048,7 @@ Gfx* func_84362084(Gfx* arg0) {
 
             case 2:
             case 4:
-                vtx = func_80005F5C(sizeof(Vtx) * 20 * 15);
+                vtx = DLBuf_AllocTemp(sizeof(Vtx) * 20 * 15);
                 sp1B4->unk_01C = vtx;
 
                 for (j = 0; j < 20; j++, var_s2++) {

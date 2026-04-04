@@ -2462,12 +2462,12 @@ void func_8820C510(unk_func_8820BE14* arg0) {
 
     while (sp34 == 0) {
         func_80015348();
-        func_800079C4();
+        Stage_ActivateFramebuffer();
 
         ((func885008C4)Memmap_GetFragmentVaddr(func_885008C4))(&arg0->unk_00);
         ((func88500828)Memmap_GetFragmentVaddr(func_88500828))(&arg0->unk_00, 0, 0);
 
-        func_80007778();
+        Stage_AdvanceFrame();
         func_8002EF18(&sp34);
     }
 }
@@ -2487,7 +2487,7 @@ void func_8820C63C(unk_func_8820BE14* arg0) {
     s32 sp24;
     s32 var_s0;
 
-    func_80006C6C(8);
+    Stage_FadeOut(8);
 
     var_s0 = 8;
     while (var_s0-- > 0) {
@@ -2500,7 +2500,7 @@ void func_8820C63C(unk_func_8820BE14* arg0) {
         func_8002EEA8(NULL);
     }
 
-    func_80006CB4(8);
+    Stage_FadeIn(8);
 
     var_s0 = 10;
     while (var_s0-- > 0) {

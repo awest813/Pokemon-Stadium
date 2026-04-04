@@ -46,7 +46,7 @@ typedef struct unk_func_80031660_sp24 {
 extern unk_func_80031270* D_80075F80;
 extern unk_func_80031270* D_80075F84;
 extern u32* D_80075F88;
-extern unk_D_80068BB0* D_80075F90;
+extern ColorBuffer* D_80075F90;
 extern s32 D_80075F94;
 extern s32 D_80075F98;
 extern s32 D_80075F9C;
@@ -440,8 +440,8 @@ s32 func_800303C8(s32 arg0, UNUSED GraphNode* arg1) {
         temp_s2 = (char*)((u8*)D_80075F84->unk_18 + 0x73);
         D_80075F9C = func_8001F5B0(0x10, 0, temp_s2);
         func_800302A4(0, -0x96);
-        func_80006498(&gDisplayListHead, D_80075F90);
-        func_8000699C(&gDisplayListHead, 0);
+        ColorBuffer_Activate(&gDisplayListHead, D_80075F90);
+        GFX_ClearScreen(&gDisplayListHead, 0);
         gDPPipeSync(gDisplayListHead++);
         {    Gfx *_gfx = (Gfx *)(gDisplayListHead++);    _gfx->words.w0 = 0xE3000C00;    _gfx->words.w1 = 0;    }
         {    Gfx *_gfx = (Gfx *)(gDisplayListHead++);    _gfx->words.w0 = 0xE3001201;    _gfx->words.w1 = 0x2000;    }
@@ -515,7 +515,7 @@ s32 func_800303C8(s32 arg0, UNUSED GraphNode* arg1) {
             func_8001F4C4();
             func_8001F444();
         }
-        func_80006498(&gDisplayListHead, D_80075F84->unk_08);
+        ColorBuffer_Activate(&gDisplayListHead, D_80075F84->unk_08);
         gDPPipeSync(gDisplayListHead++);
         {    Gfx *_gfx = (Gfx *)(gDisplayListHead++);    _gfx->words.w0 = 0xE3000A01;    _gfx->words.w1 = 0;    }
         {    Gfx *_gfx = (Gfx *)(gDisplayListHead++);    _gfx->words.w0 = 0xFCFFFFFF;    _gfx->words.w1 = 0xFFFCF279;    }
@@ -632,9 +632,9 @@ void func_80031204(unk_func_80031270* arg0, UNUSED s16 arg1, UNUSED s16 arg2) {
     func_80002D60(sp18);
 }
 
-unk_func_80031270* func_80031270(s16 arg0, s16 arg1, unk_D_80068BB0* arg2, unk_D_80068BB0* arg3,
+unk_func_80031270* func_80031270(s16 arg0, s16 arg1, ColorBuffer* arg2, ColorBuffer* arg3,
                                  unk_D_86002F58_004_000_010* arg4, BinArchive* arg5, unk_D_83403C60* arg6) {
-    UNUSED unk_D_80068BB0* var_v0;
+    UNUSED ColorBuffer* var_v0;
     unk_func_80031270* temp_v0 = main_pool_alloc(sizeof(unk_func_80031270), 0);
 
     if (temp_v0 != NULL) {
@@ -646,16 +646,16 @@ unk_func_80031270* func_80031270(s16 arg0, s16 arg1, unk_D_80068BB0* arg2, unk_D
         if (arg2 != NULL) {
             temp_v0->unk_08 = arg2;
         } else {
-            temp_v0->unk_08 = func_80006314(0, 2, arg0, arg1, 0);
+            temp_v0->unk_08 = ColorBuffer_Alloc(0, 2, arg0, arg1, 0);
         }
 
         if (arg3 != NULL) {
             temp_v0->unk_0C = arg3;
         } else {
-            temp_v0->unk_0C = func_80006314(0, 2, arg0, arg1, 1);
+            temp_v0->unk_0C = ColorBuffer_Alloc(0, 2, arg0, arg1, 1);
         }
 
-        func_80006414(temp_v0->unk_08, temp_v0->unk_0C);
+        ColorBuffer_AttachDepth(temp_v0->unk_08, temp_v0->unk_0C);
 
         temp_v0->unk_10 = arg4;
         temp_v0->unk_14 = arg5;
@@ -663,7 +663,7 @@ unk_func_80031270* func_80031270(s16 arg0, s16 arg1, unk_D_80068BB0* arg2, unk_D
         temp_v0->unk_34 = 0;
 
         if (D_80075F90 == 0) {
-            D_80075F90 = func_80006314(0, 2, 0xC8, 0x2B, 0);
+            D_80075F90 = ColorBuffer_Alloc(0, 2, 0xC8, 0x2B, 0);
         }
 
         func_80031204(temp_v0, arg0, arg1);
@@ -808,14 +808,14 @@ u8* func_80031660(unk_func_80031270* arg0) {
                 func_800314BC(arg0);
                 break;
             case 1:
-                func_80006498(&gDisplayListHead, arg0->unk_08);
+                ColorBuffer_Activate(&gDisplayListHead, arg0->unk_08);
 
                 if ((arg0->unk_34 == -1) || (arg0->unk_34 == 0)) {
-                    func_8000699C(&gDisplayListHead, 1);
+                    GFX_ClearScreen(&gDisplayListHead, 1);
                 } else if (arg0->unk_34 < 0x10000U) {
-                    func_8000699C(&gDisplayListHead, arg0->unk_34);
+                    GFX_ClearScreen(&gDisplayListHead, arg0->unk_34);
                 } else {
-                    func_8000699C(&gDisplayListHead, 0xA6BF);
+                    GFX_ClearScreen(&gDisplayListHead, 0xA6BF);
                 }
                 func_80015348();
                 *((s32*)Util_ConvertAddrToVirtAddr(&D_8140E6B8)) = sp24->unk_18;

@@ -1551,18 +1551,18 @@ void func_86B04C9C(void) {
 }
 
 void func_86B04CF4(UNUSED s32 arg0) {
-    func_800079C4();
-    func_8000699C(&gDisplayListHead, 1);
+    Stage_ActivateFramebuffer();
+    GFX_ClearScreen(&gDisplayListHead, 1);
     func_80015348();
     func_80015094(D_86B0EBC0);
     func_86B04C9C();
-    func_80007778();
+    Stage_AdvanceFrame();
 }
 
 void func_86B04D48(void) {
     s32 i;
 
-    func_80006C6C(0x10);
+    Stage_FadeOut(0x10);
 
     for (i = 0; i < 16; i++) {
         func_86B04914();
@@ -1588,7 +1588,7 @@ void func_86B04D98(void) {
 void func_86B04DF0(void) {
     s32 i;
 
-    func_80006CB4(0xA);
+    Stage_FadeIn(0xA);
     for (i = 0; i < 10; i++) {
         func_86B04914();
         func_86B048D8();
@@ -1634,12 +1634,12 @@ void func_86B04EBC(void) {
 }
 
 s32 func_86B04FB0(void) {
-    unk_func_80007444* sp24;
+    RenderContext* sp24;
 
     main_pool_push_state('DEMO');
 
-    func_80005E40(0x10000, 0);
-    sp24 = func_80007444(0, 1, 3, 1, 2, 1);
+    DLBuf_Init(0x10000, 0);
+    sp24 = Stage_CreateRenderContext(0, 1, 3, 1, 2, 1);
     func_8001E94C(2, 0);
 
     ASSET_LOAD(D_1000000, common_menu1_ui, 0);
@@ -1655,13 +1655,13 @@ s32 func_86B04FB0(void) {
     D_86B0EBD4 = func_8002D5AC(0x24);
 
     func_86B04EBC();
-    func_80007678(sp24);
+    Stage_SetRenderContext(sp24);
     func_86B04D48();
     func_86B04D98();
     func_86B04DF0();
-    func_800076C0();
+    Stage_FreeRenderContext();
     func_8001E9CC();
-    func_80005EAC();
+    DLBuf_Free();
     main_pool_pop_state('DEMO');
 
     return 0;

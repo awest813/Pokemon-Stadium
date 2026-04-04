@@ -32,11 +32,11 @@ static s32 D_82D0ABA8;
 static GraphNode* D_82D0ABAC;
 static GraphNode* D_82D0ABB0;
 static GraphNode* D_82D0ABB4;
-static unk_D_80068BB0* D_82D0ABB8[4];
-static unk_D_80068BB0* D_82D0ABC8;
-static unk_D_80068BB0* D_82D0ABCC;
+static ColorBuffer* D_82D0ABB8[4];
+static ColorBuffer* D_82D0ABC8;
+static ColorBuffer* D_82D0ABCC;
 static unk_D_82D0ABD0 D_82D0ABD0;
-static unk_D_80068BB0* D_82D0ABE0[8];
+static ColorBuffer* D_82D0ABE0[8];
 static GraphNode* D_82D0AC00;
 static GraphNode* D_82D0AC04;
 static GraphNode* D_82D0AC08;
@@ -1013,9 +1013,9 @@ void func_82D00088(void) {
     gSPDisplayList(gDisplayListHead++, D_8006F630);
 }
 
-void func_82D002C4(unk_D_80068BB0* arg0, s16 arg1, s16 arg2) {
-    func_80006498(&gDisplayListHead, arg0);
-    func_8000699C(&gDisplayListHead, 0);
+void func_82D002C4(ColorBuffer* arg0, s16 arg1, s16 arg2) {
+    ColorBuffer_Activate(&gDisplayListHead, arg0);
+    GFX_ClearScreen(&gDisplayListHead, 0);
 
     gSPDisplayList(gDisplayListHead++, D_8006F518);
 
@@ -1408,7 +1408,7 @@ void func_82D02454(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s8* arg4) {
 void func_82D02870(s32 arg0) {
     unk_D_82D0AB38* temp_v1;
 
-    D_82D0ABB8[arg0] = func_80006314(0, 2, 0x80, 0xCC, 1);
+    D_82D0ABB8[arg0] = ColorBuffer_Alloc(0, 2, 0x80, 0xCC, 1);
     if (D_82D0AB38[arg0].unk_01 != 0) {
         if (D_82D0AB38[arg0].unk_00 == 0) {
             if (D_82D0AB38[arg0].unk_03 != 0) {
@@ -1429,7 +1429,7 @@ void func_82D02870(s32 arg0) {
 }
 
 void func_82D029E0(void) {
-    D_82D0ABC8 = func_80006314(0, 2, 0x21A, 0x64, 1);
+    D_82D0ABC8 = ColorBuffer_Alloc(0, 2, 0x21A, 0x64, 1);
     func_82D002C4(D_82D0ABC8, 0x216, 0x60);
 
     gSPDisplayList(gDisplayListHead++, D_8006F518);
@@ -1470,7 +1470,7 @@ void func_82D02D94(void) {
     s32 sp2C;
     char* sp28;
 
-    D_82D0ABCC = func_80006314(0, 2, 0x80, 0x2C, 1);
+    D_82D0ABCC = ColorBuffer_Alloc(0, 2, 0x80, 0x2C, 1);
     func_82D002C4(D_82D0ABCC, 0x78, 0x28);
 
     gSPDisplayList(gDisplayListHead++, D_8006F470);
@@ -1507,12 +1507,12 @@ void func_82D02ED0(s32 arg0, s16 arg1) {
         D_82D09FF8[i].unk_01E.x = temp_lo;
     }
 
-    func_800079C4();
+    Stage_ActivateFramebuffer();
     func_82D00088();
     func_82D01AB4(arg1);
     func_80015094(D_82D09FF0);
     func_82D0194C(sp1C);
-    func_80007778();
+    Stage_AdvanceFrame();
 }
 
 void func_82D02FB8(void) {
@@ -1553,7 +1553,7 @@ s32 func_82D03174(void) {
     s16 j;
 
     func_82D02FB8();
-    func_80006C6C(8);
+    Stage_FadeOut(8);
 
     for (j = 0; j < 7; j++) {
         func_800290B4();
@@ -1590,10 +1590,10 @@ s32 func_82D03174(void) {
         }
     } else {
         func_80048B90(3);
-        func_8000D278(0x10);
-        func_80007990(0xFFFF);
-        func_80006CB4(8);
-        while (func_80007604() != 1) {
+        Audio_StopTrack(0x10);
+        Stage_SetFillColor(0xFFFF);
+        Stage_FadeIn(8);
+        while (Stage_GetFadeMode() != 1) {
             func_800290B4();
             func_82D02ED0(i, 0xFF);
         }
@@ -1773,11 +1773,11 @@ void func_82D03DC0(s16 arg0, s16 arg1, unk_func_800281D4* arg2, s32 arg3) {
 }
 
 void func_82D043CC(s16 arg0, s16 arg1, unk_func_800281D4* arg2, s16 arg3, s16 arg4) {
-    func_800079C4();
+    Stage_ActivateFramebuffer();
     func_82D00088();
     func_82D03DC0(arg0, arg1, arg2, arg3 == 0);
     func_82D03BCC(arg3, arg4);
-    func_80007778();
+    Stage_AdvanceFrame();
 }
 
 s32 func_82D0442C(unk_func_800281D4* arg0) {
@@ -1895,16 +1895,16 @@ s16 func_82D04590(unk_func_800281D4* arg0) {
 
     if (var_s1 == 0) {
         func_8002C5E8();
-        func_8000D278(0x10);
-        func_80007990(1);
-        func_80006CB4(8);
+        Audio_StopTrack(0x10);
+        Stage_SetFillColor(1);
+        Stage_FadeIn(8);
 
-        while (func_80007604() != 1) {
+        while (Stage_GetFadeMode() != 1) {
             func_800290B4();
             func_82D043CC(0, 0, arg0, 0, 0);
         }
 
-        func_800077B4(2);
+        Stage_AdvanceFrames(2);
 
         if (D_800AE540.unk_0000 == 7) {
             sp44 = 0x27;
@@ -1917,9 +1917,9 @@ s16 func_82D04590(unk_func_800281D4* arg0) {
     }
 
     if (var_s1 != 0) {
-        func_80007990(0xFFFF);
-        func_80006CB4(8);
-        while (func_80007604() != 1) {
+        Stage_SetFillColor(0xFFFF);
+        Stage_FadeIn(8);
+        while (Stage_GetFadeMode() != 1) {
             func_800290B4();
             func_82D043CC(0, var_s0, arg0, 0, 0);
         }
@@ -2291,7 +2291,7 @@ void func_82D053F4(s32 arg0, s32 arg1) {
         sp30 = 1;
     }
 
-    func_800079C4();
+    Stage_ActivateFramebuffer();
     func_82D00088();
     func_80015094(D_82D09FF0);
     func_82D04FA0(arg0, sp30);
@@ -2303,13 +2303,13 @@ void func_82D053F4(s32 arg0, s32 arg1) {
     }
 
     func_82D04904(&D_82D0ABD0);
-    func_80007778();
+    Stage_AdvanceFrame();
 }
 
-unk_D_80068BB0* func_82D0580C(s32 arg0) {
+ColorBuffer* func_82D0580C(s32 arg0) {
     UNUSED s32 pad;
     s16 i;
-    unk_D_80068BB0* sp3C;
+    ColorBuffer* sp3C;
     u8* var_s3;
     s16 temp_s0;
 
@@ -2319,7 +2319,7 @@ unk_D_80068BB0* func_82D0580C(s32 arg0) {
         var_s3 = D_3017DA0;
     }
 
-    sp3C = func_80006314(0, 2, 0xAC, 0x98, 1);
+    sp3C = ColorBuffer_Alloc(0, 2, 0xAC, 0x98, 1);
     func_82D002C4(sp3C, 0xA8, 0x94);
 
     gSPDisplayList(gDisplayListHead++, D_8006F470);
@@ -2347,10 +2347,10 @@ unk_D_80068BB0* func_82D0580C(s32 arg0) {
     return sp3C;
 }
 
-unk_D_80068BB0* func_82D05A5C(void) {
-    unk_D_80068BB0* sp34;
+ColorBuffer* func_82D05A5C(void) {
+    ColorBuffer* sp34;
 
-    sp34 = func_80006314(0, 2, 0xAC, 0x5C, 1);
+    sp34 = ColorBuffer_Alloc(0, 2, 0xAC, 0x5C, 1);
     func_82D002C4(sp34, 0xA8, 0x58);
 
     gSPDisplayList(gDisplayListHead++, D_8006F470);
@@ -2373,10 +2373,10 @@ unk_D_80068BB0* func_82D05A5C(void) {
     return sp34;
 }
 
-unk_D_80068BB0* func_82D05BE0(void) {
-    unk_D_80068BB0* sp34;
+ColorBuffer* func_82D05BE0(void) {
+    ColorBuffer* sp34;
 
-    sp34 = func_80006314(0, 2, 0xAC, 0x5C, 1);
+    sp34 = ColorBuffer_Alloc(0, 2, 0xAC, 0x5C, 1);
     func_82D002C4(sp34, 0xA8, 0x58);
 
     gSPDisplayList(gDisplayListHead++, D_8006F470);
@@ -2399,10 +2399,10 @@ unk_D_80068BB0* func_82D05BE0(void) {
     return sp34;
 }
 
-unk_D_80068BB0* func_82D05D64(void) {
-    unk_D_80068BB0* sp34;
+ColorBuffer* func_82D05D64(void) {
+    ColorBuffer* sp34;
 
-    sp34 = func_80006314(0, 2, 0xAC, 0x40, 1);
+    sp34 = ColorBuffer_Alloc(0, 2, 0xAC, 0x40, 1);
     func_82D002C4(sp34, 0xA8, 0x3C);
 
     gSPDisplayList(gDisplayListHead++, D_8006F470);
@@ -2425,12 +2425,12 @@ unk_D_80068BB0* func_82D05D64(void) {
     return sp34;
 }
 
-unk_D_80068BB0* func_82D05EE8(s8* arg0, u8 arg1, u8 arg2, u8 arg3) {
+ColorBuffer* func_82D05EE8(s8* arg0, u8 arg1, u8 arg2, u8 arg3) {
     s32 sp2C;
-    unk_D_80068BB0* sp28;
+    ColorBuffer* sp28;
 
     sp2C = func_8001F5B0(8, 0, arg0);
-    sp28 = func_80006314(0, 2, 0xAC, 0x30, 1);
+    sp28 = ColorBuffer_Alloc(0, 2, 0xAC, 0x30, 1);
     func_82D002C4(sp28, 0xA8, 0x2C);
 
     gSPDisplayList(gDisplayListHead++, D_8006F470);
@@ -2656,9 +2656,9 @@ s16 func_82D067A0(void) {
     D_82D0ABA4 = 0;
     func_82D06014();
     D_82D06FA0 = 0;
-    if (func_80007604() != 0) {
-        func_80006C6C(8);
-        while (func_80007604() != 0) {
+    if (Stage_GetFadeMode() != 0) {
+        Stage_FadeOut(8);
+        while (Stage_GetFadeMode() != 0) {
             func_800290B4();
             func_82D053F4(0, 0);
         }
@@ -2720,15 +2720,15 @@ s16 func_82D067A0(void) {
     }
 
     if (D_82D06FA0 == 0) {
-        func_8000D23C(0x50);
+        Audio_SwitchTrack(0x50);
     } else if (D_82D06FA0 != 2) {
-        func_8000D278(0x10);
+        Audio_StopTrack(0x10);
     }
 
     if ((D_82D0ABA8 == 0) || (D_82D06FA0 != 0)) {
-        func_80007990(0xFFFF);
-        func_80006CB4(8);
-        while (func_80007604() != 1) {
+        Stage_SetFillColor(0xFFFF);
+        Stage_FadeIn(8);
+        while (Stage_GetFadeMode() != 1) {
             func_800290B4();
             func_82D053F4(i, 0);
         }
@@ -2787,7 +2787,7 @@ void func_82D06B98(void) {
 }
 
 s32 func_82D06D0C(s32 arg0, s32 arg1) {
-    unk_func_80007444* sp54;
+    RenderContext* sp54;
     u8 sp53;
     s16 sp50 = 2;
     s32 sp4C = 1;
@@ -2801,8 +2801,8 @@ s32 func_82D06D0C(s32 arg0, s32 arg1) {
     func_80028070(&D_82D0AB98);
     sp53 = (D_82D0AB98 & 4) != 0;
     D_800AE540.unk_11F2 = sp53;
-    func_80005E40(0x10000, 0);
-    sp54 = func_80007444(1, 0, 2, 0, 2, 1);
+    DLBuf_Init(0x10000, 0);
+    sp54 = Stage_CreateRenderContext(1, 0, 2, 0, 2, 1);
     func_8001E94C(0x1C, 0);
 
     ASSET_LOAD(D_1000000, common_menu1_ui, 0);
@@ -2812,8 +2812,8 @@ s32 func_82D06D0C(s32 arg0, s32 arg1) {
     func_82D06B98();
     func_8002D510();
     D_82D0AB9C = func_8002D5AC(0xE);
-    func_8000D1F0(0x28);
-    func_80007678(sp54);
+    Audio_PlayTrack(0x28);
+    Stage_SetRenderContext(sp54);
 
     if (arg1 != 0) {
         sp4C = func_82D03174();
@@ -2834,7 +2834,7 @@ s32 func_82D06D0C(s32 arg0, s32 arg1) {
         }
     }
 
-    func_800076C0();
+    Stage_FreeRenderContext();
 
     if (D_800AE540.unk_11F2 != sp53) {
         if (D_800AE540.unk_11F2 == 0) {
@@ -2847,7 +2847,7 @@ s32 func_82D06D0C(s32 arg0, s32 arg1) {
     }
 
     func_800284B4(2);
-    func_80005EAC();
+    DLBuf_Free();
 
     main_pool_pop_state('GBCK');
 

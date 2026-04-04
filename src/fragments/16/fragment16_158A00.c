@@ -151,7 +151,7 @@ void func_86A000B4(s8 arg0, u8 arg1) {
     u32* temp_v0;
     unk_D_8690A610_018* temp_v0_4;
 
-    while (func_80001C90() == 0) {}
+    while (Display_IsReady() == 0) {}
 
     func_8001103C(NULL, &D_86A06190);
     func_8001103C(NULL, &D_86A061A8);
@@ -258,14 +258,14 @@ void func_86A00720(u8 arg0) {
 }
 
 void func_86A00788(u8 arg0) {
-    func_800079C4();
+    Stage_ActivateFramebuffer();
 
     if ((D_86A025C8 == -1) || (D_86A025C8 == 0)) {
-        func_8000699C(&gDisplayListHead, 1);
+        GFX_ClearScreen(&gDisplayListHead, 1);
     } else if (D_86A025C8 < 0x10000) {
-        func_8000699C(&gDisplayListHead, D_86A025C8);
+        GFX_ClearScreen(&gDisplayListHead, D_86A025C8);
     } else {
-        func_8000699C(&gDisplayListHead, 0xA6BF);
+        GFX_ClearScreen(&gDisplayListHead, 0xA6BF);
     }
 
     if (arg0 == 0) {
@@ -275,7 +275,7 @@ void func_86A00788(u8 arg0) {
         func_86A00720(arg0);
     }
 
-    func_80007778();
+    Stage_AdvanceFrame();
 }
 
 void func_86A00840(void) {
@@ -292,7 +292,7 @@ void func_86A00840(void) {
         switch (i) {
             case 0:
                 sp35 = 0x1E;
-                func_80006C6C(sp35);
+                Stage_FadeOut(sp35);
                 var_s1 = 0x1E;
                 break;
 
@@ -303,7 +303,7 @@ void func_86A00840(void) {
 
             case 2:
                 sp35 = 0x78;
-                func_80006CB4(sp35);
+                Stage_FadeIn(sp35);
                 var_s1 = sp35;
                 break;
 
@@ -324,8 +324,8 @@ void func_86A0092C(s32 arg0) {
 
     s32 var_s6 = 1;
 
-    func_800077B4(0x3C);
-    func_80006C6C(0xB4);
+    Stage_AdvanceFrames(0x3C);
+    Stage_FadeOut(0xB4);
 
     if (arg0 != 0) {
         func_8004B1CC(0x42);
@@ -1416,14 +1416,14 @@ void func_86A00C90(void) {
 
     func_8004FC60(1, 0x78);
     func_8004FC60(2, 0x78);
-    func_80006CB4(0x78);
+    Stage_FadeIn(0x78);
 
     for (i = 0; i < 120; i++) {
         func_86A00434();
         func_86A00788(2);
     }
 
-    func_800077B4(0x3C);
+    Stage_AdvanceFrames(0x3C);
 }
 
 void func_86A00D00(void) {
@@ -1459,12 +1459,12 @@ void func_86A00DAC(s32 arg0) {
 }
 
 s32 func_86A00ED8(s32 arg0, s32 arg1) {
-    unk_func_80007444* sp24;
+    RenderContext* sp24;
 
     main_pool_push_state('ROLE');
 
-    func_80005E40(0x10000, 0);
-    sp24 = func_80007444(0, 1, 3, 1, 1, 1);
+    DLBuf_Init(0x10000, 0);
+    sp24 = Stage_CreateRenderContext(0, 1, 3, 1, 1, 1);
     D_86A06200 = func_8001E94C(4, 0);
 
     ASSET_LOAD(D_1000000, common_menu1_ui, 0);
@@ -1472,13 +1472,13 @@ s32 func_86A00ED8(s32 arg0, s32 arg1) {
     FRAGMENT_LOAD(fragment31);
 
     func_86A00DAC(arg1);
-    func_80007678(sp24);
+    Stage_SetRenderContext(sp24);
     func_86A00840();
     func_86A0092C(arg1);
     func_86A00C90();
-    func_800076C0();
+    Stage_FreeRenderContext();
     func_8001E9CC();
-    func_80005EAC();
+    DLBuf_Free();
 
     main_pool_pop_state('ROLE');
 

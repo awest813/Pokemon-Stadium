@@ -261,7 +261,7 @@ s32 func_82E0036C(s32 arg0, unk_func_80011B94* arg1) {
 }
 
 void func_82E0045C(s32 arg0, s32 arg1) {
-    func_800079C4();
+    Stage_ActivateFramebuffer();
     func_8001D924(D_82E019B4);
     func_80015094(D_82E019B8);
 
@@ -328,7 +328,7 @@ void func_82E0045C(s32 arg0, s32 arg1) {
     if (arg0 == 1) {
         func_82E00058(0xD0, (D_82E023A8 * 0x6C) + 0x32, 0xE0, 0x38, 0xFF, 0xF0, 0x64, 0xFF);
     }
-    func_80007778();
+    Stage_AdvanceFrame();
 }
 
 void func_82E00A54(void) {
@@ -404,13 +404,13 @@ s32 func_82E00CF0(void) {
             func_82E0045C(2, i);
         }
     } else {
-        func_80007990(0xFFFF);
-        func_80006CB4(8);
-        while (func_80007604() != 1) {
+        Stage_SetFillColor(0xFFFF);
+        Stage_FadeIn(8);
+        while (Stage_GetFadeMode() != 1) {
             func_82E00020();
             func_82E0045C(1, 0);
         }
-        func_800077B4(2);
+        Stage_AdvanceFrames(2);
     }
     return temp_v1;
 }
@@ -474,9 +474,9 @@ s32 func_82E00F2C(UNUSED s32 arg0, UNUSED s32 arg1) {
         D_82E019B4 = func_8000484C(D_82E019B0, var_v1);
 
         func_82E00E2C();
-        func_80007754();
+        Stage_SetSegments();
         sp18 = func_82E00CF0();
-        func_8000771C();
+        Stage_WaitFrame();
 
         main_pool_pop_state('LVSL');
     }

@@ -300,13 +300,13 @@ void func_86B0B4D0(u8* arg0) {
 }
 
 void func_86B0B650(void) {
-    func_800079C4();
+    Stage_ActivateFramebuffer();
     func_86B0B4D0(D_86B109C0);
-    func_800067E4(&gDisplayListHead, 0, 0, 0x140, 0xF0);
+    GFX_ClearDepth(&gDisplayListHead, 0, 0, 0x140, 0xF0);
     func_80015348();
     func_80015094(D_86B10848);
     func_86B0B184();
-    func_80007778();
+    Stage_AdvanceFrame();
 }
 
 s32 func_86B0B6C0(void) {
@@ -360,8 +360,8 @@ void func_86B0B810(void) {
     s32 i;
     s32 var_s2 = 1;
 
-    func_80007990(1);
-    func_80006C6C(0xA);
+    Stage_SetFillColor(1);
+    Stage_FadeOut(0xA);
 
     for (i = 0; i < 10; i++) {
         func_86B0B498();
@@ -376,15 +376,15 @@ void func_86B0B810(void) {
         func_86B0B650();
     }
 
-    func_80007990(0xFFFF);
-    func_80006CB4(8);
+    Stage_SetFillColor(0xFFFF);
+    Stage_FadeIn(8);
 
     for (i = 0; i < 8; i++) {
         func_86B0B498();
         func_86B0B650();
     }
 
-    func_800077B4(2);
+    Stage_AdvanceFrames(2);
 }
 
 void func_86B0B8DC(void) {
@@ -417,12 +417,12 @@ void func_86B0B8DC(void) {
 }
 
 s32 func_86B0BA18(void) {
-    unk_func_80007444* sp24;
+    RenderContext* sp24;
 
     main_pool_push_state('GBOY');
 
-    func_80005E40(0x10000, 0);
-    sp24 = func_80007444(0, 1, 3, 1, 2, 1);
+    DLBuf_Init(0x10000, 0);
+    sp24 = Stage_CreateRenderContext(0, 1, 3, 1, 2, 1);
     func_8001E94C(2, 0);
 
     ASSET_LOAD(D_1000000, common_menu1_ui, 0);
@@ -441,11 +441,11 @@ s32 func_86B0BA18(void) {
     }
 
     func_86B0B8DC();
-    func_80007678(sp24);
+    Stage_SetRenderContext(sp24);
     func_86B0B810();
-    func_800076C0();
+    Stage_FreeRenderContext();
     func_8001E9CC();
-    func_80005EAC();
+    DLBuf_Free();
 
     main_pool_pop_state('GBOY');
 

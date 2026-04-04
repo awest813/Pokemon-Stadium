@@ -69,7 +69,7 @@ Gfx* func_80033284(Gfx* arg0, Vec3f* arg1, u8 arg2, u8 arg3, u8 arg4, u8 arg5, f
     guMtxF2L(&sp34, &sp78);
     guScale(&spB8, arg6, arg6, arg6);
     guTranslate(&spF8, sp144, sp140, sp13C);
-    sp138 = func_80005F5C(sizeof(Mtx) * 1);
+    sp138 = DLBuf_AllocTemp(sizeof(Mtx) * 1);
     guMtxCatL(&spB8, &spF8, sp138);
     guMtxCatL(&sp78, sp138, sp138);
 

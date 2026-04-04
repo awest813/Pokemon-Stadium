@@ -2,9 +2,9 @@
 #include "6BC0.h"
 #include "memory.h"
 
-static unk_D_80068BB0* D_80068BB0 = NULL;
+static ColorBuffer* D_80068BB0 = NULL;
 
-unk_D_800A7440* func_80005FC0(unk_D_800A7440* arg0, s16 x1, s16 y1, s16 x2, s16 y2) {
+ScissorRect* ScissorRect_Set(ScissorRect* arg0, s16 x1, s16 y1, s16 x2, s16 y2) {
     if (x2 >= x1) {
         arg0->x1 = x1;
         arg0->y1 = x2;
@@ -24,7 +24,7 @@ unk_D_800A7440* func_80005FC0(unk_D_800A7440* arg0, s16 x1, s16 y1, s16 x2, s16 
     return arg0;
 }
 
-s32 func_80006030(unk_D_800A7440* arg0) {
+s32 ScissorRect_Clip(ScissorRect* arg0) {
     s32 ret = 0;
 
     if (D_80068BB0 != NULL) {
@@ -50,7 +50,7 @@ s32 func_80006030(unk_D_800A7440* arg0) {
     return ret;
 }
 
-void func_800060E0(Gfx** gfx_p, s16 x, s16 y, s16 width, s16 height) {
+void GFX_SetScissor(Gfx** gfx_p, s16 x, s16 y, s16 width, s16 height) {
     if (D_80068BB0 != NULL) {
         Gfx* gfx = *gfx_p;
 
@@ -59,11 +59,11 @@ void func_800060E0(Gfx** gfx_p, s16 x, s16 y, s16 width, s16 height) {
 
         *gfx_p = gfx;
 
-        func_80005FC0(&D_800A7440, x, y, x + width - 1, y + height - 1);
+        ScissorRect_Set(&D_800A7440, x, y, x + width - 1, y + height - 1);
     }
 }
 
-void func_80006200(Gfx** gfx_p) {
+void GFX_RestoreScissor(Gfx** gfx_p) {
     if (D_80068BB0 != NULL) {
         Gfx* gfx = *gfx_p;
 
@@ -75,7 +75,7 @@ void func_80006200(Gfx** gfx_p) {
     }
 }
 
-void func_800062E4(unk_D_80068BB0* arg0, s32 fmt, s32 size, s32 width, s32 height, u32 img_p) {
+void ColorBuffer_Init(ColorBuffer* arg0, s32 fmt, s32 size, s32 width, s32 height, u32 img_p) {
     arg0->fmt = fmt;
     arg0->size = size;
     arg0->width = width;
@@ -84,8 +84,8 @@ void func_800062E4(unk_D_80068BB0* arg0, s32 fmt, s32 size, s32 width, s32 heigh
     arg0->depth_p = NULL;
 }
 
-unk_D_80068BB0* func_80006314(s32 fmt, s32 size, s32 width, s32 height, s32 side) {
-    unk_D_80068BB0* sp34;
+ColorBuffer* ColorBuffer_Alloc(s32 fmt, s32 size, s32 width, s32 height, s32 side) {
+    ColorBuffer* sp34;
     s32 size_bytes;
     s32 num_pixels = width * height;
 
@@ -108,31 +108,31 @@ unk_D_80068BB0* func_80006314(s32 fmt, s32 size, s32 width, s32 height, s32 side
     }
 
     // header + image size + rounding up to 64
-    sp34 = main_pool_alloc(sizeof(unk_D_80068BB0) + size_bytes + 64, side);
+    sp34 = main_pool_alloc(sizeof(ColorBuffer) + size_bytes + 64, side);
     if (sp34 != NULL) {
         // image data follows the header struct
-        func_800062E4(sp34, fmt, size, width, height, (u8*)sp34 + sizeof(unk_D_80068BB0));
+        ColorBuffer_Init(sp34, fmt, size, width, height, (u8*)sp34 + sizeof(ColorBuffer));
     }
 
     return sp34;
 }
 
-void func_80006414(unk_D_80068BB0* img, unk_D_80068BB0* depth) {
+void ColorBuffer_AttachDepth(ColorBuffer* img, ColorBuffer* depth) {
     if ((depth->size == IMAGE_SIZE_BITS_16b) && (img->width == depth->width) && (img->height == depth->height)) {
         img->depth_p = depth;
     }
 }
 
-void func_80006450(void) {
+void GFX_ClearActiveBuffer(void) {
     D_80068BB0 = NULL;
-    func_80005FC0(&D_800A7440, 0, 0, 0, 0);
+    ScissorRect_Set(&D_800A7440, 0, 0, 0, 0);
 }
 
-unk_D_80068BB0* func_8000648C(void) {
+ColorBuffer* ColorBuffer_GetActive(void) {
     return D_80068BB0;
 }
 
-void func_80006498(Gfx** gfx_p, unk_D_80068BB0* arg1) {
+void ColorBuffer_Activate(Gfx** gfx_p, ColorBuffer* arg1) {
     Gfx* gfx = *gfx_p;
 
     gDPPipeSync(gfx++);
@@ -145,12 +145,12 @@ void func_80006498(Gfx** gfx_p, unk_D_80068BB0* arg1) {
     gDPSetColorImage(gfx++, arg1->fmt, arg1->size, arg1->width, (u32)arg1->img_p & 0x1FFFFFFF);
 
     D_80068BB0 = arg1;
-    func_800060E0(&gfx, 0, 0, arg1->width, arg1->height);
+    GFX_SetScissor(&gfx, 0, 0, arg1->width, arg1->height);
 
     *gfx_p = gfx;
 }
 
-void func_800065B4(Gfx** gfx_p, s32 arg1, s32 arg2, s32 arg3, s32 arg4, u16 fill_colour) {
+void GFX_FillRect(Gfx** gfx_p, s32 arg1, s32 arg2, s32 arg3, s32 arg4, u16 fill_colour) {
     if (D_80068BB0 != NULL) {
         Gfx* gfx = *gfx_p;
 
@@ -159,7 +159,7 @@ void func_800065B4(Gfx** gfx_p, s32 arg1, s32 arg2, s32 arg3, s32 arg4, u16 fill
         gDPSetCycleType(gfx++, G_CYC_FILL);
 
         if (D_80068BB0->depth_p) {
-            unk_D_80068BB0* depth = D_80068BB0->depth_p;
+            ColorBuffer* depth = D_80068BB0->depth_p;
 
             gDPSetColorImage(gfx++, depth->fmt, depth->size, depth->width, (u32)depth->img_p & 0x1FFFFFFF);
             gDPSetFillColor(gfx++, 0xFFFCFFFC);
@@ -177,10 +177,10 @@ void func_800065B4(Gfx** gfx_p, s32 arg1, s32 arg2, s32 arg3, s32 arg4, u16 fill
     }
 }
 
-void func_800067E4(Gfx** gfx_p, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
+void GFX_ClearDepth(Gfx** gfx_p, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     if (D_80068BB0 != NULL && D_80068BB0->depth_p != NULL) {
         Gfx* gfx = *gfx_p;
-        unk_D_80068BB0* depth = D_80068BB0->depth_p;
+        ColorBuffer* depth = D_80068BB0->depth_p;
 
         gDPPipeSync(gfx++);
         gDPSetRenderMode(gfx++, G_RM_OPA_SURF, G_RM_OPA_SURF2);
@@ -198,6 +198,6 @@ void func_800067E4(Gfx** gfx_p, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     }
 }
 
-void func_8000699C(Gfx** gfx_p, u16 fill_colour) {
-    func_800065B4(gfx_p, 0, 0, D_80068BB0->width, D_80068BB0->height, (fill_colour << 0x10) | fill_colour);
+void GFX_ClearScreen(Gfx** gfx_p, u16 fill_colour) {
+    GFX_FillRect(gfx_p, 0, 0, D_80068BB0->width, D_80068BB0->height, (fill_colour << 0x10) | fill_colour);
 }

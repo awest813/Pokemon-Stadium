@@ -195,7 +195,7 @@ Gfx* func_84369FA0(Gfx* arg0) {
         if (var_s5->unk_000 == 1) {
             temp_s0 = &var_s5->unk_01C[0];
             if (temp_s0->unk_0C.y > 0.0f) {
-                temp_v0 = func_80005F5C(sizeof(Mtx) * 1);
+                temp_v0 = DLBuf_AllocTemp(sizeof(Mtx) * 1);
                 guTranslate(temp_v0, temp_s0->unk_0C.x, temp_s0->unk_0C.y, temp_s0->unk_0C.z);
                 guRotateRPY(&sp100, (temp_s0->unk_08 * -360.0f * var_s5->unk_006) / 6.2831854820251465,
                             0x5A - (var_s5->unk_006 * 0x5A), 0.0f);
@@ -208,7 +208,7 @@ Gfx* func_84369FA0(Gfx* arg0) {
                 gSPPopMatrix(arg0++, G_MTX_MODELVIEW);
             }
 
-            var_s5->unk_014 = func_80005F5C(sizeof(Vtx) * 30);
+            var_s5->unk_014 = DLBuf_AllocTemp(sizeof(Vtx) * 30);
 
             var_s0 = var_s5->unk_014;
             for (j = 0; j < 15; j++) {

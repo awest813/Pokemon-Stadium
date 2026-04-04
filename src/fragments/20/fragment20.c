@@ -1688,8 +1688,8 @@ void miniMetapodDrawPlayerHUBs(UNUSED s32 arg0) {
 }
 
 void func_86E02880(s32 arg0) {
-    func_800079C4();
-    func_8000699C(&gDisplayListHead, 0xA6BF);
+    Stage_ActivateFramebuffer();
+    GFX_ClearScreen(&gDisplayListHead, 0xA6BF);
 
     if (D_8780FC94 == 0) {
         func_80015348();
@@ -1707,13 +1707,13 @@ void func_86E02880(s32 arg0) {
         showDebuggCameraInfo();
     }
 
-    func_80007778();
+    Stage_AdvanceFrame();
 }
 
 void metapodMinigameInit(void) {
     initMetapodMinigameAssets();
-    func_800077B4(0xA);
-    func_80006C6C(0x10);
+    Stage_AdvanceFrames(0xA);
+    Stage_FadeOut(0x10);
     miniTutoScreenState = 3;
     miniDifficulty = D_8780FA38;
 }
@@ -1722,7 +1722,7 @@ void func_86E0296C(void) {
 }
 
 void miniMetapodTutoScreenControls(void) {
-    if ((miniDebugMode == false) && (miniShowHUB == false) && (func_80007604() == 0)) {
+    if ((miniDebugMode == false) && (miniShowHUB == false) && (Stage_GetFadeMode() == 0)) {
         if (BTN_IS_PRESSED(gPlayer1Controller, BTN_START)) {
             miniTutoScreenState = 1;
             minigameState = 1;
@@ -1788,7 +1788,7 @@ void func_86E02A64(void) {
 void func_86E02BB0(void) {
     s32 i;
 
-    func_80006CB4(0x1E);
+    Stage_FadeIn(0x1E);
     if (D_86E08E40 != 0) {
         func_86E001A0(0xF, 0x1E);
     } else {
@@ -1861,7 +1861,7 @@ void func_86E02C5C(void) {
 }
 
 s32 metapodMinigameLoad(s32 arg0, s32 arg1) {
-    unk_func_80007444* sp24;
+    RenderContext* sp24;
 
     if (arg0 == 1) {
         D_86E08E40 = 1;
@@ -1871,8 +1871,8 @@ s32 metapodMinigameLoad(s32 arg0, s32 arg1) {
 
     main_pool_push_state('MINI');
 
-    func_80005E40(0x40000, 0);
-    sp24 = func_80007444(0, 1, 3, 1, 2, 1);
+    DLBuf_Init(0x40000, 0);
+    sp24 = Stage_CreateRenderContext(0, 1, 3, 1, 2, 1);
     D_86E08E44 = func_8001E94C(0x16, 0);
 
     ASSET_LOAD(D_1000000, common_menu1_ui, 0);
@@ -1880,13 +1880,13 @@ s32 metapodMinigameLoad(s32 arg0, s32 arg1) {
     func_80004454((((u32)D_8D000000 & 0x0FF00000) >> 0x14) - 0x10, _5C7A70_ROM_START, pokedex_area_model_ROM_START);
 
     func_86E02C5C();
-    func_80007678(sp24);
+    Stage_SetRenderContext(sp24);
     metapodMinigameInit();
     func_86E02A64(); //	tutorial screen ?
     func_86E02BB0();
-    func_800076C0();
+    Stage_FreeRenderContext();
     func_8001E9CC(); //	main_pool_try_free(D_800AC870);
-    func_80005EAC(); //	main_pool_try_free(D_800A7428.unk4); main_pool_try_free(D_800A7428.unk0);
+    DLBuf_Free(); //	main_pool_try_free(D_800A7428.unk4); main_pool_try_free(D_800A7428.unk0);
 
     main_pool_pop_state('MINI');
 

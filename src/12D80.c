@@ -123,20 +123,20 @@ void func_80012180(void) {
     D_800AA8C8.unk_10A0 = 0;
     D_800AA8C8.unk_1080[0] = 0;
     func_8000ED98(&D_800AA8C8.unk_0000[0]);
-    D_800AA8C8.unk_1000[0] = func_80005F5C(sizeof(Mtx) * 1);
+    D_800AA8C8.unk_1000[0] = DLBuf_AllocTemp(sizeof(Mtx) * 1);
     func_80010090(D_800AA8C8.unk_1000[0], D_800AA8C8.unk_0000);
 }
 
 void func_800121C8(void) {
     D_800AA8C8.unk_1080[D_800AA8C8.unk_10A0] = 0;
-    D_800AA8C8.unk_1000[D_800AA8C8.unk_10A0] = func_80005F5C(sizeof(MtxF) * 1);
+    D_800AA8C8.unk_1000[D_800AA8C8.unk_10A0] = DLBuf_AllocTemp(sizeof(MtxF) * 1);
     func_80010090(D_800AA8C8.unk_1000[D_800AA8C8.unk_10A0], &D_800AA8C8.unk_0000[D_800AA8C8.unk_10A0]);
 }
 
 void func_80012230(MtxF* arg0) {
     func_8000ED4C(&D_800AA8C8.unk_0000[D_800AA8C8.unk_10A0], arg0);
     D_800AA8C8.unk_1080[D_800AA8C8.unk_10A0] = 0;
-    D_800AA8C8.unk_1000[D_800AA8C8.unk_10A0] = func_80005F5C(sizeof(MtxF) * 1);
+    D_800AA8C8.unk_1000[D_800AA8C8.unk_10A0] = DLBuf_AllocTemp(sizeof(MtxF) * 1);
     func_80010090(D_800AA8C8.unk_1000[D_800AA8C8.unk_10A0], &D_800AA8C8.unk_0000[D_800AA8C8.unk_10A0]);
 }
 
@@ -148,7 +148,7 @@ void func_800122B4(MtxF* arg0) {
 
     func_8000FBB0(&temp_a0[0], arg0, &temp_a0[-1]);
     D_800AA8C8.unk_1080[D_800AA8C8.unk_10A0] = 0;
-    D_800AA8C8.unk_1000[D_800AA8C8.unk_10A0] = func_80005F5C(sizeof(MtxF) * 1);
+    D_800AA8C8.unk_1000[D_800AA8C8.unk_10A0] = DLBuf_AllocTemp(sizeof(MtxF) * 1);
     func_80010090(D_800AA8C8.unk_1000[D_800AA8C8.unk_10A0], &D_800AA8C8.unk_0000[D_800AA8C8.unk_10A0]);
 }
 
@@ -161,7 +161,7 @@ void func_80012344(Vec3f* arg0) {
     func_8000FDE4(&temp_a0[0], &temp_a0[-1], arg0);
 
     D_800AA8C8.unk_1080[D_800AA8C8.unk_10A0] = 0;
-    D_800AA8C8.unk_1000[D_800AA8C8.unk_10A0] = func_80005F5C(sizeof(MtxF) * 1);
+    D_800AA8C8.unk_1000[D_800AA8C8.unk_10A0] = DLBuf_AllocTemp(sizeof(MtxF) * 1);
 
     func_80010090(D_800AA8C8.unk_1000[D_800AA8C8.unk_10A0], &D_800AA8C8.unk_0000[D_800AA8C8.unk_10A0]);
 }
@@ -201,7 +201,7 @@ void func_80012458(Vec3f* arg0) {
 
 Vtx* func_800124D4(unk_D_86002F34_00C_0CC* arg0, unk_D_86002F34_00C_040* arg1) {
     u8 sp47;
-    Vtx* temp_v0 = func_80005F5C(sizeof(Vtx) * 4);
+    Vtx* temp_v0 = DLBuf_AllocTemp(sizeof(Vtx) * 4);
 
     if (temp_v0 != NULL) {
         switch (arg0->unk_00) {
@@ -278,7 +278,7 @@ void func_80012870(Vtx* arg0, unk_D_86002F34_00C_0CC* arg1, s16 arg2, s16 arg3, 
 #endif
 
 Vtx* func_80012960(unk_D_86002F34_00C_0CC* arg0) {
-    Vtx* temp_v0 = func_80005F5C(sizeof(Vtx) * 8);
+    Vtx* temp_v0 = DLBuf_AllocTemp(sizeof(Vtx) * 8);
     Vtx* temp_s0;
     s16 temp_s2;
     s16 temp_s4;
@@ -421,11 +421,11 @@ void func_80013464(GraphNode* arg0) {
     unk_D_86002F34_00C_024* sp48 = &arg->unk_24;
     unk_D_86002F34_00C_018* temp_s0 = &arg->unk_18;
 
-    temp_s0->vp = func_80005F5C(sizeof(Vp) * 1);
-    temp_s2->mtx = func_80005F5C(sizeof(Mtx) * 1);
-    sp48->mtx = func_80005F5C(sizeof(MtxF) * 1);
-    temp_s1->p_mtxf = func_80005F5C(sizeof(MtxF) * 1);
-    temp_s1->lookat = func_80005F5C(sizeof(LookAt) * 1);
+    temp_s0->vp = DLBuf_AllocTemp(sizeof(Vp) * 1);
+    temp_s2->mtx = DLBuf_AllocTemp(sizeof(Mtx) * 1);
+    sp48->mtx = DLBuf_AllocTemp(sizeof(MtxF) * 1);
+    temp_s1->p_mtxf = DLBuf_AllocTemp(sizeof(MtxF) * 1);
+    temp_s1->lookat = DLBuf_AllocTemp(sizeof(LookAt) * 1);
 
     temp_s0->vp->vp.vtrans[0] = (temp_s0->x * 4) + (temp_s0->width * 2);
     temp_s0->vp->vp.vtrans[1] = (temp_s0->y * 4) + (temp_s0->height * 2);
@@ -450,7 +450,7 @@ void func_80013464(GraphNode* arg0) {
         func_80013330(&arg->unk_00);
     }
     func_800131B4(&arg->unk_CC, temp_s2);
-    func_80006200(&gDisplayListHead);
+    GFX_RestoreScissor(&gDisplayListHead);
     D_8006F088 = NULL;
 }
 
@@ -466,7 +466,7 @@ void func_8001378C(GraphNode* arg0) {
     if (arg->unk_00.unk_0C != NULL) {
         arg->unk_1D = 0;
         arg->unk_20 = -1;
-        arg->lights = func_80005F5C(sizeof(Lights7));
+        arg->lights = DLBuf_AllocTemp(sizeof(Lights7));
         arg->unk_1C = 0;
         arg->lights->a.l.col[0] = 0;
         arg->lights->a.l.col[1] = 0;
@@ -535,7 +535,7 @@ void func_80013AF8(GraphNode* arg0) {
     unk_D_86002F34_alt2* arg = (unk_D_86002F34_alt2*)arg0;
     unk_D_86002F34_00C_018* ptr = &D_8006F088->unk_18;
 
-    func_800065B4(&gDisplayListHead, ptr->x, ptr->y, ptr->width, ptr->height, arg->unk_18);
+    GFX_FillRect(&gDisplayListHead, ptr->x, ptr->y, ptr->width, ptr->height, arg->unk_18);
 
     gDPPipeSync(gDisplayListHead++);
     gDPSetCycleType(gDisplayListHead++, G_CYC_2CYCLE);
@@ -544,7 +544,7 @@ void func_80013AF8(GraphNode* arg0) {
 void func_80013B8C(UNUSED GraphNode* arg0) {
     unk_D_86002F34_00C_018* ptr = &D_8006F088->unk_18;
 
-    func_800067E4(&gDisplayListHead, ptr->x, ptr->y, ptr->width, ptr->height);
+    GFX_ClearDepth(&gDisplayListHead, ptr->x, ptr->y, ptr->width, ptr->height);
 
     gDPPipeSync(gDisplayListHead++);
     gDPSetCycleType(gDisplayListHead++, G_CYC_2CYCLE);
@@ -954,7 +954,7 @@ void func_80014D70(GraphNode* arg0) {
     Gfx* temp_s1;
 
     sp3C = &D_800AA8C8.unk_0000[D_800AA8C8.unk_10A0];
-    temp_s1 = func_80005F5C(sizeof(Gfx) * 2);
+    temp_s1 = DLBuf_AllocTemp(sizeof(Gfx) * 2);
 
     if (func_80015390(D_8006F09C, 0x64, NULL) == 0) {
         func_80014CB8(0x64);

@@ -830,7 +830,7 @@ void func_84B07428(unk_D_84B25A28* arg0) {
     unk_D_86002F58_004_000_010* temp_s0;
 
     temp_s0 = func_80019760(5);
-    func_8001A1D0(arg0->unk_20, temp_s0, func_80006314(0, 2, 0x80, 0x60, 1));
+    func_8001A1D0(arg0->unk_20, temp_s0, ColorBuffer_Alloc(0, 2, 0x80, 0x60, 1));
 
     for (count = 0, i = 0; i < D_800AE540.unk_1194[0].unk_08[0]->unk_214->unk_002; count++, i++) {
         func_8001A324(arg0->unk_20, count, D_800AE540.unk_1194[0].unk_08[0]->unk_214->unk_028[i].unk_00.unk_00, 0);
@@ -846,7 +846,7 @@ void func_84B07560(unk_D_84B25A28* arg0) {
     s32 count;
     unk_D_86002F58_004_000_010* tmp = func_80019760(5);
 
-    func_8001A1D0(arg0->unk_20, tmp, func_80006314(0, 2, 0x60, 0x40, 1));
+    func_8001A1D0(arg0->unk_20, tmp, ColorBuffer_Alloc(0, 2, 0x60, 0x40, 1));
 
     for (count = 0, i = 0; i < D_800AE540.unk_1194[0].unk_08[0]->unk_214->unk_002; count++, i++) {
         func_8001A324(arg0->unk_20, count, D_800AE540.unk_1194[0].unk_08[0]->unk_214->unk_028[i].unk_00.unk_00, 0);
@@ -970,8 +970,8 @@ void func_84B07CF8(unk_D_84B25A28* arg0, unk_D_86002F34_00C* arg1) {
     arg0->unk_00 = 0;
     arg0->unk_01 = 0;
     arg0->unk_02 = 0;
-    arg0->unk_24 = func_80006314(0, 2, 0x40, 0x60, 0);
-    arg0->unk_28 = func_80006314(0, 2, 0x40, 0x60, 0);
+    arg0->unk_24 = ColorBuffer_Alloc(0, 2, 0x40, 0x60, 0);
+    arg0->unk_28 = ColorBuffer_Alloc(0, 2, 0x40, 0x60, 0);
 
     if ((D_800AE540.unk_0001 == 0) && ((D_800AE540.unk_1194[0].unk_01 == 2) || (D_800AE540.unk_1194[1].unk_01 == 2))) {
         arg0->unk_02 = 1;

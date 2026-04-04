@@ -314,7 +314,7 @@ Gfx* func_8436E3BC(Gfx* arg0) {
         if (var_s6->unk_000 == 1) {
             var_s0 = &var_s6->unk_0A4[0];
 
-            var_s6->unk_088 = func_80005F5C(sizeof(Vtx) * 40);
+            var_s6->unk_088 = DLBuf_AllocTemp(sizeof(Vtx) * 40);
             var_s1 = var_s6->unk_088;
 
             for (j = 0; j < 20; j++, var_s0++) {

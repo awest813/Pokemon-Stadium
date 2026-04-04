@@ -46,7 +46,7 @@ void func_81002968(s32 arg0, unk_arg1_func_81002968* arg1) {
 
     if (arg0 == 2) {
         sp18 = arg1->unk_14;
-        temp_v0 = func_80005F5C(0x50);
+        temp_v0 = DLBuf_AllocTemp(0x50);
         arg1->unk_18 = temp_v0;
         func_81002830(temp_v0, sp18);
     }
@@ -64,7 +64,7 @@ void func_81002A68(s32 arg0, TextureState* state) {
 
     if (arg0 == 2) {
         textures = state->textures;
-        state->gfx = (Gfx*)func_80005F5C(0x50);
+        state->gfx = (Gfx*)DLBuf_AllocTemp(0x50);
         if (D_8006F09C->unk_01A == 0x58) {
             index = (s32) D_8006F09C->unk_040.unk_08 >> 0x10;
             if (index >= 0x42) {

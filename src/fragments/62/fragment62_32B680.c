@@ -31,8 +31,8 @@ static f32 D_84387D60[] = {
 };
 
 void func_84340DC0(void) {
-    Mtx* sp3C = func_80005F5C(sizeof(Mtx) * 1);
-    LookAt* sp38 = func_80005F5C(sizeof(LookAt) * 1);
+    Mtx* sp3C = DLBuf_AllocTemp(sizeof(Mtx) * 1);
+    LookAt* sp38 = DLBuf_AllocTemp(sizeof(LookAt) * 1);
     unk_D_86002F34_00C* temp_v0 = func_8432FD64();
 
     guLookAtReflect(sp3C, sp38, temp_v0->unk_60.eye.x, temp_v0->unk_60.eye.y, temp_v0->unk_60.eye.z,
@@ -490,7 +490,7 @@ void func_84341E50(Gfx* arg0) {
 
 void func_84341F08(s32 arg0, arg1_func_84344CE8* arg1) {
     if (arg0 == 2) {
-        arg1->unk_18 = func_80005F5C(sizeof(Gfx) * 30);
+        arg1->unk_18 = DLBuf_AllocTemp(sizeof(Gfx) * 30);
         func_84341E50(arg1->unk_18);
     }
 }
@@ -572,7 +572,7 @@ void func_84341F44(Gfx* arg0, arg1_func_8434E21C* arg1, UNUSED u16 arg2) {
 
 void func_84342304(s32 arg0, arg1_func_84344CE8* arg1) {
     if (arg0 == 2) {
-        arg1->unk_18 = func_80005F5C(sizeof(Gfx) * 30);
+        arg1->unk_18 = DLBuf_AllocTemp(sizeof(Gfx) * 30);
         func_84341F44(arg1->unk_18, arg1->unk_14, D_8006F084);
     }
 }
@@ -1476,7 +1476,7 @@ void func_84343B9C(Gfx* arg0, s32 arg1, u16 arg2) {
 
 void func_84343D24(s32 arg0, arg1_func_84344CE8* arg1) {
     if (arg0 == 2) {
-        arg1->unk_18 = func_80005F5C(sizeof(Gfx) * 30);
+        arg1->unk_18 = DLBuf_AllocTemp(sizeof(Gfx) * 30);
         func_84343B9C(arg1->unk_18, arg1->unk_14, D_8006F084);
     }
 }
@@ -1562,7 +1562,7 @@ void func_84343FA4(Gfx* arg0, u16 arg1) {
 
 void func_84344050(s32 arg0, arg1_func_84344CE8* arg1) {
     if (arg0 == 2) {
-        arg1->unk_18 = func_80005F5C(sizeof(Gfx) * 10);
+        arg1->unk_18 = DLBuf_AllocTemp(sizeof(Gfx) * 10);
         func_84343FA4(arg1->unk_18, D_8006F084);
     }
 }
@@ -1816,7 +1816,7 @@ void func_84344C7C(Gfx* arg0, u8* arg1) {
 
 void func_84344CE8(s32 arg0, arg1_func_84344CE8* arg1) {
     if (arg0 == 2) {
-        arg1->unk_18 = func_80005F5C(sizeof(Gfx) * 30);
+        arg1->unk_18 = DLBuf_AllocTemp(sizeof(Gfx) * 30);
         func_84344C7C(arg1->unk_18, arg1->unk_14);
     }
 }
@@ -1928,7 +1928,7 @@ void func_8434523C(Gfx* arg0, s32 arg1, u16 arg2) {
 
 void func_843452F0(s32 arg0, arg1_func_84344CE8* arg1) {
     if (arg0 == 2) {
-        arg1->unk_18 = func_80005F5C(sizeof(Gfx) * 30);
+        arg1->unk_18 = DLBuf_AllocTemp(sizeof(Gfx) * 30);
         func_8434523C(arg1->unk_18, arg1->unk_14, D_8006F084);
     }
 }
@@ -1941,7 +1941,7 @@ void func_84345338(Gfx* arg0, arg1_func_8434E21C* arg1, UNUSED u16 arg2) {
 
 void func_8434539C(s32 arg0, arg1_func_84344CE8* arg1) {
     if (arg0 == 2) {
-        arg1->unk_18 = func_80005F5C(sizeof(Gfx) * 30);
+        arg1->unk_18 = DLBuf_AllocTemp(sizeof(Gfx) * 30);
         func_84345338(arg1->unk_18, arg1->unk_14, D_8006F084);
     }
 }
@@ -1954,7 +1954,7 @@ void func_843453E4(Gfx* arg0, u8* arg1, UNUSED u16 arg2) {
 
 void func_84345448(s32 arg0, arg1_func_84344CE8* arg1) {
     if (arg0 == 2) {
-        arg1->unk_18 = func_80005F5C(sizeof(Gfx) * 30);
+        arg1->unk_18 = DLBuf_AllocTemp(sizeof(Gfx) * 30);
         func_843453E4(arg1->unk_18, arg1->unk_14, D_8006F084);
     }
 }
@@ -2161,7 +2161,7 @@ void func_84345A20(Gfx* arg0, UNUSED s32 arg1, UNUSED u16 arg2) {
 
 void func_84345AE0(s32 arg0, arg1_func_84344CE8* arg1) {
     if (arg0 == 2) {
-        arg1->unk_18 = func_80005F5C(sizeof(Gfx) * 30);
+        arg1->unk_18 = DLBuf_AllocTemp(sizeof(Gfx) * 30);
         func_84345A20(arg1->unk_18, arg1->unk_14, D_8006F084);
     }
 }
@@ -2281,7 +2281,7 @@ void func_84345F38(Gfx* arg0, s32 arg1, u16 arg2) {
 
 void func_84346014(s32 arg0, arg1_func_84344CE8* arg1) {
     if (arg0 == 2) {
-        arg1->unk_18 = func_80005F5C(sizeof(Gfx) * 30);
+        arg1->unk_18 = DLBuf_AllocTemp(sizeof(Gfx) * 30);
         func_84345F38(arg1->unk_18, arg1->unk_14, D_8006F084);
     }
 }
@@ -2299,7 +2299,7 @@ void func_8434605C(Gfx* arg0, UNUSED s32 arg1, UNUSED u16 arg2) {
 
 void func_843460EC(s32 arg0, arg1_func_84344CE8* arg1) {
     if (arg0 == 2) {
-        arg1->unk_18 = func_80005F5C(sizeof(Gfx) * 30);
+        arg1->unk_18 = DLBuf_AllocTemp(sizeof(Gfx) * 30);
         func_8434605C(arg1->unk_18, arg1->unk_14, D_8006F084);
     }
 }
@@ -2512,7 +2512,7 @@ void func_843466EC(Gfx* arg0, s32 arg1, u16 arg2) {
 
 void func_843467B0(s32 arg0, arg1_func_84344CE8* arg1) {
     if (arg0 == 2) {
-        arg1->unk_18 = func_80005F5C(sizeof(Gfx) * 30);
+        arg1->unk_18 = DLBuf_AllocTemp(sizeof(Gfx) * 30);
         func_843466EC(arg1->unk_18, arg1->unk_14, D_8006F084);
     }
 }
@@ -2536,7 +2536,7 @@ void func_843467F8(Gfx* arg0, u8* arg1, UNUSED u16 arg2) {
 
 void func_84346960(s32 arg0, arg1_func_84344CE8* arg1) {
     if (arg0 == 2) {
-        arg1->unk_18 = func_80005F5C(sizeof(Gfx) * 30);
+        arg1->unk_18 = DLBuf_AllocTemp(sizeof(Gfx) * 30);
         func_843467F8(arg1->unk_18, arg1->unk_14, D_8006F084);
     }
 }
@@ -2560,7 +2560,7 @@ void func_843469A8(Gfx* arg0, u8* arg1, UNUSED u16 arg2) {
 
 void func_84346B10(s32 arg0, arg1_func_84344CE8* arg1) {
     if (arg0 == 2) {
-        arg1->unk_18 = func_80005F5C(sizeof(Gfx) * 30);
+        arg1->unk_18 = DLBuf_AllocTemp(sizeof(Gfx) * 30);
         func_843469A8(arg1->unk_18, arg1->unk_14, D_8006F084);
     }
 }
@@ -2650,7 +2650,7 @@ void func_8434719C(Gfx* arg0, arg1_func_8434E21C* arg1, UNUSED u16 arg2) {
 
 void func_84347254(s32 arg0, arg1_func_84344CE8* arg1) {
     if (arg0 == 2) {
-        arg1->unk_18 = func_80005F5C(sizeof(Gfx) * 30);
+        arg1->unk_18 = DLBuf_AllocTemp(sizeof(Gfx) * 30);
         func_8434719C(arg1->unk_18, arg1->unk_14, D_8006F084);
     }
 }
@@ -2669,7 +2669,7 @@ void func_8434729C(Gfx* arg0, arg1_func_8434E21C* arg1, UNUSED u16 arg2) {
 
 void func_84347374(s32 arg0, arg1_func_84344CE8* arg1) {
     if (arg0 == 2) {
-        arg1->unk_18 = func_80005F5C(sizeof(Gfx) * 30);
+        arg1->unk_18 = DLBuf_AllocTemp(sizeof(Gfx) * 30);
         func_8434729C(arg1->unk_18, arg1->unk_14, D_8006F084);
     }
 }
@@ -2909,7 +2909,7 @@ void func_84347BF4(Gfx* arg0, arg1_func_8434E21C* arg1, UNUSED u16 arg2) {
 
 void func_84347D2C(s32 arg0, arg1_func_84344CE8* arg1) {
     if (arg0 == 2) {
-        arg1->unk_18 = func_80005F5C(sizeof(Gfx) * 30);
+        arg1->unk_18 = DLBuf_AllocTemp(sizeof(Gfx) * 30);
         func_84347BF4(arg1->unk_18, arg1->unk_14, D_8006F084);
     }
 }
@@ -3283,7 +3283,7 @@ void func_84348F24(Gfx* arg0, s32 arg1, u16 arg2) {
 
 void func_84349010(s32 arg0, arg1_func_84344CE8* arg1) {
     if (arg0 == 2) {
-        arg1->unk_18 = func_80005F5C(sizeof(Gfx) * 30);
+        arg1->unk_18 = DLBuf_AllocTemp(sizeof(Gfx) * 30);
         func_84348F24(arg1->unk_18, arg1->unk_14, D_8006F084);
     }
 }
@@ -3320,7 +3320,7 @@ void func_843491D4(Gfx* arg0, u8* arg1, UNUSED u16 arg2) {
 
 void func_84349264(s32 arg0, arg1_func_84344CE8* arg1) {
     if (arg0 == 2) {
-        arg1->unk_18 = func_80005F5C(sizeof(Gfx) * 30);
+        arg1->unk_18 = DLBuf_AllocTemp(sizeof(Gfx) * 30);
         func_843491D4(arg1->unk_18, arg1->unk_14, D_8006F084);
     }
 }
@@ -3334,7 +3334,7 @@ void func_843492AC(Gfx* arg0, u8* arg1, UNUSED u16 arg2) {
 
 void func_8434933C(s32 arg0, arg1_func_84344CE8* arg1) {
     if (arg0 == 2) {
-        arg1->unk_18 = func_80005F5C(sizeof(Gfx) * 30);
+        arg1->unk_18 = DLBuf_AllocTemp(sizeof(Gfx) * 30);
         func_843492AC(arg1->unk_18, arg1->unk_14, D_8006F084);
     }
 }
@@ -3602,7 +3602,7 @@ void func_84349D10(Gfx* arg0, u8* arg1, UNUSED u16 arg2) {
 
 void func_84349F80(s32 arg0, arg1_func_84344CE8* arg1) {
     if (arg0 == 2) {
-        arg1->unk_18 = func_80005F5C(sizeof(Gfx) * 30);
+        arg1->unk_18 = DLBuf_AllocTemp(sizeof(Gfx) * 30);
         func_84349D10(arg1->unk_18, arg1->unk_14, D_8006F084);
     }
 }
@@ -3667,7 +3667,7 @@ void func_84349FC8(Gfx* arg0, UNUSED arg1_func_8434E21C* arg1, UNUSED u16 arg2) 
 
 void func_8434A18C(s32 arg0, arg1_func_84344CE8* arg1) {
     if (arg0 == 2) {
-        arg1->unk_18 = func_80005F5C(sizeof(Gfx) * 30);
+        arg1->unk_18 = DLBuf_AllocTemp(sizeof(Gfx) * 30);
         func_84349FC8(arg1->unk_18, arg1->unk_14, D_8006F084);
     }
 }
@@ -3804,7 +3804,7 @@ void func_8434A654(Gfx* arg0, arg1_func_8434E21C* arg1, UNUSED u16 arg2) {
 
 void func_8434A6D8(s32 arg0, arg1_func_84344CE8* arg1) {
     if (arg0 == 2) {
-        arg1->unk_18 = func_80005F5C(sizeof(Gfx) * 30);
+        arg1->unk_18 = DLBuf_AllocTemp(sizeof(Gfx) * 30);
         func_8434A654(arg1->unk_18, arg1->unk_14, D_8006F084);
     }
 }
@@ -3820,7 +3820,7 @@ void func_8434A720(Gfx* arg0, UNUSED arg1_func_8434E21C* arg1, UNUSED u16 arg2) 
 
 void func_8434A794(s32 arg0, arg1_func_84344CE8* arg1) {
     if (arg0 == 2) {
-        arg1->unk_18 = func_80005F5C(sizeof(Gfx) * 30);
+        arg1->unk_18 = DLBuf_AllocTemp(sizeof(Gfx) * 30);
         func_8434A720(arg1->unk_18, arg1->unk_14, D_8006F084);
     }
 }
@@ -3894,7 +3894,7 @@ void func_8434AAEC(Gfx* arg0, u8 arg1, UNUSED u16 arg2) {
 
 void func_8434AC44(s32 arg0, arg1_func_84344CE8* arg1) {
     if (arg0 == 2) {
-        arg1->unk_18 = func_80005F5C(sizeof(Gfx) * 30);
+        arg1->unk_18 = DLBuf_AllocTemp(sizeof(Gfx) * 30);
         func_8434AAEC(arg1->unk_18, arg1->unk_14, D_8006F084);
     }
 }
@@ -4299,7 +4299,7 @@ void func_8434B2B8(Gfx* arg0, u8* arg1, UNUSED u16 arg2) {
 
 void func_8434BA28(s32 arg0, arg1_func_84344CE8* arg1) {
     if (arg0 == 2) {
-        arg1->unk_18 = func_80005F5C(sizeof(Gfx) * 30);
+        arg1->unk_18 = DLBuf_AllocTemp(sizeof(Gfx) * 30);
         func_8434B2B8(arg1->unk_18, arg1->unk_14, D_8006F084);
     }
 }
@@ -4448,7 +4448,7 @@ void func_8434C3F0(Gfx* arg0, u8 arg1, UNUSED u16 arg2) {
 
 void func_8434C548(s32 arg0, arg1_func_84344CE8* arg1) {
     if (arg0 == 2) {
-        arg1->unk_18 = func_80005F5C(sizeof(Gfx) * 30);
+        arg1->unk_18 = DLBuf_AllocTemp(sizeof(Gfx) * 30);
         func_8434C3F0(arg1->unk_18, arg1->unk_14, D_8006F084);
     }
 }
@@ -4504,7 +4504,7 @@ void func_8434C814(Gfx* arg0, u8* arg1, UNUSED u16 arg2) {
 
 void func_8434CA48(s32 arg0, arg1_func_84344CE8* arg1) {
     if (arg0 == 2) {
-        arg1->unk_18 = func_80005F5C(sizeof(Gfx) * 30);
+        arg1->unk_18 = DLBuf_AllocTemp(sizeof(Gfx) * 30);
         func_8434C814(arg1->unk_18, arg1->unk_14, D_8006F084);
     }
 }
@@ -4728,7 +4728,7 @@ void func_8434D77C(Gfx* arg0, arg1_func_8434E21C* arg1, UNUSED u16 arg2) {
 
 void func_8434D890(s32 arg0, arg1_func_84344CE8* arg1) {
     if (arg0 == 2) {
-        arg1->unk_18 = func_80005F5C(sizeof(Gfx) * 30);
+        arg1->unk_18 = DLBuf_AllocTemp(sizeof(Gfx) * 30);
         func_8434D77C(arg1->unk_18, arg1->unk_14, D_8006F084);
     }
 }
@@ -4972,7 +4972,7 @@ void func_8434E21C(Gfx* arg0, arg1_func_8434E21C* arg1, UNUSED u16 arg2) {
 
 void func_8434E6AC(s32 arg0, arg1_func_84344CE8* arg1) {
     if (arg0 == 2) {
-        arg1->unk_18 = func_80005F5C(sizeof(Gfx) * 30);
+        arg1->unk_18 = DLBuf_AllocTemp(sizeof(Gfx) * 30);
         func_8434E21C(arg1->unk_18, arg1->unk_14, D_8006F084);
     }
 }

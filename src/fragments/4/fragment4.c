@@ -97,7 +97,7 @@ Gfx* func_87A00098(Gfx* arg0, Mtx* arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg5,
     Mtx spD8;
     Mtx sp98;
     UNUSED Mtx sp58;
-    Mtx* temp_s1 = (Mtx*)func_80005F5C(sizeof(Mtx));
+    Mtx* temp_s1 = (Mtx*)DLBuf_AllocTemp(sizeof(Mtx));
 
     guTranslate(&spD8, arg2, arg3, arg4);
     guScale(&sp98, arg5, arg5, arg5);
@@ -125,8 +125,8 @@ Gfx* func_87A00268(Gfx* arg0, Mtx* arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg5,
     Vtx* temp_v0;
     Vtx* ptr1;
 
-    temp_s1 = func_80005F5C(sizeof(Mtx) * 1);
-    temp_v0 = func_80005F5C(sizeof(Vtx) * 4);
+    temp_s1 = DLBuf_AllocTemp(sizeof(Mtx) * 1);
+    temp_v0 = DLBuf_AllocTemp(sizeof(Vtx) * 4);
 
     ptr1 = temp_v0;
     for (i = 0; i < 4; i++, ptr1++, arg9 += 4) {

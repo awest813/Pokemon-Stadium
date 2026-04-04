@@ -34,10 +34,10 @@ void func_86B01C00(u8* arg0) {
 }
 
 void func_86B01D8C(u8* arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, u8 arg5, u8 arg6) {
-    unk_D_80068BB0* temp_s1 = func_8000648C();
-    Vtx* temp_s2 = func_80005F5C(sizeof(Vtx) * 4);
-    Mtx* spCC = func_80005F5C(sizeof(Mtx) * 1);
-    Vp* spC8 = func_80005F5C(sizeof(Vp));
+    ColorBuffer* temp_s1 = ColorBuffer_GetActive();
+    Vtx* temp_s2 = DLBuf_AllocTemp(sizeof(Vtx) * 4);
+    Mtx* spCC = DLBuf_AllocTemp(sizeof(Mtx) * 1);
+    Vp* spC8 = DLBuf_AllocTemp(sizeof(Vp));
 
     func_8001E6E8(spC8, temp_s1->width, temp_s1->height);
 

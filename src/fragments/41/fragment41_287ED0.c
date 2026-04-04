@@ -341,7 +341,7 @@ void func_82F00968(void) {
 }
 
 void func_82F00A58(void) {
-    func_800079C4();
+    Stage_ActivateFramebuffer();
     func_82F00164();
     if (func_82F0FDCC() != 0) {
         func_82F13414();
@@ -351,7 +351,7 @@ void func_82F00A58(void) {
     func_82F05110();
     func_82F0C320();
     func_82F00960();
-    func_80007778();
+    Stage_AdvanceFrame();
 }
 
 void func_82F00AC8(s32 arg0) {
@@ -390,7 +390,7 @@ void func_82F00AC8(s32 arg0) {
 
         case 7:
             func_82F000C8(0);
-            func_80006CB4(0xF);
+            Stage_FadeIn(0xF);
             func_8004B9C4(0xF);
             break;
     }
@@ -557,7 +557,7 @@ s32 func_82F0109C(void) {
 
     switch (D_82F14428) {
         case 0:
-            if (func_80007604() == 0) {
+            if (Stage_GetFadeMode() == 0) {
                 func_82F00AC8(1);
             }
             break;
@@ -587,7 +587,7 @@ s32 func_82F0109C(void) {
             break;
 
         case 7:
-            if (func_80007604() == 1) {
+            if (Stage_GetFadeMode() == 1) {
                 sp1C = 0;
             }
             break;
@@ -596,7 +596,7 @@ s32 func_82F0109C(void) {
 }
 
 void func_82F01180(void) {
-    func_80006C6C(0x10);
+    Stage_FadeOut(0x10);
     func_8004B1CC(0x10);
     func_8001F738(gPlayer1Controller);
 
@@ -617,12 +617,12 @@ void func_82F01180(void) {
 }
 
 s32 func_82F01234(s32 arg0, s32 arg1) {
-    unk_func_80007444* sp24;
+    RenderContext* sp24;
 
     main_pool_push_state('PMEX');
 
-    func_80005E40(0x14000, 0);
-    sp24 = func_80007444(1, 0, 2, 0, 2, 1);
+    DLBuf_Init(0x14000, 0);
+    sp24 = Stage_CreateRenderContext(1, 0, 2, 0, 2, 1);
     D_82F14420 = func_8001E94C(0x1E, 0);
 
     ASSET_LOAD(D_1000000, common_menu1_ui, 0);
@@ -633,12 +633,12 @@ s32 func_82F01234(s32 arg0, s32 arg1) {
     func_8001987C();
     func_8001B058();
     func_82F00968();
-    func_80007678(sp24);
+    Stage_SetRenderContext(sp24);
     func_82F01180();
-    func_800077B4(2);
-    func_800076C0();
+    Stage_AdvanceFrames(2);
+    Stage_FreeRenderContext();
     func_8001E9CC();
-    func_80005EAC();
+    DLBuf_Free();
 
     main_pool_pop_state('PMEX');
 

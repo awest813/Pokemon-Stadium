@@ -74,13 +74,13 @@ void func_86B0A18C(u8* arg0) {
 }
 
 void func_86B0A30C(void) {
-    func_800079C4();
+    Stage_ActivateFramebuffer();
     func_86B0A18C(D_86B10828);
-    func_800067E4(&gDisplayListHead, 0, 0, 0x140, 0xF0);
+    GFX_ClearDepth(&gDisplayListHead, 0, 0, 0x140, 0xF0);
     func_80015348();
     func_80015094(D_86B106B4);
     func_86B0A0B0();
-    func_80007778();
+    Stage_AdvanceFrame();
 }
 
 s32 func_86B0A37C(void) {
@@ -91,8 +91,8 @@ s32 func_86B0A37C(void) {
     }
 
     if ((D_86B106B8.unk_040.unk_08 >> 0x10) == 0x64) {
-        func_80007990(1);
-        func_80006CB4(3);
+        Stage_SetFillColor(1);
+        Stage_FadeIn(3);
     }
 
     var_v0 = func_800174E4(&D_86B106B8) != 0;
@@ -104,8 +104,8 @@ s32 func_86B0A37C(void) {
 void func_86B0A414(void) {
     s32 var_s0 = 1;
 
-    func_80006C6C(0xC);
-    func_8000D1F0(0x30);
+    Stage_FadeOut(0xC);
+    Audio_PlayTrack(0x30);
 
     while (var_s0 != 0) {
         func_86B0A15C();
@@ -115,7 +115,7 @@ void func_86B0A414(void) {
         func_86B0A30C();
     }
 
-    func_800077B4(2);
+    Stage_AdvanceFrames(2);
 }
 
 void func_86B0A47C(void) {
@@ -137,12 +137,12 @@ void func_86B0A47C(void) {
 }
 
 s32 func_86B0A554(void) {
-    unk_func_80007444* sp24;
+    RenderContext* sp24;
 
     main_pool_push_state('MTWO');
 
-    func_80005E40(0x10000, 0);
-    sp24 = func_80007444(0, 1, 3, 1, 2, 1);
+    DLBuf_Init(0x10000, 0);
+    sp24 = Stage_CreateRenderContext(0, 1, 3, 1, 2, 1);
     func_8001E94C(6, 0);
 
     ASSET_LOAD(D_1000000, common_menu1_ui, 0);
@@ -163,11 +163,11 @@ s32 func_86B0A554(void) {
     }
 
     func_86B0A47C();
-    func_80007678(sp24);
+    Stage_SetRenderContext(sp24);
     func_86B0A414();
-    func_800076C0();
+    Stage_FreeRenderContext();
     func_8001E9CC();
-    func_80005EAC();
+    DLBuf_Free();
 
     main_pool_pop_state('MTWO');
 

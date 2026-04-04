@@ -314,11 +314,11 @@ void func_86B095C4(void) {
 }
 
 void func_86B0961C(s16 arg0, s16 arg1, s16 arg2, s16 arg3, s16 arg4, s16 arg5, s16 arg6, s16 arg7) {
-    unk_D_800A7440 sp30;
+    ScissorRect sp30;
 
-    func_80005FC0(&sp30, arg0, arg1, (arg0 + arg2) - 1, (arg1 + arg3) - 1);
+    ScissorRect_Set(&sp30, arg0, arg1, (arg0 + arg2) - 1, (arg1 + arg3) - 1);
 
-    if (func_80006030(&sp30) != 0) {
+    if (ScissorRect_Clip(&sp30) != 0) {
         if (arg6 != 0) {
             arg4 += ((sp30.x1 - arg0) * arg6) >> 5;
         }

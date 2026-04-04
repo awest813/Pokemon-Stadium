@@ -58,7 +58,7 @@ void func_81002F38(s32 arg0, DisplayListState* state) {
         D_81004B70 = 0;
         return;
     case 2:
-        gfx = func_80005F5C(0xA0);
+        gfx = DLBuf_AllocTemp(0xA0);
         state->gfx = gfx;
         func_81002DC0(gfx, addresses->segments[0], addresses->segments[1]);
         D_81004B70 += 1;
@@ -101,7 +101,7 @@ void func_81003138(s32 arg0, DisplayListState* state) {
         D_81004B80 = 0;
         return;
     case 2:
-        gfx = func_80005F5C(0xA0);
+        gfx = DLBuf_AllocTemp(0xA0);
         state->gfx = gfx;
         func_81002FC0(gfx, addresses->segments[0], addresses->segments[1]);
         D_81004B80 += 1;
@@ -144,7 +144,7 @@ void func_81003338(s32 arg0, DisplayListState* state) {
         D_81004B90 = 0;
         return;
     case 2:
-        gfx = func_80005F5C(0xA0);
+        gfx = DLBuf_AllocTemp(0xA0);
         state->gfx = gfx;
         func_810031C0(gfx, addresses->segments[0], addresses->segments[1]);
         D_81004B90 += 1;
@@ -187,7 +187,7 @@ void func_81003538(s32 arg0, DisplayListState* state) {
         D_81004BA0 = 0;
         return;
     case 2:
-        gfx = func_80005F5C(0xA0);
+        gfx = DLBuf_AllocTemp(0xA0);
         state->gfx = gfx;
         func_810033C0(gfx, addresses->segments[0], addresses->segments[1]);
         D_81004BA0 += 1;
@@ -204,7 +204,7 @@ void func_810035C0(s32 arg0, DisplayListState* state) {
     Gfx* gfx;
 
     if (arg0 == 2) {
-        gfx = func_80005F5C(0x10);
+        gfx = DLBuf_AllocTemp(0x10);
         temp_a1 = D_81004190 * 3;
         temp_a2 = D_81004190 * -6;
         state->gfx = gfx;
@@ -237,7 +237,7 @@ void func_81003678(s32 arg0, DisplayListState* state) {
     u8 t;
     
     if (arg0 == 2) {
-        gfx = func_80005F5C(0x20);
+        gfx = DLBuf_AllocTemp(0x20);
         state->gfx = gfx;
         for (i = 0; i < 5; i++) {
             kf = D_8100419C[i];
@@ -338,7 +338,7 @@ void func_81003A54(Gfx* gfx) {
         sprintf(D_81004BB8, D_810047D0, sp34);
         sp4D = func_8001E730((u8) D_81004BB8[(D_81004BB0 - 3) & 0xFFFF]);
         sp2C = 0xA - func_81003A24((s8*)sp34);
-        sp30 = func_80005F5C(0x40);;
+        sp30 = DLBuf_AllocTemp(0x40);;
         guTranslate(sp30, (f32) sp2C * 32.0f, 0.0f, 0.0f);
         var_v1 = sp4D;
         {    Gfx *_gfx = (Gfx *)(gfx++);    _gfx->words.w0 = 0xDA380001;    _gfx->words.w1 = sp30;    }
@@ -362,7 +362,7 @@ void func_81003CF0(s32 arg0, DisplayListState* state) {
     Gfx* gfx;
 
     if (arg0 == 2) {
-        gfx = func_80005F5C(0xF0);
+        gfx = DLBuf_AllocTemp(0xF0);
         state->gfx = gfx;
         func_810038D0(gfx);
     }
@@ -372,7 +372,7 @@ void func_81003D2C(s32 arg0, DisplayListState* state) {
     Gfx* gfx;
 
     if (arg0 == 2) {
-        gfx = func_80005F5C(0xA0);
+        gfx = DLBuf_AllocTemp(0xA0);
         state->gfx = gfx;
         func_81003A54(gfx);
     }

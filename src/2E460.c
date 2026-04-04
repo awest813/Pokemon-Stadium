@@ -537,8 +537,8 @@ void func_8002EF44(void) {
                 func_80023D60(func_80029080());
             }
 
-            func_80005E40(0x16000, 0);
-            func_80007678(func_80007444(1, 1, 2, 0, 2, 1));
+            DLBuf_Init(0x16000, 0);
+            Stage_SetRenderContext(Stage_CreateRenderContext(1, 1, 2, 0, 2, 1));
 
             FRAGMENT_LOAD_AND_CALL2(fragment22, var_s4, 0);
 
@@ -548,8 +548,8 @@ void func_8002EF44(void) {
                                            D_800AE520.arg0, D_800AE520.arg1);
             }
 
-            func_800076C0();
-            func_80005EAC();
+            Stage_FreeRenderContext();
+            DLBuf_Free();
 
             main_pool_pop_state('PLAB');
         } else {

@@ -133,12 +133,12 @@ void func_80029310(void) {
 
     main_pool_push_state('TITL');
 
-    func_80005E40(0x10000, 0);
-    func_80007678(func_80007444(0, 1, 3, 1, 2, 1));
+    DLBuf_Init(0x10000, 0);
+    Stage_SetRenderContext(Stage_CreateRenderContext(0, 1, 3, 1, 2, 1));
 
     if (func_800290E4(0x12) == 2) {
-        func_80006CF8(1);
-        func_800077B4(2);
+        Stage_SetFadeMode(1);
+        Stage_AdvanceFrames(2);
     }
 
     gCurrentGameState = STATE_TITLE_SCREEN;
@@ -186,22 +186,22 @@ void func_800293CC(void) {
 }
 
 void func_800296AC(void) {
-    func_8000D2B4(1);
-    func_80001BD4(2);
+    Audio_WaitDone(1);
+    Display_FlushFrames(2);
     LeoBootGame(D_800AA680.unk_08);
 }
 
 void func_800296E0(void) {
     s32 temp_v0;
-    unk_func_80007444* temp_s0;
+    RenderContext* temp_s0;
 
     main_pool_push_state('DBUG');
 
-    func_80005E40(0x10000, 0);
-    temp_s0 = func_80007444(1, 1, 2, 0, 2, 1);
+    DLBuf_Init(0x10000, 0);
+    temp_s0 = Stage_CreateRenderContext(1, 1, 2, 0, 2, 1);
 
     FRAGMENT_LOAD(fragment34);
-    func_80007678(temp_s0);
+    Stage_SetRenderContext(temp_s0);
     FRAGMENT_LOAD_AND_CALL2(fragment67, 1, 0);
 
     while ((gCurrentGameState == STATE_STUBBED_DEBUG) && (D_800AE520.unk_00 != 0)) {
@@ -210,8 +210,8 @@ void func_800296E0(void) {
                                           D_800AE520.arg0, D_800AE520.arg1);
     }
 
-    func_800076C0();
-    func_80005EAC();
+    Stage_FreeRenderContext();
+    DLBuf_Free();
 
     main_pool_pop_state('DBUG');
 }
@@ -238,8 +238,8 @@ void func_80029924(void) {
 s16 func_80029984(s16 arg0) {
     main_pool_push_state('STAD');
 
-    func_80005E40(0x18000, 0);
-    func_80007678(func_80007444(1, 1, 2, 0, 2, 1));
+    DLBuf_Init(0x18000, 0);
+    Stage_SetRenderContext(Stage_CreateRenderContext(1, 1, 2, 0, 2, 1));
 
     while ((arg0 > 0) && (arg0 < 5)) {
         switch (arg0) {
@@ -277,8 +277,8 @@ s16 func_80029984(s16 arg0) {
         }
     }
 
-    func_800076C0();
-    func_80005EAC();
+    Stage_FreeRenderContext();
+    DLBuf_Free();
 
     main_pool_pop_state('STAD');
 
@@ -348,8 +348,8 @@ void func_80029BC0(void) {
 s32 func_80029E78(s16 arg0) {
     main_pool_push_state('FREE');
 
-    func_80005E40(0x18000, 0);
-    func_80007678(func_80007444(1, 1, 2, 0, 2, 1));
+    DLBuf_Init(0x18000, 0);
+    Stage_SetRenderContext(Stage_CreateRenderContext(1, 1, 2, 0, 2, 1));
 
     while ((arg0 > 0) && (arg0 < 4)) {
         switch (arg0) {
@@ -379,8 +379,8 @@ s32 func_80029E78(s16 arg0) {
         }
     }
 
-    func_800076C0();
-    func_80005EAC();
+    Stage_FreeRenderContext();
+    DLBuf_Free();
     main_pool_pop_state('FREE');
 
     return arg0;
@@ -427,8 +427,8 @@ void func_8002A06C(void) {
 s16 func_8002A260(s16 arg0) {
     main_pool_push_state('STAD');
 
-    func_80005E40(0x18000, 0);
-    func_80007678(func_80007444(1, 1, 2, 0, 2, 1));
+    DLBuf_Init(0x18000, 0);
+    Stage_SetRenderContext(Stage_CreateRenderContext(1, 1, 2, 0, 2, 1));
 
     while ((arg0 > 0) && (arg0 < 3)) {
         switch (arg0) {
@@ -450,8 +450,8 @@ s16 func_8002A260(s16 arg0) {
         }
     }
 
-    func_800076C0();
-    func_80005EAC();
+    Stage_FreeRenderContext();
+    DLBuf_Free();
 
     main_pool_pop_state('STAD');
     return arg0;
@@ -527,10 +527,10 @@ void func_8002A728(void) {
     main_pool_push_state('EMU0');
 
     if ((FRAGMENT_LOAD_AND_CALL(fragment33, 0, 0) == 0) && (D_80075674 >= 0) && (D_80075674 < 4)) {
-        func_8000D278(4);
-        func_8000D2B4(1);
-        func_80001BD4(2);
-        func_8000D358();
+        Audio_StopTrack(4);
+        Audio_WaitDone(1);
+        Display_FlushFrames(2);
+        Audio_Disable();
 
         sp2C.unk_04 = main_pool_alloc(sizeof(*sp2C.unk_04), 0);
 
@@ -540,8 +540,8 @@ void func_8002A728(void) {
         sp34 = func_8000D8A8();
 
         func_8000D8DC(&sp2C);
-        func_80001BD4(2);
-        func_8000D380();
+        Display_FlushFrames(2);
+        Audio_Enable();
 
         if (sp34 != 0) {
             func_8002B274(D_80075674, sp34);
@@ -566,8 +566,8 @@ void func_8002A728(void) {
 s16 func_8002A8A0(s16 arg0, s16 arg1) {
     main_pool_push_state('STAD');
 
-    func_80005E40(0x18000, 0);
-    func_80007678(func_80007444(1, 1, 2, 0, 2, 1));
+    DLBuf_Init(0x18000, 0);
+    Stage_SetRenderContext(Stage_CreateRenderContext(1, 1, 2, 0, 2, 1));
 
     while ((arg0 > 0) && (arg0 < 4)) {
         switch (arg0) {
@@ -599,8 +599,8 @@ s16 func_8002A8A0(s16 arg0, s16 arg1) {
         arg1 = 0;
     }
 
-    func_800076C0();
-    func_80005EAC();
+    Stage_FreeRenderContext();
+    DLBuf_Free();
 
     main_pool_pop_state('STAD');
 
@@ -758,11 +758,11 @@ void func_8002B24C(void) {
 void func_8002B274(s32 arg0, s32 arg1) {
     osViBlack(1);
     func_8000A924();
-    func_8000D338();
+    Audio_StopAll();
     func_8002B310();
-    func_80001AD4(1);
-    func_80001C64();
-    func_80001BD4(0xA);
+    Display_SetBorderColor(1);
+    VI_RestoreMode();
+    Display_FlushFrames(0xA);
 
     main_pool_pop_state('GAME');
 

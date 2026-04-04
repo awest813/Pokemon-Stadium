@@ -163,14 +163,14 @@ void func_8210046C(u8* arg0) {
 }
 
 void func_821005EC(void) {
-    func_800079C4();
+    Stage_ActivateFramebuffer();
     func_8210046C(D_82100EB4);
     if ((Cont_GetControllerBits() & 1) && (D_82100EC8 != 0)) {
         func_821000C4(0x6E, 0xAF);
     }
     func_821002F8();
     func_82100028(0x64, 0x50);
-    func_80007778();
+    Stage_AdvanceFrame();
 }
 
 static u8 D_82100DCC[] = {
@@ -318,9 +318,9 @@ s32 func_821009B4(void) {
 }
 
 void func_82100AB8(void) {
-    if (func_80007604() == 1) {
-        func_80006C6C(0xA);
-        while (func_80007604() != 0) {
+    if (Stage_GetFadeMode() == 1) {
+        Stage_FadeOut(0xA);
+        while (Stage_GetFadeMode() != 0) {
             func_800290B4();
             func_821005EC();
         }
@@ -329,14 +329,14 @@ void func_82100AB8(void) {
 
 void func_82100B1C(s32 arg0) {
     if (arg0 == 3) {
-        func_80007990(1);
+        Stage_SetFillColor(1);
     } else {
-        func_80007990(0xFFFF);
+        Stage_SetFillColor(0xFFFF);
     }
 
-    func_80006CB4(8);
+    Stage_FadeIn(8);
 
-    while (func_80007604() != 1) {
+    while (Stage_GetFadeMode() != 1) {
         func_800290B4();
         func_821005EC();
     }
@@ -366,13 +366,13 @@ s32 func_82100C98(UNUSED s32 arg0, s16* arg1) {
 
     D_82100EC4 = arg1;
 
-    if (func_800075F8() == NULL) {
+    if (Stage_GetRenderContext() == NULL) {
         main_pool_push_state('TITL');
 
-        func_80005E40(0x10000, 0);
-        func_80007678(func_80007444(0, 1, 3, 1, 2, 1));
+        DLBuf_Init(0x10000, 0);
+        Stage_SetRenderContext(Stage_CreateRenderContext(0, 1, 3, 1, 2, 1));
     } else {
-        func_80007754();
+        Stage_SetSegments();
     }
 
     func_80028AFC(2);
@@ -385,10 +385,10 @@ s32 func_82100C98(UNUSED s32 arg0, s16* arg1) {
     func_82100AB8();
     sp24 = func_821009B4();
     func_82100B1C(sp24);
-    func_800076C0();
-    func_8000D2B4(0);
+    Stage_FreeRenderContext();
+    Audio_WaitDone(0);
     func_8004FF20();
-    func_80005EAC();
+    DLBuf_Free();
 
     main_pool_pop_state('TITL');
     return sp24;

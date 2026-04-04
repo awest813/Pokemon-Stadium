@@ -64,8 +64,8 @@ void func_86502A68(void) {
     Gfx* sp1C;
     Mtx* sp18;
 
-    sp1C = func_80005F5C(sizeof(Gfx) * 16);
-    sp18 = func_80005F5C(sizeof(Mtx) * 1);
+    sp1C = DLBuf_AllocTemp(sizeof(Gfx) * 16);
+    sp18 = DLBuf_AllocTemp(sizeof(Mtx) * 1);
 
     D_8650AD80->unk_18 = sp1C;
     guScale(sp18, 0.1f, 0.1f, 0.1f);

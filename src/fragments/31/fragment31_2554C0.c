@@ -25,7 +25,7 @@ void func_810002DC(s32 arg0, DisplayListState* state) {
 
     if (arg0 == 2) {
         addresses = state->addresses;
-        gfx = func_80005F5C(0x50);
+        gfx = DLBuf_AllocTemp(0x50);
         state->gfx = gfx;
         func_81000200(gfx, addresses, D_8006F084 & 7);
     }
@@ -51,7 +51,7 @@ void func_81000420(s32 arg0, DisplayListState* state) {
     temp_v1 = func_800325B4();
     if (arg0 == 2) {
         addresses = state->addresses;
-        gfx = func_80005F5C(0x140);
+        gfx = DLBuf_AllocTemp(0x140);
         state->gfx = gfx;
         func_81000330(gfx, addresses, ((D_800AF7B0[temp_v1 & 1] * 3) + D_81003FD0) % 8);
         D_81003FD0 += 1;

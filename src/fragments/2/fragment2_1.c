@@ -155,7 +155,7 @@ void func_878025D0(void) {
 
     if ((var_s2 != 0) && (D_8780FAC0 < 4)) {
         temp_s1 = D_878064E0[D_8780FAC0];
-        temp_v0 = func_80005F5C(sizeof(Gfx) * 48);
+        temp_v0 = DLBuf_AllocTemp(sizeof(Gfx) * 48);
         D_8780FC30->unk_18 = temp_v0;
 
         gSPSetGeometryMode(&temp_v0[0], G_CULL_BACK);

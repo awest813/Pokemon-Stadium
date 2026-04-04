@@ -186,7 +186,7 @@ void func_8001C07C(unk_D_800AE540_1194* arg0) {
             }
         }
         if (!(arg0->unk_10->unk_00 & 4)) {
-            while (func_80001C90() == 0) {}
+            while (Display_IsReady() == 0) {}
         }
         func_800198E4(arg0->unk_10, (u16) sp2A, sp2C);
         arg0->unk_00 |= 0x40;

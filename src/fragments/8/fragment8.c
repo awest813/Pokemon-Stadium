@@ -258,7 +258,7 @@ void func_862002F4(void) {
 
 void func_862004D8(void) {
     D_8620471A = 0;
-    if (func_80007604() == 0) {
+    if (Stage_GetFadeMode() == 0) {
         D_8620471A = 1;
         Cont_StartReadInputs();
         Cont_ReadInputs();
@@ -473,8 +473,8 @@ void func_86200EC4(s32 arg0) {
         D_862082A0[i] = D_86203E50[i].unk_190 * 36.0f;
     }
 
-    func_800079C4();
-    func_8000699C(&gDisplayListHead, 1);
+    Stage_ActivateFramebuffer();
+    GFX_ClearScreen(&gDisplayListHead, 1);
 
     if (D_8780FC94 == 0) {
         func_80015348();
@@ -495,7 +495,7 @@ void func_86200EC4(s32 arg0) {
         func_8780005C();
     }
 
-    func_80007778();
+    Stage_AdvanceFrame();
     D_86203E46++;
 }
 
@@ -503,8 +503,8 @@ s32 func_862011E8(void) {
     s32 i;
     s32 var_s1_3;
 
-    func_800077B4(0xA);
-    func_80006C6C(0x10);
+    Stage_AdvanceFrames(0xA);
+    Stage_FadeOut(0x10);
 
     for (i = 0; i < 4; i++) {
         D_86204590 = &D_86203E50[i];
@@ -556,7 +556,7 @@ s32 func_862011E8(void) {
 void func_862013C0(void) {
     s32 i;
 
-    func_80006C6C(0x10);
+    Stage_FadeOut(0x10);
 
     for (i = 0; i < 4; i++) {
         func_8001BD04(&D_86203E50[i].unk_008, 0);
@@ -580,10 +580,10 @@ void func_862013C0(void) {
 
         func_862004D8();
 
-        if ((D_86204718 == 1) && (func_80007604() == 0) &&
+        if ((D_86204718 == 1) && (Stage_GetFadeMode() == 0) &&
             ((gPlayer1Controller->buttonPressed | gPlayer2Controller->buttonPressed |
               gPlayer3Controller->buttonPressed | (gPlayer4Controller->buttonPressed != 0)) != 0)) {
-            func_80006CB4(0x1E);
+            Stage_FadeIn(0x1E);
             func_8004B094(0x1E);
             D_86204700 = 0;
 
@@ -1033,7 +1033,7 @@ void func_862023F8(void) {
                 }
 
                 if (D_86204704 == 0x1C2) {
-                    func_80006CB4(0x1E);
+                    Stage_FadeIn(0x1E);
                     func_8004B094(0x1E);
                 }
 
@@ -1241,7 +1241,7 @@ void func_86202F3C(void) {
     s32 i;
 
     func_8004B9C4(0x1E);
-    func_80006CB4(0x1E);
+    Stage_FadeIn(0x1E);
 
     for (i = 0; i < 30; i++) {
         func_862004D8();
@@ -1387,7 +1387,7 @@ void func_86203380(void) {
 }
 
 void func_8620369C(s32 arg0, UNUSED s32 arg1) {
-    unk_func_80007444* sp24;
+    RenderContext* sp24;
 
     if (arg0 == 1) {
         D_86204718 = 1;
@@ -1398,9 +1398,9 @@ void func_8620369C(s32 arg0, UNUSED s32 arg1) {
 
     main_pool_push_state('MINI');
 
-    func_80005E40(0x10000, 0);
+    DLBuf_Init(0x10000, 0);
 
-    sp24 = func_80007444(0, 0, 3, 1, 2, 1);
+    sp24 = Stage_CreateRenderContext(0, 0, 3, 1, 2, 1);
     D_86204714 = func_8001E94C(0x16, 0);
 
     ASSET_LOAD(D_1000000, common_menu1_ui, 0);
@@ -1411,7 +1411,7 @@ void func_8620369C(s32 arg0, UNUSED s32 arg1) {
 
     func_862030D0();
     func_878029C0();
-    func_80007678(sp24);
+    Stage_SetRenderContext(sp24);
     func_86203380();
 
     if (func_862011E8() != -1) {
@@ -1431,9 +1431,9 @@ void func_8620369C(s32 arg0, UNUSED s32 arg1) {
         func_86202EE4();
     }
 
-    func_800076C0();
+    Stage_FreeRenderContext();
     func_8001E9CC();
-    func_80005EAC();
+    DLBuf_Free();
 
     main_pool_pop_state('MINI');
 

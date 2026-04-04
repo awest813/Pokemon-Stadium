@@ -67,7 +67,7 @@ typedef struct unk_D_84B259E8 {
     /* 0x0C */ GraphNode* unk_0C;
     /* 0x10 */ u8* unk_10[4];
     /* 0x20 */ char unk20[0x10];
-    /* 0x30 */ unk_D_80068BB0* unk_30[4];
+    /* 0x30 */ ColorBuffer* unk_30[4];
 } unk_D_84B259E8; // size >= 0x40
 
 typedef struct unk_D_84B25A58 {
@@ -82,8 +82,8 @@ typedef struct unk_D_84B25A58 {
     /* 0x18 */ unk_D_86002F34* unk_18;
     /* 0x1C */ unk_func_8001A024* unk_1C;
     /* 0x20 */ u16 (*unk_20)[0x640];
-    /* 0x24 */ unk_D_80068BB0* unk_24;
-    /* 0x28 */ unk_D_80068BB0* unk_28;
+    /* 0x24 */ ColorBuffer* unk_24;
+    /* 0x28 */ ColorBuffer* unk_28;
     /* 0x2C */ u8 unk_2C[12];
 } unk_D_84B25A58; // size = 0x38
 
@@ -184,7 +184,7 @@ s32 func_84B003D4(s32 arg0, unk_D_86002F34_alt8* arg1);
 void func_84B00404(unk_D_86002F58_004_000* arg0);
 void func_84B00478(void);
 void func_84B0053C(s16, s16, s16, s16, u8, u8, u8, u8);
-void func_84B00D3C(unk_D_80068BB0*, s16, u8*, u8*);
+void func_84B00D3C(ColorBuffer*, s16, u8*, u8*);
 void func_84B0117C(s16 arg0);
 void func_84B01474(s16 arg0);
 void func_84B014DC(void);

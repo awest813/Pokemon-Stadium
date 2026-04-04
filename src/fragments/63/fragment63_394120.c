@@ -227,10 +227,10 @@ void func_84B0053C(s16 arg0, s16 arg1, s16 arg2, s16 arg3, u8 arg4, u8 arg5, u8 
     gSPDisplayList(gDisplayListHead++, D_8006F630);
 }
 
-void func_84B00D3C(unk_D_80068BB0* arg0, s16 arg1, u8* arg2, u8* arg3) {
+void func_84B00D3C(ColorBuffer* arg0, s16 arg1, u8* arg2, u8* arg3) {
     unk_D_800AE540_1194* temp_v1 = &D_800AE540.unk_1194[arg1];
 
-    func_80006498(&gDisplayListHead, arg0);
+    ColorBuffer_Activate(&gDisplayListHead, arg0);
 
     gSPDisplayList(gDisplayListHead++, D_8006F4E0);
 
@@ -317,12 +317,12 @@ void func_84B01474(s16 arg0) {
 }
 
 void func_84B014DC(void) {
-    func_800079C4();
-    func_8000699C(&gDisplayListHead, 1);
+    Stage_ActivateFramebuffer();
+    GFX_ClearScreen(&gDisplayListHead, 1);
     func_80015094(D_84B1A598.unk_0004);
     func_84B0F464(&D_84B26640.unk_1C);
     func_84B0F464(&D_84B26640.unk_28);
-    func_80007778();
+    Stage_AdvanceFrame();
 }
 
 void func_84B01538(void) {
@@ -339,13 +339,13 @@ s32 func_84B01578(void) {
     func_8002C128();
     func_84B07CF8(&D_84B25A28, D_84B1A598.unk_0004->unk_0C);
     func_84B07758(&D_84B25A28, D_84B1A598.unk_B40C);
-    func_8000D1F0(0x31);
+    Audio_PlayTrack(0x31);
 
     for (i = 0; i < 16; i++) {
         func_84B01538();
     }
 
-    func_80006C6C(8);
+    Stage_FadeOut(8);
 
     while (func_84B07AB8(&D_84B25A28, D_84B1A598.unk_0008) == 0) {
         func_84B01538();
@@ -361,9 +361,9 @@ s32 func_84B01578(void) {
         func_84B01538();
     }
 
-    func_8000D278(0x20);
-    func_80007990(1);
-    func_80006CB4(0x10);
+    Audio_StopTrack(0x20);
+    Stage_SetFillColor(1);
+    Stage_FadeIn(0x10);
 
     for (i = 0; i < 18; i++) {
         func_84B01538();
@@ -411,7 +411,7 @@ s32 func_84B017AC(void) {
         func_84B016F4();
     }
 
-    func_80006C6C(8);
+    Stage_FadeOut(8);
 
     for (i = 0; i < 20; i++) {
         func_84B016F4();
@@ -419,7 +419,7 @@ s32 func_84B017AC(void) {
 
     func_84B04F78(&D_84B259A8, &D_84B1A598.unk_0008[0x10]);
     func_84B06364(&D_84B259E8, D_84B1A598.unk_0008, 0);
-    func_8000D1F0(0x33);
+    Audio_PlayTrack(0x33);
 
     for (i = 0; i < var_s1; i++) {
         func_84B016F4();
@@ -440,9 +440,9 @@ s32 func_84B017AC(void) {
         func_84B016F4();
     }
 
-    func_8000D278(0x20);
-    func_80007990(1);
-    func_80006CB4(0x10);
+    Audio_StopTrack(0x20);
+    Stage_SetFillColor(1);
+    Stage_FadeIn(0x10);
 
     for (i = 0; i < 18; i++) {
         func_84B016F4();
@@ -541,15 +541,15 @@ void func_84B01C2C(void) {
 
     if (D_800AE540.unk_1194[1].unk_08[0]->unk_000 & 2) {
         if (D_800AE540.unk_1194[0].unk_1C == 1) {
-            func_8000D1F0(0x32);
+            Audio_PlayTrack(0x32);
         } else {
-            func_8000D1F0(0x45);
+            Audio_PlayTrack(0x45);
         }
     } else {
-        func_8000D1F0(0x32);
+        Audio_PlayTrack(0x32);
     }
 
-    func_80006C6C(8);
+    Stage_FadeOut(8);
 
     while (func_84B0A634(&D_84B25A58, D_84B1A598.unk_0008) == 0) {
         func_84B01AA0();
@@ -576,8 +576,8 @@ void func_84B01DBC(void) {
         func_84B01AA0();
     }
 
-    func_8000D1F0(0x32);
-    func_80006C6C(8);
+    Audio_PlayTrack(0x32);
+    Stage_FadeOut(8);
 
     while (func_84B0A634(&D_84B25A58, D_84B1A598.unk_0008) == 0) {
         func_84B01AA0();
@@ -663,7 +663,7 @@ void func_84B0204C(void) {
 void func_84B02188(void) {
     s32 i;
 
-    func_8000D278(0x3C);
+    Audio_StopTrack(0x3C);
 
     for (i = 0; i < 16; i++) {
         func_800290B4();
@@ -676,9 +676,9 @@ void func_84B02188(void) {
 void func_84B021FC(void) {
     s32 i;
 
-    func_8000D278(0x3C);
-    func_80007990(1);
-    func_80006CB4(0x10);
+    Audio_StopTrack(0x3C);
+    Stage_SetFillColor(1);
+    Stage_FadeIn(0x10);
 
     for (i = 0; i < 18; i++) {
         func_800290B4();
@@ -871,7 +871,7 @@ s32 func_84B02654(void) {
             D_800AE540.unk_11F6 |= 0x41;
         } else {
             func_84B0204C();
-            func_8000D278(0x50);
+            Audio_StopTrack(0x50);
             D_800AE540.unk_0003++;
             sp2C = 1;
         }
@@ -958,7 +958,7 @@ s32 func_84B02984(void) {
             func_84B0D718(&D_84B25AC0);
             func_8004DF94(0x0110000D, 0, 0);
             func_84B0204C();
-            func_8000D278(0x10);
+            Audio_StopTrack(0x10);
 
             D_800AE540.unk_11F6 |= 1;
             if (D_800AE540.unk_0002 == 8) {
@@ -981,7 +981,7 @@ s32 func_84B02984(void) {
             func_84B0D718(&D_84B25AC0);
             func_8004DF94(0x0110000D, 0, 0);
             func_84B0204C();
-            func_8000D278(0x50);
+            Audio_StopTrack(0x50);
             D_800AE540.unk_0003++;
             sp24 = 1;
         }
@@ -1155,7 +1155,7 @@ s32 func_84B02F60(void) {
 
     func_84B05728(&D_84B259A8);
     func_84B050AC(&D_84B259A8, &D_84B1A598.unk_0008[0x10]);
-    func_8000D1F0(0x3F);
+    Audio_PlayTrack(0x3F);
 
     for (i = 0; i < var_s1; i++) {
         func_800290B4();
@@ -1164,8 +1164,8 @@ s32 func_84B02F60(void) {
         func_84B014DC();
     }
 
-    func_80007990(1);
-    func_80006CB4(0x10);
+    Stage_SetFillColor(1);
+    Stage_FadeIn(0x10);
 
     for (i = 0; i < 18; i++) {
         func_800290B4();
@@ -1212,13 +1212,13 @@ void func_84B03064(void) {
 }
 
 s32 func_84B03194(s32 arg0, UNUSED s32 arg1) {
-    unk_func_80007444* sp2C;
+    RenderContext* sp2C;
 
     main_pool_push_state('EYEC');
     func_80028AFC(2);
     func_80027FA0(&D_84B26670, D_800AE540.unk_11F2);
-    func_80005E40(0x18000, 0);
-    sp2C = func_80007444(0, 1, 3, 1, 2, 1);
+    DLBuf_Init(0x18000, 0);
+    sp2C = Stage_CreateRenderContext(0, 1, 3, 1, 2, 1);
     func_8001E94C(0x17, 0);
 
     ASSET_LOAD(D_1000000, common_menu1_ui, 0);
@@ -1232,7 +1232,7 @@ s32 func_84B03194(s32 arg0, UNUSED s32 arg1) {
     D_84B1A598.unk_B408 = func_800044F4(0x898000, NULL, 1, 1);
     D_84B1A598.unk_B40C = ASSET_LOAD2(battle_portraits, 1, 1);
 
-    func_80007678(sp2C);
+    Stage_SetRenderContext(sp2C);
     func_84B03064();
 
     while (arg0 < 4) {
@@ -1259,9 +1259,9 @@ s32 func_84B03194(s32 arg0, UNUSED s32 arg1) {
         main_pool_pop_state('eye0');
     }
 
-    func_800076C0();
+    Stage_FreeRenderContext();
     func_8001E9CC();
-    func_80005EAC();
+    DLBuf_Free();
 
     main_pool_pop_state('EYEC');
 

@@ -482,8 +482,8 @@ s32 func_8420C60C(unk_D_8423D3A8* arg0, s16 arg1, s16 arg2, s16 arg3, s16 arg4, 
     arg0->unk_20 = 0;
     arg0->unk_2C = arg6;
 
-    func_80005FC0(&arg0->unk_0E, arg2, arg3, arg2 + 0x227, arg3 + 0xCB);
-    func_80005FC0(&arg0->unk_16, arg4, arg5, arg4 + 0x8B, arg5 + 0x33);
+    ScissorRect_Set(&arg0->unk_0E, arg2, arg3, arg2 + 0x227, arg3 + 0xCB);
+    ScissorRect_Set(&arg0->unk_16, arg4, arg5, arg4 + 0x8B, arg5 + 0x33);
     return 1;
 }
 
@@ -492,11 +492,11 @@ s32 func_8420C6D8(unk_D_8423D3A8* arg0, s16 arg1, s16 arg2, unk_D_838067F0_0168_
         return 0;
     }
 
-    while (func_80001C90() == 0) {}
+    while (Display_IsReady() == 0) {}
 
     func_8001B2D8(arg0->unk_28, &arg3->unk_004, 0x108D);
     arg0->unk_2C = arg3;
-    func_80005FC0(&arg0->unk_16, arg1, arg2, arg1 + 0x8B, arg2 + 0x33);
+    ScissorRect_Set(&arg0->unk_16, arg1, arg2, arg1 + 0x8B, arg2 + 0x33);
     return 1;
 }
 

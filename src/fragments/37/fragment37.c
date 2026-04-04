@@ -153,7 +153,7 @@ Vtx* func_82200424(void) {
     temp_s4 = D_82203150.unk_08.b;
     temp_s5 = D_82203150.unk_08.a;
 
-    temp_v0 = func_80005F5C(sizeof(Vtx) * 8);
+    temp_v0 = DLBuf_AllocTemp(sizeof(Vtx) * 8);
 
     if (temp_v0 != NULL) {
         func_8001E680(&temp_v0[0], temp_s6 - temp_s0, temp_s7 - temp_s0, -1, 0, 0, temp_s2, temp_s3, temp_s4, temp_s5);
@@ -258,7 +258,7 @@ Vtx* func_82200C8C(s16 arg0, s16 arg1, s16 arg2, Color_RGBA8 arg3) {
     s16 sp44;
     Vtx* temp_v0;
 
-    temp_v0 = func_80005F5C(sizeof(Vtx) * 8);
+    temp_v0 = DLBuf_AllocTemp(sizeof(Vtx) * 8);
     if (temp_v0 != NULL) {
         sp44 = arg2 / 2;
 
@@ -530,7 +530,7 @@ s32 func_822023A4(void) {
         func_80048B90(0x16);
         var_t1 = 3;
     } else if (gPlayer1Controller->buttonPressed & 0x4000) {
-        func_8000D23C(0x28);
+        Audio_SwitchTrack(0x28);
         func_80048B90(3);
         var_t1 = 4;
     } else if (gPlayer1Controller->buttonPressed & 0x800) {
@@ -595,11 +595,11 @@ s32 func_8220263C(void) {
     } else {
         D_82203160->unk_06 = 0;
         if (D_822031D8 == 3) {
-            func_8000D278(0x20);
+            Audio_StopTrack(0x20);
             var_v1 = 6;
         } else {
             if (D_822031D8 != 7) {
-                func_8000D278(0x28);
+                Audio_StopTrack(0x28);
             }
             var_v1 = 5;
         }
@@ -617,8 +617,8 @@ s32 func_822026BC(void) {
         D_82203150.unk_06 += 0x19;
         if (D_82203150.unk_06 >= 0xFF) {
             D_82203150.unk_06 = 0xFF;
-            func_80007990(1);
-            func_80006CB4(1);
+            Stage_SetFillColor(1);
+            Stage_FadeIn(1);
             var_a1 = 5;
         }
     } else {
@@ -634,8 +634,8 @@ s32 func_82202758(void) {
         D_82202FA4 += 0x40;
     } else if (D_82202FA4 == 0x200) {
         D_82202FA4 += 0x40;
-        func_80007990(0xFFFF);
-        func_80006CB4(2);
+        Stage_SetFillColor(0xFFFF);
+        Stage_FadeIn(2);
         var_a1 = 6;
     } else if (D_82202FA4 < 0x280) {
         D_82202FA4 += 0x40;
@@ -647,13 +647,13 @@ s32 func_82202758(void) {
 }
 
 s32 func_822027E8(void) {
-    s32 temp_v0 = func_80007604();
+    s32 temp_v0 = Stage_GetFadeMode();
     s16 var_v1 = 4;
 
     switch (temp_v0) {
         case 0:
-            func_80007990(0xFFFF);
-            func_80006CB4(0x10);
+            Stage_SetFillColor(0xFFFF);
+            Stage_FadeIn(0x10);
             var_v1 = 4;
             break;
 
@@ -678,7 +678,7 @@ void func_82202850(void) {
 }
 
 void func_82202980(s16 arg0) {
-    func_800079C4();
+    Stage_ActivateFramebuffer();
     func_82202850();
 
     if (D_82202FA0 == 0) {
@@ -699,14 +699,14 @@ void func_82202980(s16 arg0) {
         func_822022C8(arg0 == 1);
     }
 
-    func_80007778();
+    Stage_AdvanceFrame();
 }
 
 s32 func_82202A6C(void) {
     s16 var_v1 = 8;
 
     D_822031D8 = 8;
-    if (func_80007604() == 0) {
+    if (Stage_GetFadeMode() == 0) {
         D_82202FA0 += 4;
         if (D_82202FA0 == 0x100) {
             D_800AE540.unk_11F5 &= 0xFFFB;
@@ -721,10 +721,10 @@ s32 func_82202A6C(void) {
 
 void func_82202AFC(void) {
     func_82200BF4(D_822031D8);
-    func_8000D1F0(0x50);
-    func_80006C6C(0xA);
+    Audio_PlayTrack(0x50);
+    Stage_FadeOut(0xA);
 
-    while (func_80007604() != 0) {
+    while (Stage_GetFadeMode() != 0) {
         func_82202374();
         func_82202980(0);
     }
@@ -802,12 +802,12 @@ void func_82202CB8(void) {
 }
 
 s32 func_82202DC4(UNUSED s32 arg0, UNUSED s32 arg1) {
-    unk_func_80007444* sp24;
+    RenderContext* sp24;
 
     main_pool_push_state('LAND');
 
-    func_80005E40(0x10000, 0);
-    sp24 = func_80007444(1, 0, 2, 0, 2, 1);
+    DLBuf_Init(0x10000, 0);
+    sp24 = Stage_CreateRenderContext(1, 0, 2, 0, 2, 1);
     func_8001E94C(0x1C, 0);
 
     ASSET_LOAD(D_1000000, common_menu1_ui, 0);
@@ -826,11 +826,11 @@ s32 func_82202DC4(UNUSED s32 arg0, UNUSED s32 arg1) {
         D_82202FA0 = 0xFF;
     }
 
-    func_80007678(sp24);
+    Stage_SetRenderContext(sp24);
     func_82202AFC();
     func_82202B60();
-    func_800076C0();
-    func_80005EAC();
+    Stage_FreeRenderContext();
+    DLBuf_Free();
 
     main_pool_pop_state('LAND');
 

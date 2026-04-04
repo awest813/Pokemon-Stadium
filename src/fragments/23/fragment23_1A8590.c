@@ -16,20 +16,20 @@ unk_D_800AC870* func_88200020(void) {
     FRAGMENT_LOAD(fragment26);
     FRAGMENT_LOAD(fragment29);
 
-    func_80007754();
+    Stage_SetSegments();
     return sp1C;
 }
 
 void func_882000E4(void) {
-    func_8000771C();
+    Stage_WaitFrame();
 
     main_pool_pop_state('TERM');
 }
 
 s32 func_88200110(UNUSED s32 arg0, UNUSED s32 arg1) {
     func_8820C700(func_88200020(), 1);
-    func_80007990(1);
-    func_80006CB4(0xA);
+    Stage_SetFillColor(1);
+    Stage_FadeIn(0xA);
     func_882000E4();
 
     FRAGMENT_LOAD_AND_CALL2(fragment22, 1, 0);

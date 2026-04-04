@@ -203,14 +203,14 @@ void func_86300238(s32 arg0) {
 }
 
 void func_863006D8(s32 arg0) {
-    func_800079C4();
-    func_8000699C(&gDisplayListHead, 0x53D);
-    func_800067E4(&gDisplayListHead, 0, 0, 0x140, 0xF0);
+    Stage_ActivateFramebuffer();
+    GFX_ClearScreen(&gDisplayListHead, 0x53D);
+    GFX_ClearDepth(&gDisplayListHead, 0, 0, 0x140, 0xF0);
     func_80015348();
     func_80015094(D_86301714);
     func_86300238(arg0);
     func_87804FD4();
-    func_80007778();
+    Stage_AdvanceFrame();
     D_86301722++;
 }
 
@@ -218,7 +218,7 @@ s32 func_86300764(void) {
     s32 i;
     s32 var_s5;
 
-    func_80006C6C(0x10);
+    Stage_FadeOut(0x10);
 
     for (i = 0; i < 4; i++) {
         D_86301D44 = &D_86301730[i];
@@ -263,7 +263,7 @@ s32 func_86300764(void) {
 void func_863008C0(void) {
     s32 i;
 
-    func_80006C6C(0x10);
+    Stage_FadeOut(0x10);
 
     for (i = 0; i < 4; i++) {
         D_86301D44 = &D_86301730[i];
@@ -502,7 +502,7 @@ void func_86301094(void) {
 void func_86301168(void) {
     s32 i;
 
-    func_80006CB4(30);
+    Stage_FadeIn(30);
 
     for (i = 0; i < 30; i++) {
         func_8630011C();
@@ -577,12 +577,12 @@ void func_86301234(void) {
 }
 
 void func_86301474(UNUSED s32 arg0, UNUSED s32 arg1) {
-    unk_func_80007444* sp24;
+    RenderContext* sp24;
 
     main_pool_push_state('MINI');
 
-    func_80005E40(0x10000, 0);
-    sp24 = func_80007444(0, 1, 3, 1, 2, 1);
+    DLBuf_Init(0x10000, 0);
+    sp24 = Stage_CreateRenderContext(0, 1, 3, 1, 2, 1);
     D_86301728 = func_8001E94C(0x26, 0);
 
     ASSET_LOAD(D_1000000, common_menu1_ui, 0);
@@ -592,7 +592,7 @@ void func_86301474(UNUSED s32 arg0, UNUSED s32 arg1) {
 
     func_86301234();
     func_878029C0();
-    func_80007678(sp24);
+    Stage_SetRenderContext(sp24);
 
     if (func_86300764() != -1) {
         func_863008C0();
@@ -602,9 +602,9 @@ void func_86301474(UNUSED s32 arg0, UNUSED s32 arg1) {
     }
 
     func_86301168();
-    func_800076C0();
+    Stage_FreeRenderContext();
     func_8001E9CC();
-    func_80005EAC();
+    DLBuf_Free();
 
     main_pool_pop_state('MINI');
 

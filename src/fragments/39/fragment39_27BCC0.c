@@ -1208,8 +1208,8 @@ void func_825010A8(unk_D_82508B30* arg0) {
 
     D_825089A4 += 0x2000;
 
-    func_80006498(&gDisplayListHead, arg0->unk_038);
-    func_8000699C(&gDisplayListHead, 0);
+    ColorBuffer_Activate(&gDisplayListHead, arg0->unk_038);
+    GFX_ClearScreen(&gDisplayListHead, 0);
 
     gSPDisplayList(gDisplayListHead++, D_8006F518);
     gDPSetBlendColor(gDisplayListHead++, 255, 255, 255, 128);
@@ -1251,8 +1251,8 @@ void func_825014B0(unk_D_82508B30* arg0) {
     s16 sp90[3];
     s32 i;
 
-    func_80006498(&gDisplayListHead, arg0->unk_038);
-    func_8000699C(&gDisplayListHead, 0);
+    ColorBuffer_Activate(&gDisplayListHead, arg0->unk_038);
+    GFX_ClearScreen(&gDisplayListHead, 0);
 
     gSPDisplayList(gDisplayListHead++, D_8006F518);
     gDPSetBlendColor(gDisplayListHead++, 255, 255, 255, 128);
@@ -1286,7 +1286,7 @@ void func_825014B0(unk_D_82508B30* arg0) {
         sp90[1] = D_8250A288.unk_04;
     }
 
-    func_800060E0(&gDisplayListHead, 0x6E, 0xE, 0x1C, 0x1A);
+    GFX_SetScissor(&gDisplayListHead, 0x6E, 0xE, 0x1C, 0x1A);
     func_8001F3F4();
     func_8001EBE0(0x10, 0);
     func_8001F324(0xFF, 0xFF, 0xFF, 0xFF);
@@ -1344,7 +1344,7 @@ unk_D_8250A228* func_8250182C(s16 arg0, s16 arg1, GraphNode* arg2) {
 
         case 2:
             if (arg1 == 0) {
-                temp_v0->unk_38 = func_80006314(0, 2, 0x12C, 0x50, 1);
+                temp_v0->unk_38 = ColorBuffer_Alloc(0, 2, 0x12C, 0x50, 1);
                 temp_v0->unk_06 |= 1;
             } else {
                 temp_v0->unk_38 = NULL;
@@ -1354,7 +1354,7 @@ unk_D_8250A228* func_8250182C(s16 arg0, s16 arg1, GraphNode* arg2) {
             break;
 
         case 3:
-            temp_v0->unk_38 = func_80006314(0, 2, 0x12C, 0x50, 1);
+            temp_v0->unk_38 = ColorBuffer_Alloc(0, 2, 0x12C, 0x50, 1);
             temp_v0->unk_06 |= 1;
             func_8000E88C(&temp_s1->unk_24, -150.0f, 0.0f, -579.0f);
             break;
@@ -1986,14 +1986,14 @@ void func_82502C78(void) {
 
 void func_82502F44(void) {
     func_82502BB0();
-    func_800079C4();
+    Stage_ActivateFramebuffer();
     func_8001D924(D_8250A268);
     func_80015094(D_8250A270);
     func_825054F4();
     func_82505C10();
     func_82502C78();
     func_8250281C();
-    func_80007778();
+    Stage_AdvanceFrame();
 }
 
 void func_82502FAC(void) {
@@ -2069,8 +2069,8 @@ void func_82503020(void) {
     } else if (D_82508AF8->unk_04 & 0x4000) {
         D_8250A26C = 7;
         D_8250A288.unk_06 = -1;
-        func_80007990(1);
-        func_80006CB4(0xF);
+        Stage_SetFillColor(1);
+        Stage_FadeIn(0xF);
         func_8004B9C4(0xF);
         func_80048B90(3);
     }
@@ -2548,8 +2548,8 @@ void func_825042A4(void) {
 
     if (func_82501D70(D_8250A240[4], 0) >= 3) {
         D_8250A26C = 7;
-        func_80007990(1);
-        func_80006CB4(0xA);
+        Stage_SetFillColor(1);
+        Stage_FadeIn(0xA);
     }
 }
 
@@ -2559,7 +2559,7 @@ void func_82504370(s16 arg0, s16 arg1) {
 
     func_825024C4(arg0, arg1);
     func_8004B1CC(0x16);
-    func_80006C6C(0xF);
+    Stage_FadeOut(0xF);
     D_82508AF4 = 0;
 
     while (var_s6 != 0) {
@@ -2571,7 +2571,7 @@ void func_82504370(s16 arg0, s16 arg1) {
 
         switch (D_8250A26C) {
             case 0:
-                if (func_80007604() == 0) {
+                if (Stage_GetFadeMode() == 0) {
                     switch (D_8250A26E) {
                         case 0:
                             func_82502FAC();
@@ -2622,7 +2622,7 @@ void func_82504370(s16 arg0, s16 arg1) {
                 break;
 
             case 7:
-                if (func_80007604() == 1) {
+                if (Stage_GetFadeMode() == 1) {
                     var_s6 = 0;
                 }
                 break;
@@ -2648,13 +2648,13 @@ void func_825045C0(void) {
 }
 
 s32 func_825046AC(s32 arg0, s32 arg1) {
-    unk_func_80007444* sp24;
+    RenderContext* sp24;
     BinArchive* temp_v0;
 
     main_pool_push_state('KIDC');
 
-    func_80005E40(0x10000, 0);
-    sp24 = func_80007444(1, 0, 2, 0, 2, 1);
+    DLBuf_Init(0x10000, 0);
+    sp24 = Stage_CreateRenderContext(1, 0, 2, 0, 2, 1);
     D_8250A304 = func_8001E94C(0x10, 0);
 
     ASSET_LOAD(D_1000000, common_menu1_ui, 0);
@@ -2665,12 +2665,12 @@ s32 func_825046AC(s32 arg0, s32 arg1) {
     D_8250A47C = D_87806330;
     func_80028AFC(2);
     func_825045C0();
-    func_80007678(sp24);
+    Stage_SetRenderContext(sp24);
     func_82504370(arg0, arg1);
-    func_800077B4(2);
-    func_800076C0();
+    Stage_AdvanceFrames(2);
+    Stage_FreeRenderContext();
     func_8001E9CC();
-    func_80005EAC();
+    DLBuf_Free();
 
     main_pool_pop_state('KIDC');
 

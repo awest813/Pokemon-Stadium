@@ -654,7 +654,7 @@ void func_84002388(void) {
 }
 
 void func_840023B8(void) {
-    func_800079C4();
+    Stage_ActivateFramebuffer();
     if (D_84002BE0 > 0) {
         func_84000698(0x4C, 0x54, 0x1E8, 0x150);
         D_84002BE0 -= 1;
@@ -662,37 +662,37 @@ void func_840023B8(void) {
     func_840012B4();
     func_84001AE0();
     func_84001FC0();
-    func_80007778();
+    Stage_AdvanceFrame();
 }
 
 void func_84002430(void) {
     s32 i;
 
-    if (func_80007604() == 1) {
-        func_80006C6C(8);
+    if (Stage_GetFadeMode() == 1) {
+        Stage_FadeOut(8);
 
         for (i = 0; i < 10; i++) {
             func_800290B4();
-            func_800079C4();
+            Stage_ActivateFramebuffer();
             func_8001D924(D_84002D0C);
-            func_80007778();
+            Stage_AdvanceFrame();
         }
     }
 }
 
 void func_840024B0(void) {
-    func_8000D278(0x10);
-    func_80007990(0xFFFF);
-    func_80006CB4(8);
+    Audio_StopTrack(0x10);
+    Stage_SetFillColor(0xFFFF);
+    Stage_FadeIn(8);
 
-    while (func_80007604() != 1) {
+    while (Stage_GetFadeMode() != 1) {
         func_800290B4();
-        func_800079C4();
+        Stage_ActivateFramebuffer();
         func_8001D924(D_84002D0C);
-        func_80007778();
+        Stage_AdvanceFrame();
     }
 
-    func_800077B4(2);
+    Stage_AdvanceFrames(2);
 }
 
 void func_8400253C(void) {
@@ -703,13 +703,13 @@ void func_8400253C(void) {
 
     for (i = 0x10; i < 0x170; i += 0x20) {
         func_84002388();
-        func_800079C4();
+        Stage_ActivateFramebuffer();
         func_8001D924(D_84002D0C);
         func_840003A8();
         tmp = i;
         tmp = (0x150 - tmp) / 2;
         func_84000698(0x4C, tmp + 0x54, 0x1E8, i);
-        func_80007778();
+        Stage_AdvanceFrame();
     }
 }
 
@@ -718,17 +718,17 @@ void func_840025FC(void) {
 
     for (i = 9; i >= 0; i--) {
         func_84002388();
-        func_800079C4();
+        Stage_ActivateFramebuffer();
         func_8001D924(D_84002D0C);
         func_840003A8();
         func_84000698(0x4C, (s16)((0x16C - (s16)(0xE + i * 0x23)) / 2) + 0x54, 0x1E8, 0xE + i * 0x23);
-        func_80007778();
+        Stage_AdvanceFrame();
     }
 
     for (i = 0; i < 2; i++) {
-        func_800079C4();
+        Stage_ActivateFramebuffer();
         func_8001D924(D_84002D0C);
-        func_80007778();
+        Stage_AdvanceFrame();
     }
 }
 
@@ -777,7 +777,7 @@ void func_840026D8(void) {
 
 s32 func_84002914(void) {
     D_84002D16 = 0;
-    func_8000D1F0(0x2D);
+    Audio_PlayTrack(0x2D);
     func_840019A4();
     func_84001F1C();
     func_840021CC();
@@ -837,9 +837,9 @@ s32 func_84002A84(s32 arg0, s32 arg1) {
     D_84002D08 = ASSET_LOAD2(backgrounds, 1, 1);
     D_84002D0C = func_8000484C(D_84002D08, 6);
     D_84002D14 = Cont_GetControllerBits();
-    func_80007754();
+    Stage_SetSegments();
     sp1C = func_84002914();
-    func_8000771C();
+    Stage_WaitFrame();
 
     main_pool_pop_state('RULE');
     return sp1C;

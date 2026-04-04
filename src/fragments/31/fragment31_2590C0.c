@@ -74,7 +74,7 @@ void func_81003F20(s32 arg0, DisplayListState* state) {
     Gfx* gfx;
 
     if (arg0 == 2) {
-        gfx = func_80005F5C(0xA0);
+        gfx = DLBuf_AllocTemp(0xA0);
         state->gfx = gfx;
         gDPSetAlphaDither(gfx++, G_AD_NOISE);
         gDPSetPrimColor(gfx++, 0, 0, 10, 10, 10, D_8006F09C->unk_0A6 & 0xFF);

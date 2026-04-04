@@ -748,10 +748,10 @@ void func_833017BC(s32 arg0, s32 arg1) {
 }
 
 void func_83301998(s32 arg0, s32 arg1, s32 arg2, s32 arg3, Color_RGBA8* arg4, Color_RGBA8* arg5) {
-    unk_D_80068BB0* temp_s1 = func_8000648C();
-    Vtx* temp_s2 = func_80005F5C(sizeof(Vtx) * 4);
-    Mtx* sp84 = func_80005F5C(sizeof(Mtx) * 1);
-    Vp* sp80 = func_80005F5C(sizeof(Vp) * 1);
+    ColorBuffer* temp_s1 = ColorBuffer_GetActive();
+    Vtx* temp_s2 = DLBuf_AllocTemp(sizeof(Vtx) * 4);
+    Mtx* sp84 = DLBuf_AllocTemp(sizeof(Mtx) * 1);
+    Vp* sp80 = DLBuf_AllocTemp(sizeof(Vp) * 1);
 
     func_8001E6E8(sp80, temp_s1->width, temp_s1->height);
 
@@ -965,7 +965,7 @@ void func_8330277C(void) {
     UNUSED s32 pad;
     unk_D_83407B38* sp18 = func_83300300();
 
-    func_800079C4();
+    Stage_ActivateFramebuffer();
     func_83301D74();
     func_833013C4(0xD5, 0x24, D_833032E0);
     func_83302068(sp18);
@@ -977,7 +977,7 @@ void func_8330277C(void) {
 
     func_833015C8(sp18, 0xD5, 0x172);
     func_834028D0(1);
-    func_80007778();
+    Stage_AdvanceFrame();
 }
 
 void func_83302820(unk_D_83407B38* arg0) {
@@ -1062,8 +1062,8 @@ void func_833029F0(void) {
 
         if (var_a2 != 0) {
             D_833032E4 = 8;
-            func_80007990(0xFFFF);
-            func_80006CB4(0xF);
+            Stage_SetFillColor(0xFFFF);
+            Stage_FadeIn(0xF);
             if (D_8330326C[D_83402E28] == 8) {
                 func_8004B9C4(0xF);
             }
@@ -1077,8 +1077,8 @@ void func_83302ACC(void) {
         func_83402D74(4);
         func_83400410(0, D_8330343C);
         D_833032E4 = 8;
-        func_80007990(0xFFFF);
-        func_80006CB4(0xF);
+        Stage_SetFillColor(0xFFFF);
+        Stage_FadeIn(0xF);
         if (D_8330326C[D_83402E28] == 8) {
             func_8004B9C4(0xF);
         }
@@ -1102,7 +1102,7 @@ s32 func_83302B5C(void) {
 
     switch (D_833032E4) {
         case 0:
-            if (func_80007604() == 0) {
+            if (Stage_GetFadeMode() == 0) {
                 D_833032AC--;
                 if (D_833032AC <= 0) {
                     switch (D_833032E0) {
@@ -1138,14 +1138,14 @@ s32 func_83302B5C(void) {
             if (temp_v0_2 != 0) {
                 D_833032E4 = 8;
                 if (temp_v0_2 == 2) {
-                    func_80007990(1);
+                    Stage_SetFillColor(1);
                     sp18 = 8;
                 } else {
                     sp18 = 0xF;
                     if (sp18) {}
-                    func_80007990(0xFFFF);
+                    Stage_SetFillColor(0xFFFF);
                 }
-                func_80006CB4(sp18);
+                Stage_FadeIn(sp18);
                 if (D_8330326C[D_83402E28] == 8) {
                     func_8004B9C4(sp18);
                 }
@@ -1160,8 +1160,8 @@ s32 func_83302B5C(void) {
         case 3:
             if (func_83300970(func_83300300()) != 0) {
                 D_833032E4 = 8;
-                func_80007990(1);
-                func_80006CB4(1);
+                Stage_SetFillColor(1);
+                Stage_FadeIn(1);
             }
             break;
 
@@ -1182,7 +1182,7 @@ s32 func_83302B5C(void) {
             break;
 
         case 8:
-            if (func_80007604() == 1) {
+            if (Stage_GetFadeMode() == 1) {
                 sp28 = 0;
             }
             break;
@@ -1208,7 +1208,7 @@ void func_83302E6C(void) {
     } else {
         var_a0 = 7;
     }
-    func_80006C6C(var_a0);
+    Stage_FadeOut(var_a0);
 
     do {
         func_83302E3C();
@@ -1250,12 +1250,12 @@ s32 func_83302F48(void) {
 }
 
 void func_83302FD8(s32 arg0, s32 arg1) {
-    unk_func_80007444* sp24;
+    RenderContext* sp24;
 
     main_pool_push_state('SNAP');
 
-    func_80005E40(0x20000, 0);
-    sp24 = func_80007444(1, 0, 2, 0, 2, 1);
+    DLBuf_Init(0x20000, 0);
+    sp24 = Stage_CreateRenderContext(1, 0, 2, 0, 2, 1);
     func_8001E94C(0x18, 0);
 
     ASSET_LOAD(D_1000000, common_menu1_ui, 0);
@@ -1269,11 +1269,11 @@ void func_83302FD8(s32 arg0, s32 arg1) {
     func_8002D510();
     func_83402340();
     func_833017BC(arg0, arg1);
-    func_80007678(sp24);
+    Stage_SetRenderContext(sp24);
     func_83302E6C();
-    func_800076C0();
+    Stage_FreeRenderContext();
     func_8001E9CC();
-    func_80005EAC();
+    DLBuf_Free();
 
     main_pool_pop_state('SNAP');
 

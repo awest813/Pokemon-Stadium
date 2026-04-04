@@ -259,7 +259,7 @@ void func_8001FE18(s32 arg0, s32 arg1, s32 arg2, s32 arg3, u16 arg4) {
     gSPDisplayList(gDisplayListHead++, D_8006F4C0);
     gDPSetFillColor(gDisplayListHead++, (arg4 << 0x10) | arg4);
 
-    if (func_80007A58() != 0) {
+    if (Stage_IsHighRes() != 0) {
         gDPFillRectangle(gDisplayListHead++, arg0 + 7, arg1 + 7, (arg0 + arg2) - 8, (arg1 + arg3) - 8);
     } else {
         gDPFillRectangle(gDisplayListHead++, arg0 + 3, arg1 + 3, (arg0 + arg2) - 4, (arg1 + arg3) - 4);
@@ -270,7 +270,7 @@ void func_8001FF68(s32 arg0, s32 arg1, s32 arg2, s32 arg3, u16 arg4) {
     gSPDisplayList(gDisplayListHead++, D_8006F4C0);
     gDPSetFillColor(gDisplayListHead++, (arg4 << 0x10) | arg4);
 
-    if (func_80007A58() != 0) {
+    if (Stage_IsHighRes() != 0) {
         gDPFillRectangle(gDisplayListHead++, arg0 + 5, arg1 + 5, (arg0 + arg2) - 6, (arg1 + arg3) - 6);
     } else {
         gDPFillRectangle(gDisplayListHead++, arg0 + 3, arg1 + 3, (arg0 + arg2) - 4, (arg1 + arg3) - 4);
@@ -279,14 +279,14 @@ void func_8001FF68(s32 arg0, s32 arg1, s32 arg2, s32 arg3, u16 arg4) {
 
 void func_800200B8(s32 arg0, s32 arg1, s32 arg2, s32 arg3, Color_RGB8* arg4, Color_RGB8* arg5) {
     Vtx* temp_s2;
-    unk_D_80068BB0* temp_s1;
+    ColorBuffer* temp_s1;
     Mtx* sp7C;
     Vp* sp78;
 
-    temp_s1 = func_8000648C();
-    temp_s2 = func_80005F5C(sizeof(Vtx) * 4);
-    sp7C = func_80005F5C(sizeof(Mtx) * 1);
-    sp78 = func_80005F5C(sizeof(Vp) * 1);
+    temp_s1 = ColorBuffer_GetActive();
+    temp_s2 = DLBuf_AllocTemp(sizeof(Vtx) * 4);
+    sp7C = DLBuf_AllocTemp(sizeof(Mtx) * 1);
+    sp78 = DLBuf_AllocTemp(sizeof(Vp) * 1);
 
     func_8001E6E8(sp78, temp_s1->width, temp_s1->height);
 
@@ -316,7 +316,7 @@ void func_800200B8(s32 arg0, s32 arg1, s32 arg2, s32 arg3, Color_RGB8* arg4, Col
 void func_80020460(s32 arg0, s32 arg1, s32 arg2, s32 arg3, u16 arg4) {
     gSPDisplayList(gDisplayListHead++, D_8006F518);
 
-    if (func_80007A58() != 0) {
+    if (Stage_IsHighRes() != 0) {
         func_8001F9D4(arg0, arg1, arg2, arg3);
     } else {
         func_8001FCAC(arg0, arg1, arg2, arg3);
@@ -331,7 +331,7 @@ void func_80020460(s32 arg0, s32 arg1, s32 arg2, s32 arg3, u16 arg4) {
 
 void func_8002053C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, Color_RGB8* arg4, Color_RGB8* arg5) {
     if ((arg2 >= 0xF) && (arg3 >= 0xF)) {
-        if (func_80007A58() != 0) {
+        if (Stage_IsHighRes() != 0) {
             func_800200B8(arg0 + 6, arg1 + 6, arg2 - 0xC, arg3 - 0xC, arg4, arg5);
         } else {
             func_800200B8(arg0 + 2, arg1 + 2, arg2 - 4, arg3 - 4, arg4, arg5);
@@ -340,7 +340,7 @@ void func_8002053C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, Color_RGB8* arg4, Col
 
     gSPDisplayList(gDisplayListHead++, D_8006F518);
 
-    if (func_80007A58() != 0) {
+    if (Stage_IsHighRes() != 0) {
         func_8001F9D4(arg0, arg1, arg2, arg3);
     } else {
         func_8001FCAC(arg0, arg1, arg2, arg3);
@@ -352,7 +352,7 @@ void func_8002053C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, Color_RGB8* arg4, Col
 void func_80020678(s32 arg0, s32 arg1, s32 arg2, s32 arg3, u16 arg4) {
     gSPDisplayList(gDisplayListHead++, D_8006F518);
 
-    if (func_80007A58() != 0) {
+    if (Stage_IsHighRes() != 0) {
         func_8001FB40(arg0, arg1, arg2, arg3);
     } else {
         func_8001FCAC(arg0, arg1, arg2, arg3);
@@ -368,7 +368,7 @@ void func_80020678(s32 arg0, s32 arg1, s32 arg2, s32 arg3, u16 arg4) {
 void func_80020754(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     gSPDisplayList(gDisplayListHead++, D_8006F518);
 
-    if (func_80007A58() != 0) {
+    if (Stage_IsHighRes() != 0) {
         func_8001F9D4(arg0, arg1, arg2, arg3);
     } else {
         func_8001FCAC(arg0, arg1, arg2, arg3);
@@ -378,7 +378,7 @@ void func_80020754(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
 }
 
 void func_800207FC(s32 arg0, s32 arg1) {
-    if (func_80007A58() != 0) {
+    if (Stage_IsHighRes() != 0) {
         gSPDisplayList(gDisplayListHead++, D_8006F4E0);
         func_8001C6AC(arg0, arg1, 0x20, 0x16, D_10031D0, 0x20, 0x200000);
     } else {

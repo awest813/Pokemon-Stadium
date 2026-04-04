@@ -32,10 +32,10 @@ extern u8 D_5001680[];
 extern u8 D_50017E8[];
 
 void func_86904070(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
-    unk_D_80068BB0* temp_s1 = func_8000648C();
-    Vtx* temp_s2 = func_80005F5C(sizeof(Vtx) * 4);
-    Mtx* sp84 = func_80005F5C(sizeof(Mtx) * 1);
-    Vp* sp80 = func_80005F5C(sizeof(Vp) * 1);
+    ColorBuffer* temp_s1 = ColorBuffer_GetActive();
+    Vtx* temp_s2 = DLBuf_AllocTemp(sizeof(Vtx) * 4);
+    Mtx* sp84 = DLBuf_AllocTemp(sizeof(Mtx) * 1);
+    Vp* sp80 = DLBuf_AllocTemp(sizeof(Vp) * 1);
 
     func_8001E6E8(sp80, temp_s1->width, temp_s1->height);
 
@@ -128,11 +128,11 @@ void func_86904BFC(void) {
 }
 
 void func_86904C04(s16 arg0, s16 arg1, s16 arg2, s16 arg3, s16 arg4, s16 arg5, s16 arg6, s16 arg7) {
-    unk_D_800A7440 sp30;
+    ScissorRect sp30;
 
-    func_80005FC0(&sp30, arg0, arg1, (arg0 + arg2) - 1, (arg1 + arg3) - 1);
+    ScissorRect_Set(&sp30, arg0, arg1, (arg0 + arg2) - 1, (arg1 + arg3) - 1);
 
-    if (func_80006030(&sp30) != 0) {
+    if (ScissorRect_Clip(&sp30) != 0) {
         if (arg6 != 0) {
             arg4 += ((sp30.x1 - arg0) * arg6) >> 5;
         }
@@ -179,19 +179,19 @@ void func_869050C8(u8* arg0, s16 arg1, s16 arg2, s16 arg3, s16 arg4) {
     Vec3f spCC;
     Vec3f spC0;
     UNUSED s32 pad;
-    unk_D_80068BB0* spB8;
+    ColorBuffer* spB8;
     Vtx* spB4;
     MtxF* spB0;
     Mtx* spAC;
     MtxF* spA8;
     Vp* spA4;
 
-    spB8 = func_8000648C();
-    spB4 = func_80005F5C(sizeof(Vtx) * 4);
-    spB0 = func_80005F5C(sizeof(MtxF) * 1);
-    spAC = func_80005F5C(sizeof(Mtx) * 1);
-    spA8 = func_80005F5C(sizeof(MtxF) * 1);
-    spA4 = func_80005F5C(sizeof(Vp) * 1);
+    spB8 = ColorBuffer_GetActive();
+    spB4 = DLBuf_AllocTemp(sizeof(Vtx) * 4);
+    spB0 = DLBuf_AllocTemp(sizeof(MtxF) * 1);
+    spAC = DLBuf_AllocTemp(sizeof(Mtx) * 1);
+    spA8 = DLBuf_AllocTemp(sizeof(MtxF) * 1);
+    spA4 = DLBuf_AllocTemp(sizeof(Vp) * 1);
 
     func_8000EB70(&spD8, 0, 0, D_8690B360.unk_06);
 
@@ -244,7 +244,7 @@ void func_86905734(u8* arg0, s16 arg1, s16 arg2, s16 arg3, s16 arg4, s16 arg5, u
     f32 a2;
     s16 spF8[4];
     s16 spF0[4];
-    unk_D_80068BB0* spEC;
+    ColorBuffer* spEC;
     Vtx* spE8;
     Mtx* spE4;
     Vp* spE0;
@@ -253,10 +253,10 @@ void func_86905734(u8* arg0, s16 arg1, s16 arg2, s16 arg3, s16 arg4, s16 arg5, u
     f32 sp5C;
     s32 tmp1;
 
-    spEC = func_8000648C();
-    spE8 = func_80005F5C(sizeof(Vtx) * 4);
-    spE4 = func_80005F5C(sizeof(Mtx) * 1);
-    spE0 = func_80005F5C(sizeof(Vp) * 1);
+    spEC = ColorBuffer_GetActive();
+    spE8 = DLBuf_AllocTemp(sizeof(Vtx) * 4);
+    spE4 = DLBuf_AllocTemp(sizeof(Mtx) * 1);
+    spE0 = DLBuf_AllocTemp(sizeof(Vp) * 1);
 
     sp64 = arg1;
     sp5C = arg2;
@@ -326,15 +326,15 @@ void func_86905F24(u8* arg0, s16 arg1, s16 arg2, s16 arg3, s16 arg4, s16 arg5, u
     f32 a2;
     s16 spE0[4];
     s16 spD8[4];
-    unk_D_80068BB0* spD4;
+    ColorBuffer* spD4;
     Vtx* spD0;
     Mtx* spCC;
     Vp* spC8;
 
-    spD4 = func_8000648C();
-    spD0 = func_80005F5C(sizeof(Vtx) * 4);
-    spCC = func_80005F5C(sizeof(Mtx) * 1);
-    spC8 = func_80005F5C(sizeof(Vp) * 1);
+    spD4 = ColorBuffer_GetActive();
+    spD0 = DLBuf_AllocTemp(sizeof(Vtx) * 4);
+    spCC = DLBuf_AllocTemp(sizeof(Mtx) * 1);
+    spC8 = DLBuf_AllocTemp(sizeof(Vp) * 1);
 
     a1 = arg1;
     a2 = arg2;
@@ -401,15 +401,15 @@ void func_869066C4(u8* arg0, s16 arg1, s16 arg2, s16 arg3, s16 arg4, s16 arg5, u
     f32 temp_fv1;
     s16 spE0[4];
     s16 spD8[4];
-    unk_D_80068BB0* spD4;
+    ColorBuffer* spD4;
     Vtx* spD0;
     Mtx* spCC;
     Vp* spC8;
 
-    spD4 = func_8000648C();
-    spD0 = func_80005F5C(sizeof(Vtx) * 4);
-    spCC = func_80005F5C(sizeof(Mtx) * 1);
-    spC8 = func_80005F5C(sizeof(Vp) * 1);
+    spD4 = ColorBuffer_GetActive();
+    spD0 = DLBuf_AllocTemp(sizeof(Vtx) * 4);
+    spCC = DLBuf_AllocTemp(sizeof(Mtx) * 1);
+    spC8 = DLBuf_AllocTemp(sizeof(Vp) * 1);
 
     temp_fv0 = arg1;
     temp_fv1 = arg2;
@@ -472,10 +472,10 @@ void func_869066C4(u8* arg0, s16 arg1, s16 arg2, s16 arg3, s16 arg4, s16 arg5, u
 
 void func_86906E70(u8* arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, u8 arg5, u8 arg6, u8 arg7, u8 arg8, u8 arg9,
                    u8 argA, u8 argB, u8 argC) {
-    unk_D_80068BB0* temp_s1 = func_8000648C();
-    Vtx* temp_s2 = func_80005F5C(sizeof(Vtx) * 4);
-    Mtx* spAC = func_80005F5C(sizeof(Mtx) * 1);
-    Vp* spA8 = func_80005F5C(sizeof(Vp));
+    ColorBuffer* temp_s1 = ColorBuffer_GetActive();
+    Vtx* temp_s2 = DLBuf_AllocTemp(sizeof(Vtx) * 4);
+    Mtx* spAC = DLBuf_AllocTemp(sizeof(Mtx) * 1);
+    Vp* spA8 = DLBuf_AllocTemp(sizeof(Vp));
 
     func_8001E6E8(spA8, temp_s1->width, temp_s1->height);
 

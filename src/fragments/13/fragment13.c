@@ -130,16 +130,16 @@ void func_86700254(s32 arg0) {
 }
 
 void func_86700428(s32 arg0) {
-    func_800079C4();
-    func_8000699C(&gDisplayListHead, 0xA6BF);
+    Stage_ActivateFramebuffer();
+    GFX_ClearScreen(&gDisplayListHead, 0xA6BF);
     func_80015348();
     func_80015094(D_86700934);
     func_86700254(arg0);
-    func_80007778();
+    Stage_AdvanceFrame();
 }
 
 void func_8670047C(void) {
-    func_80006C6C(0x10);
+    Stage_FadeOut(0x10);
     func_8001BD04(&D_86700940, 8);
 
     while (func_80017514(&D_86700940) == 0) {
@@ -185,7 +185,7 @@ void func_867005A8(void) {
         func_86700428(2);
     }
 
-    func_80006CB4(0x1E);
+    Stage_FadeIn(0x1E);
 
     for (i = 0; i < 30; i++) {
         func_86700020();
@@ -208,12 +208,12 @@ void func_86700648(void) {
 }
 
 s32 func_867006FC(UNUSED s32 arg0, UNUSED s32 arg1) {
-    unk_func_80007444* sp24;
+    RenderContext* sp24;
 
     main_pool_push_state('MINI');
 
-    func_80005E40(0x10000, 0);
-    sp24 = func_80007444(0, 1, 3, 1, 2, 1);
+    DLBuf_Init(0x10000, 0);
+    sp24 = Stage_CreateRenderContext(0, 1, 3, 1, 2, 1);
     func_8001E94C(6, 0);
 
     ASSET_LOAD(D_1000000, common_menu1_ui, 0);
@@ -222,13 +222,13 @@ s32 func_867006FC(UNUSED s32 arg0, UNUSED s32 arg1) {
     func_80004454((((u32)D_8D000000 & 0x0FF00000) >> 0x14) - 0x10, _5C7A70_ROM_START, pokedex_area_model_ROM_START);
 
     func_86700648();
-    func_80007678(sp24);
+    Stage_SetRenderContext(sp24);
     func_8670047C();
     func_867004E8();
     func_867005A8();
-    func_800076C0();
+    Stage_FreeRenderContext();
     func_8001E9CC();
-    func_80005EAC();
+    DLBuf_Free();
 
     main_pool_pop_state('MINI');
 

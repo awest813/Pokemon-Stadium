@@ -94,7 +94,7 @@ void func_81100368(s32 arg0) {
 }
 
 s32 func_811007AC(u8 arg0) {
-    func_800079C4();
+    Stage_ActivateFramebuffer();
     func_81100020(0x55, 0x70, 0x88);
     func_811002D4(D_81100934);
     func_81100368(D_81100930);
@@ -102,23 +102,23 @@ s32 func_811007AC(u8 arg0) {
 }
 
 void func_811007F8(s32 arg0, s32 arg1) {
-    unk_func_80007444* temp_s0;
+    RenderContext* temp_s0;
 
     D_81100930 = arg0;
     D_81100934 = arg1;
 
     main_pool_push_state('FATL');
 
-    func_80005E40(0x10000, 0);
-    temp_s0 = func_80007444(0, 1, 2, 0, 2, 1);
+    DLBuf_Init(0x10000, 0);
+    temp_s0 = Stage_CreateRenderContext(0, 1, 2, 0, 2, 1);
     func_8001E94C(6, 0);
     ASSET_LOAD(D_1000000, common_menu1_ui, 0);
     ASSET_LOAD(D_2000000, transfer_pak_error_ui, 0);
     func_8002D510();
     D_81100938 = func_8002D5AC(0xD);
-    func_80007678(temp_s0);
+    Stage_SetRenderContext(temp_s0);
 
     while (true) {
-        func_800078D4(func_811007AC, 8, 8);
+        Stage_RunFadeLoop(func_811007AC, 8, 8);
     }
 }

@@ -222,7 +222,7 @@ Gfx* func_843670C8(Gfx* arg0) {
             temp_s0 = &var_s5->unk_038[0];
             tmp = var_s5->unk_010;
 
-            temp_s1 = func_80005F5C(sizeof(Mtx) * 1);
+            temp_s1 = DLBuf_AllocTemp(sizeof(Mtx) * 1);
 
             spB4 = (temp_s0->unk_08 * 360.0) / 6.2831854820251465;
             guTranslate(temp_s1, temp_s0->unk_0C.x, temp_s0->unk_0C.y, temp_s0->unk_0C.z);
@@ -241,7 +241,7 @@ Gfx* func_843670C8(Gfx* arg0) {
             gSPDisplayList(arg0++, D_84389720);
             gSPPopMatrix(arg0++, G_MTX_MODELVIEW);
 
-            var_s5->unk_018 = func_80005F5C(sizeof(Vtx) * 20);
+            var_s5->unk_018 = DLBuf_AllocTemp(sizeof(Vtx) * 20);
             vtx = var_s5->unk_018;
 
             for (j = 0; j < 10; j++, temp_s0++) {

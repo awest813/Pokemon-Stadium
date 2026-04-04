@@ -2082,12 +2082,12 @@ void func_8260125C(void) {
 }
 
 void func_82602294(void) {
-    func_800079C4();
-    func_8000699C(&gDisplayListHead, 0x2A9);
-    func_800067E4(&gDisplayListHead, 0, 0, 0x140, 0xF0);
+    Stage_ActivateFramebuffer();
+    GFX_ClearScreen(&gDisplayListHead, 0x2A9);
+    GFX_ClearDepth(&gDisplayListHead, 0, 0, 0x140, 0xF0);
     func_80015094(D_82607418);
     func_8260125C();
-    func_80007778();
+    Stage_AdvanceFrame();
 }
 
 void func_82602300(s16 arg0) {
@@ -2510,8 +2510,8 @@ void func_8260365C(void) {
 
     D_82608552 = tmp;
 
-    func_800077B4(0xA);
-    func_80006C6C(0x10);
+    Stage_AdvanceFrames(0xA);
+    Stage_FadeOut(0x10);
     func_82600020();
 
     if (D_8267E750 == 1) {
@@ -2519,10 +2519,10 @@ void func_8260365C(void) {
         D_8267E754 = 0xA0;
         D_82608544 = 1;
     } else {
-        func_8000D1F0(0xF);
+        Audio_PlayTrack(0xF);
     }
 
-    while (func_80007604() != 0) {
+    while (Stage_GetFadeMode() != 0) {
         func_82600D04();
         func_82602294();
     }
@@ -2559,11 +2559,11 @@ void func_8260365C(void) {
         D_82608552 = tmp;
     }
 
-    func_80007990(0xFFFF);
-    func_80006CB4(0x16);
+    Stage_SetFillColor(0xFFFF);
+    Stage_FadeIn(0x16);
     func_8004B9C4(0x3C);
 
-    while (func_80007604() != 1) {
+    while (Stage_GetFadeMode() != 1) {
         func_82600D04();
         func_82602294();
     }
@@ -2700,14 +2700,14 @@ void func_82603924(void) {
 }
 
 s32 func_82603D20(s32 arg0, s32 arg1) {
-    unk_func_80007444* sp24;
+    RenderContext* sp24;
 
     D_8267E750 = 0;
 
     main_pool_push_state('VICH');
 
-    func_80005E40(0x20000, 0);
-    sp24 = func_80007444(0, 1, 2, 1, 3, 1);
+    DLBuf_Init(0x20000, 0);
+    sp24 = Stage_CreateRenderContext(0, 1, 2, 1, 3, 1);
     func_8001E94C(0xE, 0);
 
     ASSET_LOAD(D_1000000, common_menu1_ui, 0);
@@ -2719,10 +2719,10 @@ s32 func_82603D20(s32 arg0, s32 arg1) {
     func_8002D510();
     D_8267E75C = func_8002D5AC(0x1F);
     D_8267E760 = func_8002D5AC(0x24);
-    func_80007678(sp24);
+    Stage_SetRenderContext(sp24);
     func_8260365C();
-    func_800076C0();
-    func_80005EAC();
+    Stage_FreeRenderContext();
+    DLBuf_Free();
 
     main_pool_pop_state('VICH');
 

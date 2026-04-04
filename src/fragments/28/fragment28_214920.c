@@ -35,8 +35,8 @@ static char** D_888267AC;
 static char** D_888267B0;
 static unk_D_86002F58_004_000 D_888267B8;
 static unk_func_8001B1FC* D_88826920;
-static unk_func_80007444* D_88826924;
-static unk_func_80007444* D_88826928;
+static RenderContext* D_88826924;
+static RenderContext* D_88826928;
 static unk_D_86002F58_004_000_010* D_8882692C;
 static s32 D_88826930;
 static s32 D_88826934;
@@ -678,7 +678,7 @@ s32 func_88802F10(unk_func_888044BC_04C_02C* arg0, s32 arg1, s32 arg2) {
     // clang-format on
     sp58.unk_0C = func_8001B9D4(D_88826920);
 
-    func_800079C4();
+    Stage_ActivateFramebuffer();
 
     gDPPipeSync(gDisplayListHead++);
     gDPSetCycleType(gDisplayListHead++, G_CYC_COPY);
@@ -830,10 +830,10 @@ s32 func_88803614(void) {
 
         ((func8850BC94)Memmap_GetFragmentVaddr(func_8850BC94))(var_s0);
         func_80015348();
-        func_800079C4();
+        Stage_ActivateFramebuffer();
         ((func885008C4)Memmap_GetFragmentVaddr(func_885008C4))(D_88826940);
         ((func88500828)Memmap_GetFragmentVaddr(func_88500828))(D_88826940, 0, 0);
-        func_80007778();
+        Stage_AdvanceFrame();
     }
     return var_s2;
 }
@@ -902,10 +902,10 @@ u8 func_888038E0(void) {
 
         ((func8850BC94)Memmap_GetFragmentVaddr(func_8850BC94))(var_s0);
         func_80015348();
-        func_800079C4();
+        Stage_ActivateFramebuffer();
         ((func885008C4)Memmap_GetFragmentVaddr(func_885008C4))(D_88826940);
         ((func88500828)Memmap_GetFragmentVaddr(func_88500828))(D_88826940, 0, 0);
-        func_80007778();
+        Stage_AdvanceFrame();
     }
 
     return var_s1;
@@ -923,7 +923,7 @@ void func_88803BCC(u8* arg0, s32 arg1) {
     sp18 = func_8001AFD8(sp1C, 0);
     func_8001A324(sp1C, 0, arg1, 0x9530);
     func_8001ABAC(sp1C, 0);
-    func_800077B4(2);
+    Stage_AdvanceFrames(2);
     osInvalDCache(sp18, 0x3200);
     _bcopy(sp18, arg0, 0x3200);
     main_pool_pop_state('ICON');
@@ -6136,10 +6136,10 @@ s32 func_88803C74(void) {
             func_80048B90(2);
         }
         func_80015348();
-        func_800079C4();
+        Stage_ActivateFramebuffer();
         ((func885008C4)Memmap_GetFragmentVaddr(func_885008C4))(D_88826940);
         ((func88500828)Memmap_GetFragmentVaddr(func_88500828))(D_88826940, 0, 0);
-        func_80007778();
+        Stage_AdvanceFrame();
     } while (var_s1 == 3);
 
     func_8001BCF0(&D_888267B8);
@@ -6153,17 +6153,17 @@ s32 func_88803ECC(void) {
     func_8003D2B8(func_88801030(D_88826940->unk_38->unk_2C) + 1);
 
     while (func_8003D494() != 0) {
-        func_800079C4();
+        Stage_ActivateFramebuffer();
         ((func885008C4)Memmap_GetFragmentVaddr(func_885008C4))(D_88826940);
         ((func88500828)Memmap_GetFragmentVaddr(func_88500828))(D_88826940, 0, 0);
-        func_80007778();
+        Stage_AdvanceFrame();
     }
     return 2;
 }
 
 s32 func_88803FB0(u8 arg0) {
     D_88826940->unk_34->unk_2C = -1;
-    func_800079C4();
+    Stage_ActivateFramebuffer();
     ((func885008C4)Memmap_GetFragmentVaddr(func_885008C4))(D_88826940);
     ((func88500828)Memmap_GetFragmentVaddr(func_88500828))(D_88826940, 0, 0);
     return 0;
@@ -6174,26 +6174,26 @@ void func_88804020(void) {
 
     D_88826940->unk_38->unk_00.unk_24(&D_88826940->unk_38->unk_00, 0x100);
     D_88826940->unk_40->unk_00.unk_24(&D_88826940->unk_40->unk_00, 0x100);
-    func_80006C04(8);
-    func_80007820(8, func_88803FB0);
-    func_800077B4(2);
-    func_80007614(D_88826928);
-    func_800077B4(2);
+    Stage_StartFade(8);
+    Stage_RunLoop(8, func_88803FB0);
+    Stage_AdvanceFrames(2);
+    Stage_SwapRenderContext(D_88826928);
+    Stage_AdvanceFrames(2);
     sp2C = func_88801030(D_88826940->unk_38->unk_2C) + 1;
     func_88807D04(sp2C, D_88826930, 0x70800, D_88826934, 0x4B000, func_8002D7C0(NULL, 0, D_888267A4, sp2C - 1),
                   D_888267B0);
-    func_80006C04(8);
-    func_80007820(0xA, func_8880725C);
+    Stage_StartFade(8);
+    Stage_RunLoop(0xA, func_8880725C);
 }
 
 void func_8880412C(void) {
-    func_80006C04(8);
-    func_80007820(8, func_8880725C);
-    func_800077B4(2);
-    func_80007614(D_88826924);
+    Stage_StartFade(8);
+    Stage_RunLoop(8, func_8880725C);
+    Stage_AdvanceFrames(2);
+    Stage_SwapRenderContext(D_88826924);
     func_8880812C();
-    func_80006C04(8);
-    func_80007820(0xA, func_88803FB0);
+    Stage_StartFade(8);
+    Stage_RunLoop(0xA, func_88803FB0);
 }
 
 s32 func_88804190(void) {
@@ -6209,7 +6209,7 @@ s32 func_88804190(void) {
         if (func_88807AC0() != 0) {
             var_s0 = 2;
         }
-        func_80007778();
+        Stage_AdvanceFrame();
     }
 
     func_80048B90(3);
@@ -6219,7 +6219,7 @@ s32 func_88804190(void) {
 
 s32 func_88804218(u8 arg0) {
     D_88826940->unk_34->unk_2C = -1;
-    func_800079C4();
+    Stage_ActivateFramebuffer();
     ((func885008C4)Memmap_GetFragmentVaddr(func_885008C4))(&D_88826940->unk_00);
     ((func88500828)Memmap_GetFragmentVaddr(func_88500828))(&D_88826940->unk_00, 0, 0);
     return 0;
@@ -6269,9 +6269,9 @@ void func_88804370(void) {
     u32 sp34;
     u32 sp30;
     u32 sp2C;
-    unk_D_80068BB0* sp28;
+    ColorBuffer* sp28;
 
-    sp28 = main_pool_alloc(sizeof(unk_D_80068BB0), 0);
+    sp28 = main_pool_alloc(sizeof(ColorBuffer), 0);
 
     sp34 = D_88826924->unk_18[0]->img_p;
     D_88826930 = D_88826924->unk_18[0]->img_p + 0x25800;
@@ -6279,14 +6279,14 @@ void func_88804370(void) {
     D_88826934 = D_88826924->unk_18[1]->img_p + 0x25800;
     sp2C = D_88826924->unk_18[1]->img_p + 0x70800;
 
-    D_88826928->unk_18[0] = main_pool_alloc(sizeof(unk_D_80068BB0), 0);
-    D_88826928->unk_18[1] = main_pool_alloc(sizeof(unk_D_80068BB0), 0);
+    D_88826928->unk_18[0] = main_pool_alloc(sizeof(ColorBuffer), 0);
+    D_88826928->unk_18[1] = main_pool_alloc(sizeof(ColorBuffer), 0);
 
-    func_800062E4(D_88826928->unk_18[0], 0, 2, 0x140, 0xF0, sp34);
-    func_800062E4(D_88826928->unk_18[1], 0, 2, 0x140, 0xF0, sp30);
-    func_800062E4(sp28, 0, 2, 0x140, 0xF0, sp2C);
-    func_80006414(D_88826928->unk_18[0], sp28);
-    func_80006414(D_88826928->unk_18[1], sp28);
+    ColorBuffer_Init(D_88826928->unk_18[0], 0, 2, 0x140, 0xF0, sp34);
+    ColorBuffer_Init(D_88826928->unk_18[1], 0, 2, 0x140, 0xF0, sp30);
+    ColorBuffer_Init(sp28, 0, 2, 0x140, 0xF0, sp2C);
+    ColorBuffer_AttachDepth(D_88826928->unk_18[0], sp28);
+    ColorBuffer_AttachDepth(D_88826928->unk_18[1], sp28);
 }
 
 s32 func_888044BC(UNUSED s32 arg0, UNUSED s32 arg1) {
@@ -6298,8 +6298,8 @@ s32 func_888044BC(UNUSED s32 arg0, UNUSED s32 arg1) {
 
     main_pool_push_state('BOOK');
 
-    D_88826924 = func_800075F8();
-    D_88826928 = func_80007444(0, 1, 2, 1, 2, 0);
+    D_88826924 = Stage_GetRenderContext();
+    D_88826928 = Stage_CreateRenderContext(0, 1, 2, 1, 2, 0);
     func_88804370();
     func_80025540(D_88826938);
     func_8001E94C(0x1D, 0);
@@ -6331,15 +6331,15 @@ s32 func_888044BC(UNUSED s32 arg0, UNUSED s32 arg1) {
 
     D_88826940 = mem_pool_alloc(sp2C, sizeof(unk_func_888044BC));
     func_888031FC(D_88826940, 0, 0, sp28, sp2C);
-    func_80007754();
+    Stage_SetSegments();
     func_8001BB20();
-    func_80006C6C(8);
-    func_80007820(8, func_88804218);
+    Stage_FadeOut(8);
+    Stage_RunLoop(8, func_88804218);
     func_88804288();
-    func_80007990(1);
-    func_80006CB4(8);
-    func_80007820(0xA, func_88804218);
-    func_8000771C();
+    Stage_SetFillColor(1);
+    Stage_FadeIn(8);
+    Stage_RunLoop(0xA, func_88804218);
+    Stage_WaitFrame();
     func_8001E9CC();
 
     main_pool_pop_state('BOOK');

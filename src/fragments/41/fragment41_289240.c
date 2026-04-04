@@ -750,7 +750,7 @@ void func_82F04604(unk_D_82F144D0* arg0) {
         } else {
             spEE = 0x1C3;
         }
-        func_800060E0(&gDisplayListHead, 0x60, 0x6C, 0x1C3, 0x117);
+        GFX_SetScissor(&gDisplayListHead, 0x60, 0x6C, 0x1C3, 0x117);
         spE4 = 1;
     } else {
         spF4 = 1;
@@ -883,7 +883,7 @@ void func_82F04604(unk_D_82F144D0* arg0) {
 
     if ((arg0->unk_0008 == 0x1B8) && (arg0->unk_000A == 0x10C)) {
         if (spE4 != 0) {
-            func_800060E0(&gDisplayListHead, 0, 0, 0x280, 0x1E0);
+            GFX_SetScissor(&gDisplayListHead, 0, 0, 0x280, 0x1E0);
         }
 
         if ((arg0->unk_0000 == 2) || (arg0->unk_0000 == 3)) {

@@ -6,7 +6,7 @@ void func_81003D70(s32 arg0, DisplayListState* state) {
     Gfx* gfx;
 
     if (arg0 == 2) {
-        gfx = (Gfx*)func_80005F5C(0x10);
+        gfx = (Gfx*)DLBuf_AllocTemp(0x10);
         state->gfx = gfx;
         if (D_86402848 == 0) {
             {    Gfx *_gfx = (Gfx *)(gfx++);    _gfx->words.w0 = 0xFC119604;    _gfx->words.w1 = 0xFF13FFFF;    }

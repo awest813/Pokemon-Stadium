@@ -447,7 +447,7 @@ void func_869002AC(void) {
 }
 
 void func_86900410(void) {
-    while (func_80001C90() == 0) {}
+    while (Display_IsReady() == 0) {}
 
     func_8001103C(NULL, &D_8690A630);
     func_8001103C(NULL, &D_8690A648);
@@ -687,7 +687,7 @@ void func_86900DE0(void) {
             D_83402E20 = D_8690B344;
         }
 
-        func_800077B4(1);
+        Stage_AdvanceFrames(1);
     }
 }
 
@@ -988,14 +988,14 @@ s32 func_869019BC(void) {
 }
 
 void func_86901A44(void) {
-    func_800079C4();
+    Stage_ActivateFramebuffer();
 
     if ((D_8690A688 == -1) || (D_8690A688 == 0)) {
-        func_8000699C(&gDisplayListHead, 1);
+        GFX_ClearScreen(&gDisplayListHead, 1);
     } else if (D_8690A688 < 0x10000) {
-        func_8000699C(&gDisplayListHead, D_8690A688);
+        GFX_ClearScreen(&gDisplayListHead, D_8690A688);
     } else {
-        func_8000699C(&gDisplayListHead, 0xA6BF);
+        GFX_ClearScreen(&gDisplayListHead, 0xA6BF);
     }
 
     func_80015348();
@@ -1007,7 +1007,7 @@ void func_86901A44(void) {
     func_869089AC();
     func_869073D8(D_8690A6A0.unk_30);
     func_86907858(D_8690A710->unk_00C);
-    func_80007778();
+    Stage_AdvanceFrame();
 }
 
 void func_86901B28(void) {
@@ -1019,7 +1019,7 @@ void func_86901B28(void) {
     s32 i;
     s16 var_s3 = 0;
 
-    func_80006C6C(0x14);
+    Stage_FadeOut(0x14);
     D_8690B360.unk_10 -= 0.8;
     D_8690B360.unk_14 = 0.0f;
     D_8690B360.unk_0C = 351.0f;
@@ -1109,7 +1109,7 @@ void func_86901ECC(void) {
 void func_86901FB4(void) {
     s32 i;
 
-    func_80006CB4(0x1E);
+    Stage_FadeIn(0x1E);
 
     for (i = 0; i < 30; i++) {
         func_86900B6C();
@@ -1134,12 +1134,12 @@ void func_86902004(s32 arg0) {
 }
 
 s32 func_86902098(s32 arg0, UNUSED s32 arg1) {
-    unk_func_80007444* sp24;
+    RenderContext* sp24;
 
     main_pool_push_state('SNAP');
 
-    func_80005E40(0x10000, 0);
-    sp24 = func_80007444(0, 1, 3, 1, 2, 1);
+    DLBuf_Init(0x10000, 0);
+    sp24 = Stage_CreateRenderContext(0, 1, 3, 1, 2, 1);
     func_8001E94C(0x16, 0);
 
     ASSET_LOAD(D_1000000, common_menu1_ui, 0);
@@ -1153,13 +1153,13 @@ s32 func_86902098(s32 arg0, UNUSED s32 arg1) {
     func_8002D510();
     D_8690A678 = func_8002D5AC(0x2B);
     func_86902004(arg0);
-    func_80007678(sp24);
+    Stage_SetRenderContext(sp24);
     func_86901B28();
     func_86901ECC();
     func_86901FB4();
-    func_800076C0();
+    Stage_FreeRenderContext();
     func_8001E9CC();
-    func_80005EAC();
+    DLBuf_Free();
 
     main_pool_pop_state('SNAP');
 

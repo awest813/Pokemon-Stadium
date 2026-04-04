@@ -525,7 +525,7 @@ void func_84B0852C(unk_D_84B25A58* arg0, s32 arg1) {
             if (var_s0 < temp_lo) {
                 var_s0 = temp_lo;
             }
-            func_80006498(&gDisplayListHead, arg0->unk_1C->unk_08[i * 3 + j].unk_0C);
+            ColorBuffer_Activate(&gDisplayListHead, arg0->unk_1C->unk_08[i * 3 + j].unk_0C);
             func_80020B88(4, 0xB4, 0x78, var_s0, temp_s5->unk_01C[j].unk_26 * 0x64);
         }
     }
@@ -550,7 +550,7 @@ void func_84B08694(unk_D_84B25A58* arg0, s32 arg1) {
                     if (var_s0 < temp_lo) {
                         var_s0 = temp_lo;
                     }
-                    func_80006498(&gDisplayListHead, arg0->unk_1C->unk_08[(i * 6) + (j * 3) + x].unk_0C);
+                    ColorBuffer_Activate(&gDisplayListHead, arg0->unk_1C->unk_08[(i * 6) + (j * 3) + x].unk_0C);
                     func_80020B88(4, 0x54, 0x78, var_s0, temp_s5->unk_01C[x].unk_26 * 0x64);
                 }
             }
@@ -1043,7 +1043,7 @@ void func_84B0A244(unk_D_84B25A58* arg0) {
     unk_D_86002F58_004_000_010* temp_s0;
 
     temp_s0 = func_80019760(5);
-    func_8001A1D0(arg0->unk_1C, temp_s0, func_80006314(0, 2, 0x80, 0xC0, 1));
+    func_8001A1D0(arg0->unk_1C, temp_s0, ColorBuffer_Alloc(0, 2, 0x80, 0xC0, 1));
 
     for (count = 0, i = 0; i < D_800AE540.unk_1194[0].unk_08[0]->unk_002; count++, i++) {
         func_8001A324(arg0->unk_1C, count, D_800AE540.unk_1194[0].unk_08[0]->unk_01C[i].unk_00.unk_00, 0);
@@ -1060,7 +1060,7 @@ void func_84B0A36C(unk_D_84B25A58* arg0) {
     unk_D_86002F58_004_000_010* temp_s0;
 
     temp_s0 = func_80019760(5);
-    func_8001A1D0(arg0->unk_1C, temp_s0, func_80006314(0, 2, 0x80, 0x60, 1));
+    func_8001A1D0(arg0->unk_1C, temp_s0, ColorBuffer_Alloc(0, 2, 0x80, 0x60, 1));
 
     for (count = 0, i = 0; i < D_800AE540.unk_1194[0].unk_08[0]->unk_002; count++, i++) {
         func_8001A324(arg0->unk_1C, count, D_800AE540.unk_1194[0].unk_08[0]->unk_01C[i].unk_00.unk_00, 0);
@@ -1172,8 +1172,8 @@ void func_84B0A9D0(unk_D_84B25A58* arg0) {
     arg0->unk_00 = 0;
     arg0->unk_01 = 0;
     arg0->unk_02 = 0;
-    arg0->unk_24 = func_80006314(0, 2, 0x40, 0x60, 0);
-    arg0->unk_28 = func_80006314(0, 2, 0x40, 0x60, 0);
+    arg0->unk_24 = ColorBuffer_Alloc(0, 2, 0x40, 0x60, 0);
+    arg0->unk_28 = ColorBuffer_Alloc(0, 2, 0x40, 0x60, 0);
 
     if ((D_800AE540.unk_0001 == 8) && (D_800AE540.unk_1194[0].unk_08[0]->unk_002 >= 4)) {
         arg0->unk_02 = 1;

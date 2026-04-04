@@ -154,20 +154,20 @@ s32 func_82B00A50(void) {
 }
 
 void func_82B00B3C(s16 arg0) {
-    func_800079C4();
+    Stage_ActivateFramebuffer();
     func_8001D924(D_82B01148);
     func_82B0029C();
     func_82B00994(arg0);
     if (arg0 == 8) {
         func_82B003B8((D_82B0114C * 0xA4) + 0x50, 0x180, 0x98, 0x30);
     }
-    func_80007778();
+    Stage_AdvanceFrame();
 }
 
 void func_82B00BC8(void) {
-    if (func_80007604 != NULL) {
-        func_80006C6C(8);
-        while (func_80007604() != 0) {
+    if (Stage_GetFadeMode != NULL) {
+        Stage_FadeOut(8);
+        while (Stage_GetFadeMode() != 0) {
             func_800290B4();
             func_82B00B3C(0);
         }
@@ -176,18 +176,18 @@ void func_82B00BC8(void) {
 
 void func_82B00C24(void) {
     if ((D_800AE540.unk_0000 == 7) || (D_800AE540.unk_0000 == 8)) {
-        func_8000D278(0x10);
+        Audio_StopTrack(0x10);
     }
 
-    func_80007990(0xFFFF);
-    func_80006CB4(8);
+    Stage_SetFillColor(0xFFFF);
+    Stage_FadeIn(8);
 
-    while (func_80007604() != 1) {
+    while (Stage_GetFadeMode() != 1) {
         func_800290B4();
         func_82B00B3C(0);
     }
 
-    func_800077B4(2);
+    Stage_AdvanceFrames(2);
 }
 
 s16 func_82B00CB4(void) {
@@ -264,15 +264,15 @@ s32 func_82B00E84(void) {
 
     if (D_800AE540.unk_0000 == 7) {
         if (sp1C.unk_04 < 8) {
-            func_8000D1F0(0x2A);
+            Audio_PlayTrack(0x2A);
         } else {
-            func_8000D1F0(0x27);
+            Audio_PlayTrack(0x27);
         }
     }
 
-    func_80007754();
+    Stage_SetSegments();
     sp26 = func_82B00CB4();
-    func_8000771C();
+    Stage_WaitFrame();
 
     main_pool_pop_state('menu');
 

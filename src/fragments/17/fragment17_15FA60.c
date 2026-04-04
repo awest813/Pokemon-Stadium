@@ -286,8 +286,8 @@ s32 func_86B00848(s32 arg0) {
 }
 
 void func_86B008C4(void) {
-    func_80007990(1);
-    func_80006CB4(0xC);
+    Stage_SetFillColor(1);
+    Stage_FadeIn(0xC);
     D_86B0E5D4->unk_04.unk_4C = 0;
     D_86B0E5D4->unk_04.unk_50 = 0;
 }
@@ -399,8 +399,8 @@ s32 func_86B00C34(void) {
 
         case 6:
             if (D_86B0E5D4->unk_04.unk_50++ >= 4) {
-                func_80007990(1);
-                func_80006C6C(0x20);
+                Stage_SetFillColor(1);
+                Stage_FadeOut(0x20);
                 D_86B0E5D4->unk_04.unk_4C = 7;
                 if ((D_86B0E5D4->unk_04.unk_44 == 0) || (D_86B0E5D4->unk_04.unk_44 == 1)) {
                     func_86B01AAC(&D_86B0E5D4->unk_04, D_86B0E5D4);
@@ -471,15 +471,15 @@ void func_86B01004(void) {
 }
 
 void func_86B0100C(void) {
-    func_800079C4();
-    func_8000699C(&gDisplayListHead, 1);
+    Stage_ActivateFramebuffer();
+    GFX_ClearScreen(&gDisplayListHead, 1);
     func_80015348();
     func_86B007EC();
     func_86B01C00(D_86B0E5E8);
     func_80015094(D_86B0E5D0);
     func_86B00794();
     func_86B02348();
-    func_80007778();
+    Stage_AdvanceFrame();
 }
 
 void func_86B0107C(void) {
@@ -545,10 +545,10 @@ s32 func_86B01190(void) {
     func_8002D510();
     D_86B0E5E0 = func_8002D5AC(0x14);
     func_86B0111C();
-    func_80007754();
+    Stage_SetSegments();
     func_86B0107C();
     func_86B010FC();
-    func_8000771C();
+    Stage_WaitFrame();
     func_8001E9CC();
 
     main_pool_pop_state('MINI');

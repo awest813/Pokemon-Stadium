@@ -188,7 +188,7 @@ void func_82C00CB4(s32 arg0) {
 }
 
 void func_82C00D98(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-    func_800079C4();
+    Stage_ActivateFramebuffer();
     func_82C00020();
     func_82C00658(arg0, arg1 == 0);
 
@@ -198,7 +198,7 @@ void func_82C00D98(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
         func_82C00CB4(arg1);
     }
 
-    func_80007778();
+    Stage_AdvanceFrame();
 }
 
 s32 func_82C00E10(s32 arg0) {
@@ -366,8 +366,8 @@ void func_82C012FC(void) {
     s16 i;
     s16 var_s1 = 0;
 
-    func_80006C6C(8);
-    while (func_80007604() != 0) {
+    Stage_FadeOut(8);
+    while (Stage_GetFadeMode() != 0) {
         func_800290B4();
         func_82C00D98(0, 0, 0, 0);
     }
@@ -399,22 +399,22 @@ void func_82C012FC(void) {
         func_82C00D98(i, 0, 0, 0);
     }
 
-    func_80007990(0xFFFF);
-    func_80006CB4(8);
+    Stage_SetFillColor(0xFFFF);
+    Stage_FadeIn(8);
 
-    while (func_80007604() != 1) {
+    while (Stage_GetFadeMode() != 1) {
         func_800290B4();
         func_82C00D98(0, 0, 0, 0);
     }
 }
 
 s32 func_82C014FC(UNUSED s32 arg0, UNUSED s32 arg1) {
-    unk_func_80007444* sp24;
+    RenderContext* sp24;
 
     main_pool_push_state('PREF');
 
-    func_80005E40(0x10000, 0);
-    sp24 = func_80007444(1, 0, 2, 0, 2, 1);
+    DLBuf_Init(0x10000, 0);
+    sp24 = Stage_CreateRenderContext(1, 0, 2, 0, 2, 1);
     func_8001E94C(0x1C, 0);
 
     ASSET_LOAD(D_1000000, common_menu1_ui, 0);
@@ -426,11 +426,11 @@ s32 func_82C014FC(UNUSED s32 arg0, UNUSED s32 arg1) {
     func_80028BE4();
     func_80028070(&D_82C01666);
     D_82C01664 = 0;
-    func_80007678(sp24);
+    Stage_SetRenderContext(sp24);
     func_82C012FC();
-    func_800076C0();
+    Stage_FreeRenderContext();
     func_800286D8();
-    func_80005EAC();
+    DLBuf_Free();
 
     main_pool_pop_state('PREF');
 

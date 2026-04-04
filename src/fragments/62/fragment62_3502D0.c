@@ -268,7 +268,7 @@ void func_8436643C(void) {
     f32 temp_fv0;
     f32 temp_fv1;
 
-    D_843A06A0.unk_0010 = func_80005F5C(sizeof(Mtx) * 1);
+    D_843A06A0.unk_0010 = DLBuf_AllocTemp(sizeof(Mtx) * 1);
     temp_v0 = func_8432FD64();
 
     tmp4 = temp_v0->unk_60.at.x;
@@ -311,7 +311,7 @@ Gfx* func_84366560(Gfx* arg0) {
     s32 idx;
 
     var_s4 = 0;
-    D_843A06A0.unk_000C = func_80005F5C(sizeof(Vtx) * 16 * 16);
+    D_843A06A0.unk_000C = DLBuf_AllocTemp(sizeof(Vtx) * 16 * 16);
 
     vtx = D_843A06A0.unk_000C;
     var_s2 = &D_843A06A0.unk_0014[0][0];

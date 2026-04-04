@@ -1489,16 +1489,16 @@ void func_87803368(s16 arg0) {
     Mtx* spC8;
     Mtx* temp_s3;
 
-    temp_s3 = (Mtx*)func_80005F5C(sizeof(Mtx) * 1);
-    spC8 = (Mtx*)func_80005F5C(sizeof(Mtx) * 36);
-    temp_s2 = (LookAt*)func_80005F5C(sizeof(LookAt) * 1);
+    temp_s3 = (Mtx*)DLBuf_AllocTemp(sizeof(Mtx) * 1);
+    spC8 = (Mtx*)DLBuf_AllocTemp(sizeof(Mtx) * 36);
+    temp_s2 = (LookAt*)DLBuf_AllocTemp(sizeof(LookAt) * 1);
 
     if (arg0 == 0) {
         for (x = 0; x < 4; x++) {
-            func_800067E4(&gDisplayListHead, (x * 0x36) + 0x44, 0, 0x16, 0xC0);
+            GFX_ClearDepth(&gDisplayListHead, (x * 0x36) + 0x44, 0, 0x16, 0xC0);
         }
     } else {
-        func_800067E4(&gDisplayListHead, 0x44, 0, 0xFC, 0xC0);
+        GFX_ClearDepth(&gDisplayListHead, 0x44, 0, 0xFC, 0xC0);
     }
 
     guLookAtReflect(&spD0, temp_s2, 0.0f, 0.0f, 320.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
@@ -1575,9 +1575,9 @@ void func_878038B8(s32 arg0, u32* arg1, u8 arg2, u8 arg3, s16 arg4, s16 arg5, s1
     Mtx* spC8;
     Mtx* spC4;
 
-    spCC = func_80005F5C(sizeof(Vtx) * 4);
-    spC8 = func_80005F5C(sizeof(Mtx) * 1);
-    spC4 = func_80005F5C(sizeof(Mtx) * 1);
+    spCC = DLBuf_AllocTemp(sizeof(Vtx) * 4);
+    spC8 = DLBuf_AllocTemp(sizeof(Mtx) * 1);
+    spC4 = DLBuf_AllocTemp(sizeof(Mtx) * 1);
 
     func_8001E680(&spCC[0], -sp64 + arg4, -sp5C + arg5, 0, 0, 0, 0xFF, 0xFF, 0xFF, 0xFF);
     func_8001E680(&spCC[1], -sp64 + arg6, -sp5C + arg5, 0, arg2 << 5, 0, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -1616,7 +1616,7 @@ void func_878038B8(s32 arg0, u32* arg1, u8 arg2, u8 arg3, s16 arg4, s16 arg5, s1
 #ifdef NON_MATCHING
 void func_87803EAC(u32* arg0, u16 arg1, UNUSED u16 arg2, u16 arg3, u16 arg4, u8 arg5, u8 arg6) {
     s32 sp68 = arg5 * arg6;
-    Vtx* temp_fp = func_80005F5C(sizeof(Vtx) * sp68);
+    Vtx* temp_fp = DLBuf_AllocTemp(sizeof(Vtx) * sp68);
     u8 i;
     u8 j;
 
@@ -1660,7 +1660,7 @@ void func_87804320(u8 arg0, s8 arg1, s8 arg2, s8 arg3, s8 arg4) {
     u8 var_s4;
     s8 temp_s2;
 
-    temp_v0 = func_80005F5C(sizeof(Mtx) * 1);
+    temp_v0 = DLBuf_AllocTemp(sizeof(Mtx) * 1);
     temp_s2 = arg1 + arg2 + arg3 + arg4;
 
     gSPDisplayList(gDisplayListHead++, D_8780EBA0);
@@ -1746,7 +1746,7 @@ void func_87804320(u8 arg0, s8 arg1, s8 arg2, s8 arg3, s8 arg4) {
 
         func_87803EAC(&D_3010000, 0x88, 0x34, 0x23, 0x1A, 5, 3);
 
-        spAC = func_80005F5C(sizeof(Vtx) * 4 * temp_s2);
+        spAC = DLBuf_AllocTemp(sizeof(Vtx) * 4 * temp_s2);
 
         spA0[0] = arg1;
         spA0[1] = arg2;

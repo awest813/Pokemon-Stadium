@@ -98,7 +98,7 @@ void func_800033C8(unk_func_80003680_sp300* arg0, u8* arg1) {
 extern u64 njpgdspMainTextStart[];
 extern u64 njpgdspMainDataStart[];
 
-void func_80003558(UnkStruct80001380* arg0, unk_func_80003680_sp90* arg1) {
+void func_80003558(RSPTask* arg0, unk_func_80003680_sp90* arg1) {
     arg0->task.t.type = 4;
     arg0->task.t.flags = 0;
     arg0->task.t.ucode_boot = rspbootTextStart;
@@ -140,7 +140,7 @@ void func_80003648(unk_func_80003680_sp90* arg0, u8(arg1)[2][0x80], unk_func_800
 }
 
 s32 func_80003680(u32 addr, s32 arg1, u8* arg2) {
-    UnkStruct80001380 sp318;
+    RSPTask sp318;
     unk_func_80003680_sp300 sp300;
     u8 sp200[2][0x80];
     JpegHuffmanTable spB0[4];
@@ -169,7 +169,7 @@ s32 func_80003680(u32 addr, s32 arg1, u8* arg2) {
     func_80003648(&sp90, &sp200, &sp300);
     func_80003558(&sp318, &sp90);
 
-    while (func_80001C90() == 0) {}
+    while (Display_IsReady() == 0) {}
 
     for (i = 0; i < sp300.height; i += 16) {
         for (j = 0; j < sp300.width; j += 16) {
@@ -182,9 +182,9 @@ s32 func_80003680(u32 addr, s32 arg1, u8* arg2) {
             }
 
             sp90.unk_00 = addr & 0x1FFFFFFF;
-            func_800053B4(&sp318, 1);
+            Sched_QueueTask(&sp318, 1);
             var_s4 = 1;
-            func_800049AC(&sp318);
+            RSPTask_WaitDone(&sp318);
 
             addr += 0x200;
             var_s2 += 0x200;

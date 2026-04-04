@@ -45,7 +45,7 @@ static Vtx* D_84103450;
 static GraphNode* D_84103454;
 static unk_D_86002F58_004_000 D_84103458[6];
 static s16 D_84103CC8;
-static unk_D_80068BB0* D_84103CD0[6];
+static ColorBuffer* D_84103CD0[6];
 static GraphNode* D_84103CE8;
 static GraphNode* D_84103CEC;
 static unk_func_80027FA0 D_84103CF0;
@@ -602,9 +602,9 @@ void func_841003F0(void) {
     }
 }
 
-void func_8410048C(unk_D_80068BB0* arg0, s16 arg1, s16 arg2) {
-    func_80006498(&gDisplayListHead, arg0);
-    func_8000699C(&gDisplayListHead, 0);
+void func_8410048C(ColorBuffer* arg0, s16 arg1, s16 arg2) {
+    ColorBuffer_Activate(&gDisplayListHead, arg0);
+    GFX_ClearScreen(&gDisplayListHead, 0);
 
     gSPDisplayList(gDisplayListHead++, D_8006F518);
     gDPSetBlendColor(gDisplayListHead++, 255, 255, 255, 128);
@@ -791,7 +791,7 @@ void func_841014E4(s32 arg0, s32 arg1, f32 arg2) {
         }
     }
 
-    func_800079C4();
+    Stage_ActivateFramebuffer();
     func_8001D924(D_84103448);
     func_80015094(D_84103454);
 
@@ -813,12 +813,12 @@ void func_841014E4(s32 arg0, s32 arg1, f32 arg2) {
 
     func_84100288(arg0);
     func_84101210(arg0);
-    func_80007778();
+    Stage_AdvanceFrame();
 }
 
-unk_D_80068BB0* func_84101894(u8* arg0, s16 arg1) {
+ColorBuffer* func_84101894(u8* arg0, s16 arg1) {
     s16 i;
-    unk_D_80068BB0* sp40 = func_80006314(0, 2, 0xA4, 0x7E, 1);
+    ColorBuffer* sp40 = ColorBuffer_Alloc(0, 2, 0xA4, 0x7E, 1);
     s32 var_s3;
 
     if (arg1 == 3) {
@@ -845,9 +845,9 @@ unk_D_80068BB0* func_84101894(u8* arg0, s16 arg1) {
     return sp40;
 }
 
-unk_D_80068BB0* func_84101A94(u8* arg0, s16 arg1) {
+ColorBuffer* func_84101A94(u8* arg0, s16 arg1) {
     s16 i;
-    unk_D_80068BB0* sp30 = func_80006314(0, 2, 0x8C, 0x6C, 1);
+    ColorBuffer* sp30 = ColorBuffer_Alloc(0, 2, 0x8C, 0x6C, 1);
     s32 var_v0;
 
     func_8410048C(sp30, 0x88, 0x68);
@@ -923,11 +923,11 @@ void func_84101EC8(void) {
     s16 i;
     s16 temp_v0;
 
-    func_8000D1F0(0x15);
+    Audio_PlayTrack(0x15);
     func_84101BFC();
     D_84103CC8 = 0;
-    func_80006C6C(0xA);
-    while (func_80007604() != 0) {
+    Stage_FadeOut(0xA);
+    while (Stage_GetFadeMode() != 0) {
         func_800290B4();
         func_841014E4(0, 0, 0.0f);
     }
@@ -964,14 +964,14 @@ void func_84101EC8(void) {
         func_841014E4(0, 0, 1.0f);
         func_841014E4(0, 0, 1.0f);
     } else {
-        func_80007990(0xFFFF);
-        func_8000D278(0x14);
-        func_80006CB4(0xA);
-        while (func_80007604() != 1) {
+        Stage_SetFillColor(0xFFFF);
+        Audio_StopTrack(0x14);
+        Stage_FadeIn(0xA);
+        while (Stage_GetFadeMode() != 1) {
             func_800290B4();
             func_841014E4(0xA, 0, 0.0f);
         }
-        func_800077B4(2);
+        Stage_AdvanceFrames(2);
     }
 }
 
@@ -1029,9 +1029,9 @@ s32 func_841022C0(s32 arg0, s32 arg1) {
     D_84103448 = func_8000484C(D_84103444, 3);
     D_84103CC8 = 0;
     func_84102140();
-    func_80007754();
+    Stage_SetSegments();
     func_84101EC8();
-    func_8000771C();
+    Stage_WaitFrame();
 
     main_pool_pop_state('PSSL');
 

@@ -10,12 +10,12 @@
 #include "profiler.h"
 #include "stdarg.h"
 
-typedef struct unk_D_80068CA0 {
-    /* 0x00 */ struct unk_D_80068CA0* next;
-    /* 0x04 */ s16 unk_04;
-    /* 0x06 */ s16 unk_06;
-    /* 0x08 */ s8 unk_08[4];
-} unk_D_80068CA0; // size = 0xC
+typedef struct DebugTextNode {
+    /* 0x00 */ struct DebugTextNode* next;
+    /* 0x04 */ s16 x;
+    /* 0x06 */ s16 y;
+    /* 0x08 */ s8 text[4];
+} DebugTextNode; // size = 0xC
 
 s32 gShowCPUProfiler = 0;
 s32 gShowMEMProfiler = 0;
@@ -96,8 +96,8 @@ static Gfx D_80068C68[] = {
 
 static s32 D_80068C98_Pad[2] = { 0, 0 };
 
-static unk_D_80068CA0* D_80068CA0 = NULL;
-static unk_D_80068CA0* D_80068CA4 = NULL;
+static DebugTextNode* D_80068CA0 = NULL;
+static DebugTextNode* D_80068CA4 = NULL;
 
 static s32 D_80068CA8 = 0;
 
@@ -170,46 +170,46 @@ static u32 D_80068CB0[] = {
     0x00111001, 0x11000011, 0x00011110, 0x11001101, 0x11001111, 0x10000110, 0x00110001, 0x10000000, 0x00000000,
 };
 
-static unk_D_800A7450 D_800A7450;
-static unk_func_80007444* D_800A7464;
+static FrameDesc D_800A7450;
+static RenderContext* D_800A7464;
 static Mtx D_800A7468;
 static char pad_D_800A74A8[0x8];
 static Gfx* D_800A74B0;
 
-s32 func_80007A58(void);
-void func_80007FC4(Gfx**, s32);
-void func_800080E0(void);
+s32 Stage_IsHighRes(void);
+void HAL_Flush(Gfx**, s32);
+void HAL_ClearPersistent(void);
 
-void func_800069F0(void) {
+void Stage_DrawFade(void) {
     u8 a;
     u8 b;
     u8 g;
     u8 r;
-    unk_func_80007444* v0 = D_800A7464;
+    RenderContext* v0 = D_800A7464;
 
-    if (D_800A7464->unk_11 == 0) {
+    if (D_800A7464->fade_mode == 0) {
         return;
     }
 
-    r = RGBA16_GET_R(D_800A7464->unk_14);
-    g = RGBA16_GET_G(D_800A7464->unk_14);
-    b = RGBA16_GET_B(D_800A7464->unk_14);
+    r = RGBA16_GET_R(D_800A7464->fill_color);
+    g = RGBA16_GET_G(D_800A7464->fill_color);
+    b = RGBA16_GET_B(D_800A7464->fill_color);
 
     r = (r << 3) | (r >> 2);
     g = (g << 3) | (g >> 2);
     b = (b << 3) | (b >> 2);
 
-    switch (D_800A7464->unk_11) {
+    switch (D_800A7464->fade_mode) {
         case 1:
             a = 255;
             break;
 
         case 2:
-            a = (255 - ((D_800A7464->unk_13 * 255) / D_800A7464->unk_12));
+            a = (255 - ((D_800A7464->fade_counter * 255) / D_800A7464->fade_duration));
             break;
 
         case 3:
-            a = ((D_800A7464->unk_13 * 255) / D_800A7464->unk_12);
+            a = ((D_800A7464->fade_counter * 255) / D_800A7464->fade_duration);
             break;
     }
 
@@ -218,67 +218,67 @@ void func_800069F0(void) {
         gSPDisplayList(gDisplayListHead++, D_80068C68);
     }
 
-    if (D_800A7464->unk_11 == 1) {
+    if (D_800A7464->fade_mode == 1) {
         return;
     }
 
-    D_800A7464->unk_13++;
-    if (D_800A7464->unk_13 == D_800A7464->unk_12) {
-        if (D_800A7464->unk_11 == 2) {
-            D_800A7464->unk_11 = 0;
+    D_800A7464->fade_counter++;
+    if (D_800A7464->fade_counter == D_800A7464->fade_duration) {
+        if (D_800A7464->fade_mode == 2) {
+            D_800A7464->fade_mode = 0;
         } else {
-            D_800A7464->unk_11 = 1;
+            D_800A7464->fade_mode = 1;
         }
     }
 }
 
-s32 func_80006C04(s32 arg0) {
+s32 Stage_StartFade(s32 arg0) {
     s32 ret = 0;
 
-    if ((D_800A7464 != NULL) && ((D_800A7464->unk_11 == 1) || (D_800A7464->unk_11 == 0))) {
-        if (D_800A7464->unk_11 == 1) {
-            D_800A7464->unk_11 = 2;
+    if ((D_800A7464 != NULL) && ((D_800A7464->fade_mode == 1) || (D_800A7464->fade_mode == 0))) {
+        if (D_800A7464->fade_mode == 1) {
+            D_800A7464->fade_mode = 2;
         } else {
-            D_800A7464->unk_11 = 3;
+            D_800A7464->fade_mode = 3;
         }
 
         ret = 1;
-        D_800A7464->unk_13 = 0;
-        D_800A7464->unk_12 = arg0;
+        D_800A7464->fade_counter = 0;
+        D_800A7464->fade_duration = arg0;
     }
 
     return ret;
 }
 
-s32 func_80006C6C(s32 arg0) {
+s32 Stage_FadeOut(s32 arg0) {
     s32 ret = 0;
 
-    if ((D_800A7464 != NULL) && (D_800A7464->unk_11 == 1)) {
-        ret = func_80006C04(arg0);
+    if ((D_800A7464 != NULL) && (D_800A7464->fade_mode == 1)) {
+        ret = Stage_StartFade(arg0);
     }
 
     return ret;
 }
 
-s32 func_80006CB4(s32 arg0) {
+s32 Stage_FadeIn(s32 arg0) {
     s32 ret = 0;
 
-    if ((D_800A7464 != NULL) && (D_800A7464->unk_11 == 0)) {
-        ret = func_80006C04(arg0);
+    if ((D_800A7464 != NULL) && (D_800A7464->fade_mode == 0)) {
+        ret = Stage_StartFade(arg0);
     }
 
     return ret;
 }
 
-void func_80006CF8(s32 arg0) {
+void Stage_SetFadeMode(s32 arg0) {
     if (D_800A7464 != NULL) {
-        D_800A7464->unk_11 = arg0;
-        D_800A7464->unk_13 = 0;
-        D_800A7464->unk_12 = 0;
+        D_800A7464->fade_mode = arg0;
+        D_800A7464->fade_counter = 0;
+        D_800A7464->fade_duration = 0;
     }
 }
 
-void func_80006D28(u32 arg0, u32 arg1) {
+void Stage_SetProfilerFlags(u32 arg0, u32 arg1) {
     if (arg0 < 3) {
         gShowCPUProfiler = arg0;
     }
@@ -288,7 +288,7 @@ void func_80006D28(u32 arg0, u32 arg1) {
     }
 }
 
-void func_80006D50(void) {
+void Stage_InitRDP(void) {
     gDPPipeSync(gDisplayListHead++);
     gDPPipelineMode(gDisplayListHead++, G_PM_1PRIMITIVE);
     gDPSetTextureLOD(gDisplayListHead++, G_TL_TILE);
@@ -307,45 +307,45 @@ void func_80006D50(void) {
     gDPPipeSync(gDisplayListHead++);
 }
 
-void func_80006F34(void) {
+void Stage_InitRSP(void) {
     gSPClearGeometryMode(gDisplayListHead++, G_SHADE | G_CULL_BOTH | G_FOG | G_LIGHTING | G_TEXTURE_GEN |
                                                  G_TEXTURE_GEN_LINEAR | G_LOD | G_SHADING_SMOOTH);
     gSPSetGeometryMode(gDisplayListHead++, G_SHADE | G_CULL_BACK | G_SHADING_SMOOTH);
     gSPTexture(gDisplayListHead++, 0, 0, 0, G_TX_RENDERTILE, G_OFF);
 }
 
-void func_80006F98(void) {
-    func_80006450();
+void Stage_InitFrame(void) {
+    GFX_ClearActiveBuffer();
     Memmap_SetSegmentMap(0, 0x80000000, osMemSize);
     Memmap_SetSegments(&gDisplayListHead);
-    func_80006D50();
-    func_80006F34();
+    Stage_InitRDP();
+    Stage_InitRSP();
 }
 
-void func_80006FE8(void) {
-    func_80006498(&gDisplayListHead, D_800A7464->unk_18[D_800A7464->unk_16]);
+void Stage_BeginFrameDraw(void) {
+    ColorBuffer_Activate(&gDisplayListHead, D_800A7464->bufs[D_800A7464->buf_index]);
     guOrtho(&D_800A7468, 0.0f, 320.0f, 0.0f, 240.0f, -2.0f, 2.0f, 1.0f);
-    func_80006D50();
-    func_80006F34();
+    Stage_InitRDP();
+    Stage_InitRSP();
 
     gSPMatrix(gDisplayListHead++, (u32)&D_80068BC8 & 0x1FFFFFFF, G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_MODELVIEW);
     gSPMatrix(gDisplayListHead++, (u32)&D_800A7468 & 0x1FFFFFFF, G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_PROJECTION);
     gSPPerspNormalize(gDisplayListHead++, 0xFFFF);
 
-    if (D_800A7464->unk_0C == 1) {
+    if (D_800A7464->res_mode == 1) {
         gSPViewport(gDisplayListHead++, (u32)&D_80068C18 & 0x1FFFFFFF);
     } else {
         gSPViewport(gDisplayListHead++, (u32)&D_80068C08 & 0x1FFFFFFF);
     }
 
-    func_800060E0(&gDisplayListHead, 0, 0, D_800A7464->unk_00, D_800A7464->unk_02);
-    func_800069F0();
+    GFX_SetScissor(&gDisplayListHead, 0, 0, D_800A7464->width, D_800A7464->height);
+    Stage_DrawFade();
 
     if (gShowCPUProfiler != 0) {
         print_profiler_metrics();
     }
 
-    func_80007FC4(&gDisplayListHead, func_80007A58());
+    HAL_Flush(&gDisplayListHead, Stage_IsHighRes());
 
     if (gShowCPUProfiler != 0) {
         draw_profiler(gShowCPUProfiler - 1);
@@ -358,82 +358,82 @@ void func_80006FE8(void) {
     gDPFullSync(gDisplayListHead++);
     gSPEndDisplayList(gDisplayListHead++);
 
-    func_80005F5C(0);
+    DLBuf_AllocTemp(0);
 }
 
-void func_80007234(void) {
-    func_80005EDC();
-    func_80006F98();
+void Stage_EndFrame(void) {
+    DLBuf_Swap();
+    Stage_InitFrame();
 }
 
-void func_8000725C(void) {
-    func_80006FE8();
-    D_800A7450.unk_00 = D_800A7464->unk_10;
-    D_800A7450.unk_01 = D_800A7464->unk_0C;
+void Stage_SwapBuffers(void) {
+    Stage_BeginFrameDraw();
+    D_800A7450.depth_type = D_800A7464->depth_type;
+    D_800A7450.res_mode = D_800A7464->res_mode;
     D_800A7450.unk_02 = D_800A7464->unk_0D;
-    D_800A7450.unk_03 = D_800A7464->unk_16;
-    D_800A7450.unk_0C = D_800A7464->unk_18[D_800A7464->unk_16];
-    func_80005F1C(&D_800A7450.unk_04, &D_800A7450.unk_08);
-    D_800A7464->unk_16++;
-    if (D_800A7464->unk_16 == D_800A7464->unk_0E) {
-        D_800A7464->unk_16 = 0;
+    D_800A7450.buf_index = D_800A7464->buf_index;
+    D_800A7450.framebuffer = D_800A7464->bufs[D_800A7464->buf_index];
+    DLBuf_GetInfo(&D_800A7450.dl_start, &D_800A7450.dl_end);
+    D_800A7464->buf_index++;
+    if (D_800A7464->buf_index == D_800A7464->num_buffers) {
+        D_800A7464->buf_index = 0;
     }
 }
 
-void func_80007304(void) {
-    func_800079C4();
+void Stage_ClearScreen(void) {
+    Stage_ActivateFramebuffer();
 
     gDPPipeSync(gDisplayListHead++);
     gDPSetRenderMode(gDisplayListHead++, G_RM_OPA_SURF, G_RM_OPA_SURF2);
     gDPSetCycleType(gDisplayListHead++, G_CYC_FILL);
-    gDPSetFillColor(gDisplayListHead++, (D_800A7464->unk_14 << 0x10) | D_800A7464->unk_14);
-    gDPFillRectangle(gDisplayListHead++, D_800A7464->unk_04, D_800A7464->unk_08, D_800A7464->unk_06,
-                     D_800A7464->unk_0A);
+    gDPSetFillColor(gDisplayListHead++, (D_800A7464->fill_color << 0x10) | D_800A7464->fill_color);
+    gDPFillRectangle(gDisplayListHead++, D_800A7464->scissor_x1, D_800A7464->scissor_y1, D_800A7464->scissor_x2,
+                     D_800A7464->scissor_y2);
     gDPPipeSync(gDisplayListHead++);
     gDPSetCycleType(gDisplayListHead++, G_CYC_1CYCLE);
 }
 
-unk_func_80007444* func_80007444(s8 arg0, s8 arg1, s8 arg2, s8 arg3, s8 arg4, s32 arg5) {
-    unk_func_80007444* temp_v0 = main_pool_alloc(sizeof(unk_func_80007444), 0);
+RenderContext* Stage_CreateRenderContext(s8 arg0, s8 arg1, s8 arg2, s8 arg3, s8 arg4, s32 arg5) {
+    RenderContext* temp_v0 = main_pool_alloc(sizeof(RenderContext), 0);
 
     if (temp_v0 != NULL) {
         if (arg0 == 1) {
-            temp_v0->unk_00 = 0x280, temp_v0->unk_02 = 0x1E0;
+            temp_v0->width = 0x280, temp_v0->height = 0x1E0;
         } else {
-            temp_v0->unk_00 = 0x140, temp_v0->unk_02 = 0xF0;
+            temp_v0->width = 0x140, temp_v0->height = 0xF0;
         }
 
-        temp_v0->unk_11 = 1;
-        temp_v0->unk_0C = arg0;
+        temp_v0->fade_mode = 1;
+        temp_v0->res_mode = arg0;
         temp_v0->unk_0D = arg1;
-        temp_v0->unk_0E = arg2;
-        temp_v0->unk_0F = arg3;
-        temp_v0->unk_10 = arg4;
-        temp_v0->unk_14 = func_80001B2C();
-        temp_v0->unk_16 = 0;
-        temp_v0->unk_04 = 0;
-        temp_v0->unk_06 = temp_v0->unk_00 - 1;
-        temp_v0->unk_08 = 0;
-        temp_v0->unk_0A = temp_v0->unk_02 - 1;
+        temp_v0->num_buffers = arg2;
+        temp_v0->depth_flag = arg3;
+        temp_v0->depth_type = arg4;
+        temp_v0->fill_color = Display_GetBorderColor();
+        temp_v0->buf_index = 0;
+        temp_v0->scissor_x1 = 0;
+        temp_v0->scissor_x2 = temp_v0->width - 1;
+        temp_v0->scissor_y1 = 0;
+        temp_v0->scissor_y2 = temp_v0->height - 1;
 
-        temp_v0->unk_18[0] = 0;
-        temp_v0->unk_18[1] = 0;
-        temp_v0->unk_18[2] = 0;
+        temp_v0->bufs[0] = 0;
+        temp_v0->bufs[1] = 0;
+        temp_v0->bufs[2] = 0;
 
         if (arg5 != 0) {
             s32 i;
 
-            for (i = 0; i < temp_v0->unk_0E; i++) {
-                temp_v0->unk_18[i] =
-                    func_80006314(0, IMAGE_SIZE_BITS_16b, temp_v0->unk_00, temp_v0->unk_02, MEMORY_POOL_RIGHT);
+            for (i = 0; i < temp_v0->num_buffers; i++) {
+                temp_v0->bufs[i] =
+                    ColorBuffer_Alloc(0, IMAGE_SIZE_BITS_16b, temp_v0->width, temp_v0->height, MEMORY_POOL_RIGHT);
             }
 
-            if (temp_v0->unk_0F == 1) {
+            if (temp_v0->depth_flag == 1) {
                 void* temp_s3 =
-                    func_80006314(0, IMAGE_SIZE_BITS_16b, temp_v0->unk_00, temp_v0->unk_02, MEMORY_POOL_LEFT);
+                    ColorBuffer_Alloc(0, IMAGE_SIZE_BITS_16b, temp_v0->width, temp_v0->height, MEMORY_POOL_LEFT);
 
-                for (i = 0; i < temp_v0->unk_0E; i++) {
-                    func_80006414(temp_v0->unk_18[i], temp_s3);
+                for (i = 0; i < temp_v0->num_buffers; i++) {
+                    ColorBuffer_AttachDepth(temp_v0->bufs[i], temp_s3);
                 }
             }
         }
@@ -442,85 +442,85 @@ unk_func_80007444* func_80007444(s8 arg0, s8 arg1, s8 arg2, s8 arg3, s8 arg4, s3
     return temp_v0;
 }
 
-unk_func_80007444* func_800075F8(void) {
+RenderContext* Stage_GetRenderContext(void) {
     return D_800A7464;
 }
 
-s32 func_80007604(void) {
-    return D_800A7464->unk_11;
+s32 Stage_GetFadeMode(void) {
+    return D_800A7464->fade_mode;
 }
 
-void func_80007614(unk_func_80007444* arg0) {
-    arg0->unk_11 = D_800A7464->unk_11;
-    arg0->unk_12 = D_800A7464->unk_12;
-    arg0->unk_13 = D_800A7464->unk_13;
-    arg0->unk_14 = D_800A7464->unk_14;
+void Stage_SwapRenderContext(RenderContext* arg0) {
+    arg0->fade_mode = D_800A7464->fade_mode;
+    arg0->fade_duration = D_800A7464->fade_duration;
+    arg0->fade_counter = D_800A7464->fade_counter;
+    arg0->fill_color = D_800A7464->fill_color;
 
-    if (D_800A7464->unk_16 < arg0->unk_0E) {
-        arg0->unk_16 = D_800A7464->unk_16;
+    if (D_800A7464->buf_index < arg0->num_buffers) {
+        arg0->buf_index = D_800A7464->buf_index;
     } else {
-        arg0->unk_16 = 0;
+        arg0->buf_index = 0;
     }
 
     D_800A7464 = arg0;
 }
 
-void func_80007678(unk_func_80007444* arg0) {
+void Stage_SetRenderContext(RenderContext* arg0) {
     D_800A7464 = arg0;
-    func_80001BA8(NULL);
-    func_80001B7C();
-    func_80001AD4(arg0->unk_14);
-    func_80007234();
+    Display_SendFrame(NULL);
+    Display_WaitForFrame();
+    Display_SetBorderColor(arg0->fill_color);
+    Stage_EndFrame();
 }
 
-void func_800076C0(void) {
+void Stage_FreeRenderContext(void) {
     if (D_800A7464 != NULL) {
-        func_80007304();
-        func_8000725C();
-        func_80001BA8(&D_800A7450);
-        func_80001B7C();
-        func_80001BD4(2);
+        Stage_ClearScreen();
+        Stage_SwapBuffers();
+        Display_SendFrame(&D_800A7450);
+        Display_WaitForFrame();
+        Display_FlushFrames(2);
         D_800A7464 = NULL;
     }
 }
 
-void func_8000771C(void) {
-    while (func_80001C90() == 0) {}
+void Stage_WaitFrame(void) {
+    while (Display_IsReady() == 0) {}
 }
 
-void func_80007754(void) {
+void Stage_SetSegments(void) {
     Memmap_SetSegments(&gDisplayListHead);
 }
 
-s32 func_80007778(void) {
-    func_8000725C();
-    func_80001BA8(&D_800A7450);
-    func_80001B7C();
-    func_80007234();
+s32 Stage_AdvanceFrame(void) {
+    Stage_SwapBuffers();
+    Display_SendFrame(&D_800A7450);
+    Display_WaitForFrame();
+    Stage_EndFrame();
 }
 
-void func_800077B4(s32 arg0) {
+void Stage_AdvanceFrames(s32 arg0) {
     while (arg0-- > 0) {
-        func_80007304();
-        func_8000725C();
-        func_80001BA8(&D_800A7450);
-        func_80001B7C();
-        func_80007234();
+        Stage_ClearScreen();
+        Stage_SwapBuffers();
+        Display_SendFrame(&D_800A7450);
+        Display_WaitForFrame();
+        Stage_EndFrame();
     }
 }
 
-s32 func_80007820(u32 arg0, s32 (*arg1)(u8)) {
+s32 Stage_RunLoop(u32 arg0, s32 (*arg1)(u8)) {
     s32 var_s1 = 0;
 
     if (arg0 == 0) {
         while (var_s1 == 0) {
-            var_s1 = arg1(D_800A7464->unk_11);
-            func_80007778();
+            var_s1 = arg1(D_800A7464->fade_mode);
+            Stage_AdvanceFrame();
         }
     } else {
         while (arg0-- > 0) {
-            var_s1 = arg1(D_800A7464->unk_11);
-            func_80007778();
+            var_s1 = arg1(D_800A7464->fade_mode);
+            Stage_AdvanceFrame();
             if (var_s1 != 0) {
                 break;
             }
@@ -529,67 +529,67 @@ s32 func_80007820(u32 arg0, s32 (*arg1)(u8)) {
     return var_s1;
 }
 
-s32 func_800078D4(s32 (*arg0)(u8), s32 arg1, s32 arg2) {
+s32 Stage_RunFadeLoop(s32 (*arg0)(u8), s32 arg1, s32 arg2) {
     s32 temp_v0;
     s32 var_s0;
     s32 var_s2;
 
     var_s2 = 0;
     var_s0 = 1;
-    func_80006C6C(arg1);
+    Stage_FadeOut(arg1);
 
     while (var_s0 != 0) {
-        temp_v0 = arg0(D_800A7464->unk_11);
+        temp_v0 = arg0(D_800A7464->fade_mode);
         if (var_s2 == 0) {
             if (temp_v0 != 0) {
                 var_s2 = temp_v0;
-                func_80006CB4(arg2);
+                Stage_FadeIn(arg2);
             }
-        } else if (D_800A7464->unk_11 == 1) {
+        } else if (D_800A7464->fade_mode == 1) {
             var_s0 = 0;
         }
-        func_80007778();
+        Stage_AdvanceFrame();
     }
 
     return var_s2;
 }
 
-void func_80007990(u16 arg0) {
+void Stage_SetFillColor(u16 arg0) {
     if (D_800A7464 != NULL) {
-        D_800A7464->unk_14 = arg0;
-        func_80001AD4(arg0);
+        D_800A7464->fill_color = arg0;
+        Display_SetBorderColor(arg0);
     }
 }
 
-void func_800079C4(void) {
+void Stage_ActivateFramebuffer(void) {
     if (D_800A7464 != NULL) {
-        func_80006498(&gDisplayListHead, D_800A7464->unk_18[D_800A7464->unk_16]);
+        ColorBuffer_Activate(&gDisplayListHead, D_800A7464->bufs[D_800A7464->buf_index]);
 
         gDPSetCycleType(gDisplayListHead++, G_CYC_1CYCLE);
     }
 }
 
-unk_D_80068BB0* func_80007A2C(void) {
-    unk_D_80068BB0* ret = NULL;
+ColorBuffer* Stage_GetFramebuffer(void) {
+    ColorBuffer* ret = NULL;
 
     if (D_800A7464 != NULL) {
-        ret = D_800A7464->unk_18[D_800A7464->unk_16];
+        ret = D_800A7464->bufs[D_800A7464->buf_index];
     }
 
     return ret;
 }
 
-s32 func_80007A58(void) {
+s32 Stage_IsHighRes(void) {
     s32 ret = 0;
 
     if (D_800A7464 != NULL) {
-        ret = D_800A7464->unk_0C == 1;
+        ret = D_800A7464->res_mode == 1;
     }
 
     return ret;
 }
 
-void func_80007A80(void) {
+void HAL_BeginDraw(void) {
     gDPPipeSync(D_800A74B0++);
     gDPSetCycleType(D_800A74B0++, G_CYC_1CYCLE);
     gDPSetTexturePersp(D_800A74B0++, G_TP_NONE);
@@ -601,7 +601,7 @@ void func_80007A80(void) {
                            G_TX_NOMIRROR | G_TX_WRAP, G_TX_NOMIRROR | G_TX_WRAP, 7, 6, G_TX_NOLOD, G_TX_NOLOD);
 }
 
-void func_80007C3C(void) {
+void HAL_EndDraw(void) {
     gDPPipeSync(D_800A74B0++);
     gDPSetTexturePersp(D_800A74B0++, G_TP_PERSP);
     gDPSetTextureFilter(D_800A74B0++, G_TF_BILERP);
@@ -609,57 +609,57 @@ void func_80007C3C(void) {
     gSPTexture(D_800A74B0++, 0xFFFF, 0xFFFF, 0, G_TX_RENDERTILE, G_OFF);
 }
 
-void func_80007CD8(s16 arg0, s16 arg1, s16 arg2) {
+void HAL_DrawCharLow(s16 arg0, s16 arg1, s16 arg2) {
     gSPTextureRectangle(D_800A74B0++, arg0 * 4, arg1 * 4, (arg0 + 6) << 2, (arg1 + 8) << 2, G_TX_RENDERTILE,
                         ((arg2 % 16) * 6) << 5, (u16)(arg2 / 16) << 8, 0x0400, 0x0400);
 }
 
-void func_80007DE4(s16 arg0, s16 arg1, s16 arg2) {
+void HAL_DrawCharHigh(s16 arg0, s16 arg1, s16 arg2) {
     gSPTextureRectangle(D_800A74B0++, arg0 * 8, arg1 * 8, (arg0 + 6) << 3, (arg1 + 8) << 3, G_TX_RENDERTILE,
                         ((arg2 % 16) * 6) << 5, (u16)(arg2 / 16) << 8, 0x0200, 0x0200);
 }
 
-void func_80007EF0(s16 arg0, s16 arg1, s8* arg2, s32 arg3) {
+void HAL_DrawString(s16 arg0, s16 arg1, s8* arg2, s32 arg3) {
     s32 temp_s0;
 
     while (*arg2 != 0) {
         temp_s0 = (*arg2++ & 0x7F) - 0x20;
         if (temp_s0 != 0) {
             if (arg3 == 0) {
-                func_80007CD8(arg0, arg1, temp_s0);
+                HAL_DrawCharLow(arg0, arg1, temp_s0);
             }
 
             if (arg3 == 1) {
-                func_80007DE4(arg0, arg1, temp_s0);
+                HAL_DrawCharHigh(arg0, arg1, temp_s0);
             }
         }
         arg0 += 6;
     }
 }
 
-void func_80007FC4(Gfx** arg0, s32 arg1) {
-    unk_D_80068CA0* var_s0 = D_80068CA0;
-    unk_D_80068CA0* var_s2 = D_80068CA4;
+void HAL_Flush(Gfx** arg0, s32 arg1) {
+    DebugTextNode* var_s0 = D_80068CA0;
+    DebugTextNode* var_s2 = D_80068CA4;
 
     D_800A74B0 = *arg0;
 
     if ((var_s0 != NULL) || (var_s2 != NULL)) {
-        func_80007A80();
+        HAL_BeginDraw();
 
         while (var_s0 != NULL) {
-            unk_D_80068CA0* next = var_s0->next;
+            DebugTextNode* next = var_s0->next;
 
-            func_80007EF0(var_s0->unk_04, var_s0->unk_06, var_s0->unk_08, arg1);
+            HAL_DrawString(var_s0->x, var_s0->y, var_s0->text, arg1);
             Util_Free(var_s0);
             var_s0 = next;
         }
 
         while (var_s2 != NULL) {
-            func_80007EF0(var_s2->unk_04, var_s2->unk_06, var_s2->unk_08, arg1);
+            HAL_DrawString(var_s2->x, var_s2->y, var_s2->text, arg1);
             var_s2 = var_s2->next;
         }
 
-        func_80007C3C();
+        HAL_EndDraw();
         D_80068CA0 = NULL;
     }
 
@@ -669,16 +669,16 @@ void func_80007FC4(Gfx** arg0, s32 arg1) {
     if (D_80068CA8 >= 0x384) {
         D_80068CA8 = 0;
         if (D_80068CA4 != NULL) {
-            func_800080E0();
+            HAL_ClearPersistent();
         }
     }
 }
 
-void func_800080E0(void) {
-    unk_D_80068CA0* var_s0 = D_80068CA4;
+void HAL_ClearPersistent(void) {
+    DebugTextNode* var_s0 = D_80068CA4;
 
     while (var_s0 != NULL) {
-        unk_D_80068CA0* next = var_s0->next;
+        DebugTextNode* next = var_s0->next;
 
         Util_Free(var_s0);
         var_s0 = next;
@@ -687,27 +687,27 @@ void func_800080E0(void) {
     D_80068CA4 = NULL;
 }
 
-char* func_80008130(char* buffer, const char* data, size_t size) {
+char* HAL_AppendStr(char* buffer, const char* data, size_t size) {
     return (char*)memcpy(buffer, data, size) + size;
 }
 
 s32 HAL_Printf(s16 x, s16 y, const char* fmt, ...) {
     s32 sp124;
     char sp20[0x104];
-    unk_D_80068CA0* sp1C;
+    DebugTextNode* sp1C;
     va_list args;
 
     va_start(args, fmt);
 
-    sp124 = _Printf(func_80008130, sp20, fmt, args);
+    sp124 = _Printf(HAL_AppendStr, sp20, fmt, args);
 
     if (sp124 > 0) {
-        sp1C = Util_Malloc(sp124 + sizeof(unk_D_80068CA0));
+        sp1C = Util_Malloc(sp124 + sizeof(DebugTextNode));
         if (sp1C != NULL) {
-            sp1C->unk_04 = x;
-            sp1C->unk_06 = y;
-            memcpy(sp1C->unk_08, &sp20, sp124);
-            sp1C->unk_08[sp124] = 0;
+            sp1C->x = x;
+            sp1C->y = y;
+            memcpy(sp1C->text, &sp20, sp124);
+            sp1C->text[sp124] = 0;
             sp1C->next = D_80068CA0;
             D_80068CA0 = sp1C;
         }
@@ -718,23 +718,23 @@ s32 HAL_Printf(s16 x, s16 y, const char* fmt, ...) {
     return sp124;
 }
 
-s32 func_800081F8(s16 x, s16 y, const char* fmt, ...) {
+s32 HAL_Printf_Persist(s16 x, s16 y, const char* fmt, ...) {
     s32 sp124;
     char sp20[0x104];
-    unk_D_80068CA0* sp1C;
+    DebugTextNode* sp1C;
     va_list args;
 
     va_start(args, fmt);
 
     D_80068CA8 = 0;
-    sp124 = _Printf(func_80008130, sp20, fmt, args);
+    sp124 = _Printf(HAL_AppendStr, sp20, fmt, args);
     if (sp124 > 0) {
-        sp1C = Util_Malloc(sp124 + sizeof(unk_D_80068CA0));
+        sp1C = Util_Malloc(sp124 + sizeof(DebugTextNode));
         if (sp1C != NULL) {
-            sp1C->unk_04 = x;
-            sp1C->unk_06 = y;
-            memcpy(sp1C->unk_08, &sp20, sp124);
-            sp1C->unk_08[sp124] = 0;
+            sp1C->x = x;
+            sp1C->y = y;
+            memcpy(sp1C->text, &sp20, sp124);
+            sp1C->text[sp124] = 0;
             sp1C->next = D_80068CA4;
             D_80068CA4 = sp1C;
         }

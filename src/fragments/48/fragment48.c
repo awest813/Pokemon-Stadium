@@ -103,10 +103,10 @@ void func_83900180(void) {
 }
 
 void func_839002B8(void) {
-    func_800079C4();
+    Stage_ActivateFramebuffer();
     func_8001D924(D_839026F8);
     func_83900180();
-    func_80007778();
+    Stage_AdvanceFrame();
 }
 
 s32 func_839002F4(void) {
@@ -157,7 +157,7 @@ s32 func_839003DC(void) {
 
     switch (D_839026FC) {
         case 0:
-            if (func_80007604() == 0) {
+            if (Stage_GetFadeMode() == 0) {
                 D_839026FC = 1;
             }
             break;
@@ -165,12 +165,12 @@ s32 func_839003DC(void) {
         case 1:
             if (func_839002F4() != 0) {
                 D_839026FC = 2;
-                func_80006CB4(0xF);
+                Stage_FadeIn(0xF);
             }
             break;
 
         case 2:
-            if (func_80007604() == 1) {
+            if (Stage_GetFadeMode() == 1) {
                 sp1C = 0;
             }
             break;
@@ -185,7 +185,7 @@ void func_83900484(void) {
 }
 
 void func_839004B4(void) {
-    func_80006C6C(0xF);
+    Stage_FadeOut(0xF);
     do {
         func_83900484();
         func_839002B8();
@@ -193,23 +193,23 @@ void func_839004B4(void) {
 }
 
 s32 func_839004F4(s32 arg0, s32 arg1) {
-    unk_func_80007444* sp24;
+    RenderContext* sp24;
 
     main_pool_push_state('GLDB');
 
-    func_80005E40(0x10000, 0);
-    sp24 = func_80007444(1, 0, 2, 0, 2, 1);
+    DLBuf_Init(0x10000, 0);
+    sp24 = Stage_CreateRenderContext(1, 0, 2, 0, 2, 1);
     func_8001E94C(0x18, 0);
     ASSET_LOAD(D_1000000, common_menu1_ui, 0);
     ASSET_LOAD(D_3000000, gallery_ui, 0);
     D_839026F8 = func_8000484C(ASSET_LOAD2(backgrounds, 1, 1), 0x14);
     func_83900038();
-    func_80007678(sp24);
+    Stage_SetRenderContext(sp24);
     func_839004B4();
     func_839000E4();
-    func_800076C0();
+    Stage_FreeRenderContext();
     func_8001E9CC();
-    func_80005EAC();
+    DLBuf_Free();
 
     main_pool_pop_state('GLDB');
 

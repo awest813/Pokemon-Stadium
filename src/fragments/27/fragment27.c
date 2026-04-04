@@ -628,7 +628,7 @@ s32 func_88602694(unk_func_88205880_0098_008_050* arg0, s32 arg1, s32 arg2) {
     }
 
     var_s1 = func_8001B9D4(arg0->unk_34);
-    func_800079C4();
+    Stage_ActivateFramebuffer();
 
     gDPPipeSync(gDisplayListHead++);
     gDPSetCycleType(gDisplayListHead++, G_CYC_COPY);

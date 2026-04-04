@@ -406,7 +406,7 @@ void func_868064BC(unk_D_868084D8* arg0) {
     }
 
     func_86805FFC(arg0);
-    gfx = func_80005F5C(sizeof(Gfx) * 16);
+    gfx = DLBuf_AllocTemp(sizeof(Gfx) * 16);
     arg0->unk_3C = gfx;
 
     gSPVertex(gfx++, D_86807340, 4, 0);

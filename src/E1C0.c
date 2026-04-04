@@ -19,11 +19,11 @@ void func_8000D5C0(UNUSED void* arg0) {
     void (*func)(void*) = Util_ConvertAddrToVirtAddr(&func_81206F38);
 
     __osSetFpcCsr(0x01000C01);
-    func_80004CC0(D_800AA664, 0, 1);
-    func_80005328(D_800AA664);
+    SchedClient_Init(D_800AA664, 0, 1);
+    Sched_RegisterClient(D_800AA664);
 
     while (1) {
-        func_80004CF4(D_800AA664);
+        SchedClient_WaitMsg(D_800AA664);
         if (D_800A62E0.unk_A38 >= 0x15) {
             continue;
         }
@@ -36,13 +36,13 @@ void func_8000D678(UNUSED void* arg0) {
     void (*func2)(void* func) = Util_ConvertAddrToVirtAddr(&func_81206E64);
 
     __osSetFpcCsr(0x01000C01);
-    func_80004CC0(D_800AA660, 0, 1);
-    func_80005328(D_800AA660);
+    SchedClient_Init(D_800AA660, 0, 1);
+    Sched_RegisterClient(D_800AA660);
     func1(D_800AA660);
     osStartThread(&D_800AA664->thread);
 
     while (1) {
-        func_80004CF4(D_800AA660);
+        SchedClient_WaitMsg(D_800AA660);
         if (D_800A62E0.unk_A38 >= 0x15) {
             continue;
         }
@@ -81,9 +81,9 @@ void func_8000D8DC(UnkInputStruct8000D738* arg0) {
     *arg0 = D_800AA660->unk_2204;
     func_8000B318(D_800AA668);
     osViBlack(1U);
-    func_80001C64();
-    func_80005370(D_800AA660);
-    func_80005370(D_800AA664);
+    VI_RestoreMode();
+    Sched_UnregisterClient(D_800AA660);
+    Sched_UnregisterClient(D_800AA664);
     osDestroyThread(&D_800AA660->thread);
     osDestroyThread(&D_800AA664->thread);
     main_pool_pop_state('GBEM');

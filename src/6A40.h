@@ -3,11 +3,11 @@
 
 #include "global.h"
 
-void func_80005E40(u32 arg0, s32 arg1);
-void func_80005EAC(void);
-void func_80005EDC(void);
-void func_80005F1C(Gfx** arg0, Gfx** arg1);
-void* func_80005F5C(s32 arg0);
-s32 func_80005F9C(void);
+void DLBuf_Init(u32 arg0, s32 arg1);
+void DLBuf_Free(void);
+void DLBuf_Swap(void);
+void DLBuf_GetInfo(Gfx** arg0, Gfx** arg1);
+void* DLBuf_AllocTemp(s32 arg0);
+s32 DLBuf_GetRemaining(void);
 
 #endif // _6A40_H_

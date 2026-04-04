@@ -27,7 +27,7 @@ void func_84B0345C(unk_D_84B19910* arg0) {
                         G_TX_NOMIRROR | G_TX_CLAMP, 5, 5, G_TX_NOLOD, G_TX_NOLOD);
 
     for (i = 0; i < 400; i++) {
-        temp_v0_12 = func_80005F5C(sizeof(Vtx) * 4);
+        temp_v0_12 = DLBuf_AllocTemp(sizeof(Vtx) * 4);
         if (temp_v0_12 != NULL) {
             ptr2 = &(i + ((void)0, arg0))->unk_02;
             func_8001E680(&temp_v0_12[0], ptr2->unk_00 - 8, ptr2->unk_02 + 8, ptr2->unk_04, 0, 0, 0xFF, 0xFF, 0x96,

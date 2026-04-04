@@ -11,11 +11,11 @@
 #include "lib/ultralib/src/libc/xstdio.h"
 
 void func_8001C330(s16 arg0, s16 arg1, s16 arg2, s16 arg3, s16 arg4, s16 arg5, s16 arg6, s16 arg7, s32 arg8) {
-    unk_D_800A7440 sp30;
+    ScissorRect sp30;
 
-    func_80005FC0(&sp30, arg0, arg1, (arg0 + arg2) - 1, (arg1 + arg3) - 1);
+    ScissorRect_Set(&sp30, arg0, arg1, (arg0 + arg2) - 1, (arg1 + arg3) - 1);
 
-    if (func_80006030(&sp30) != 0) {
+    if (ScissorRect_Clip(&sp30) != 0) {
         if (arg6 != 0) {
             arg4 += ((sp30.x1 - arg0) * arg6) >> 5;
         }
@@ -207,16 +207,16 @@ void func_8001E000(s16 arg0, s16 arg1, s16 arg2, f32 arg3, Vtx* arg4, u32 arg5) 
     Vec3f spC0;
     Vec3f spB4;
     MtxF* temp_s4;
-    unk_D_80068BB0* temp_s1;
+    ColorBuffer* temp_s1;
     Vp* temp_s2;
     MtxF* temp_s0;
     MtxF* temp_s3;
 
-    temp_s3 = func_80005F5C(0x40);
-    temp_s4 = func_80005F5C(0x40);
-    temp_s0 = func_80005F5C(0x40);
-    temp_s2 = func_80005F5C(0x10);
-    temp_s1 = func_8000648C();
+    temp_s3 = DLBuf_AllocTemp(0x40);
+    temp_s4 = DLBuf_AllocTemp(0x40);
+    temp_s0 = DLBuf_AllocTemp(0x40);
+    temp_s2 = DLBuf_AllocTemp(0x10);
+    temp_s1 = ColorBuffer_GetActive();
 
     func_8000EB70(&spCC, 0, 0, arg2);
     func_8000E88C(&spC0, arg0, arg1, 0.0f);

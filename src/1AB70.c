@@ -46,7 +46,7 @@ void func_80019F84(unk_func_8001A024* arg0, s16 arg1, s16 arg2) {
 
 unk_func_8001A024* func_8001A024(unk_D_86002F58_004_000_010* arg0, s16 arg1, s16 arg2, s16 arg3) {
     s32 var_s0;
-    unk_D_80068BB0* temp_a1;
+    ColorBuffer* temp_a1;
     s32 i;
     unk_func_8001A024* temp_v0 = main_pool_alloc(sizeof(unk_func_8001A024), 0);
 
@@ -61,16 +61,16 @@ unk_func_8001A024* func_8001A024(unk_D_86002F58_004_000_010* arg0, s16 arg1, s16
         temp_v0->unk_18 = D_8006FF00;
 
         if (arg0 != NULL) {
-            temp_v0->unk_14 = func_80006314(0, 2, arg2, arg3, 1);
+            temp_v0->unk_14 = ColorBuffer_Alloc(0, 2, arg2, arg3, 1);
         }
 
         for (i = 0; i < arg1; i++) {
             temp_v0->unk_08[i].unk_00 = 0;
             temp_v0->unk_08[i].unk_14.raw = 0;
-            temp_v0->unk_08[i].unk_0C = func_80006314(0, 2, arg2, arg3, 0);
+            temp_v0->unk_08[i].unk_0C = ColorBuffer_Alloc(0, 2, arg2, arg3, 0);
             bzero(temp_v0->unk_08[i].unk_0C->img_p, arg2 * arg3 * 2);
             if (temp_v0->unk_14 != NULL) {
-                func_80006414(temp_v0->unk_08[i].unk_0C, temp_v0->unk_14);
+                ColorBuffer_AttachDepth(temp_v0->unk_08[i].unk_0C, temp_v0->unk_14);
             }
         }
 
@@ -79,14 +79,14 @@ unk_func_8001A024* func_8001A024(unk_D_86002F58_004_000_010* arg0, s16 arg1, s16
     return temp_v0;
 }
 
-void func_8001A1D0(unk_func_8001A024* arg0, unk_D_86002F58_004_000_010* arg1, unk_D_80068BB0* arg2) {
+void func_8001A1D0(unk_func_8001A024* arg0, unk_D_86002F58_004_000_010* arg1, ColorBuffer* arg2) {
     s32 i;
 
     arg0->unk_04 = arg1;
     arg0->unk_14 = arg2;
 
     for (i = 0; i < arg0->unk_01; ++i) {
-        func_80006414(arg0->unk_08[i].unk_0C, arg2);
+        ColorBuffer_AttachDepth(arg0->unk_08[i].unk_0C, arg2);
     }
 }
 
@@ -100,7 +100,7 @@ void func_8001A258(unk_func_8001A024* arg0) {
     u16 w;
     u16 h;
     unk_func_8001A024_008* tempImg_p;
-    unk_D_80068BB0* tempDepth_p;
+    ColorBuffer* tempDepth_p;
 
     if (arg0->unk_00 & 1) {
         func_80019CA8(arg0->unk_04);
@@ -209,7 +209,7 @@ void func_8001A654(u16* arg0, s32 a1, arg1_func_80010CA8 arg2) {
     // clang-format on
 }
 
-void func_8001A6D4(unk_D_80068BB0* arg0, arg1_func_80010CA8 arg1) {
+void func_8001A6D4(ColorBuffer* arg0, arg1_func_80010CA8 arg1) {
     s32 size = arg0->width * arg0->height;
 
     func_8001A654(arg0->img_p, size, arg1);
@@ -248,11 +248,11 @@ void func_8001A714(unk_func_8001A024* arg0, s32 arg1) {
     arg0->unk_10->unk_000.unk_02 |= 0x80;
     func_8000E88C(&arg0->unk_10->unk_030, temp_s1->unk_08, temp_s1->unk_08, temp_s1->unk_08);
     func_80010354(&sp34->unk_60.at, &sp34->unk_60.eye, 1250.0f, 0x71C, temp_s1->unk_04);
-    func_80006498(&gDisplayListHead, arg0->unk_08[arg1].unk_0C);
+    ColorBuffer_Activate(&gDisplayListHead, arg0->unk_08[arg1].unk_0C);
     func_80015348();
     func_8001533C(3);
     func_80015094(arg0->unk_0C);
-    func_8000699C(&gDisplayListHead, arg0->unk_08[arg1].unk_02);
+    GFX_ClearScreen(&gDisplayListHead, arg0->unk_08[arg1].unk_02);
     func_8001533C(1);
     func_80015094(arg0->unk_0C);
 }
@@ -320,7 +320,7 @@ s32 func_8001ABAC(unk_func_8001A024* arg0, s32 arg1) {
     if (arg0->unk_03 >= 0) {
         temp_s0 = &arg0->unk_08[arg0->unk_03];
         if (temp_s0->unk_00 & 4) {
-            while (func_80001C90() == 0) {}
+            while (Display_IsReady() == 0) {}
             func_8001A6D4(temp_s0->unk_0C, temp_s0->unk_10);
             temp_s0->unk_00 &= ~4;
         }
@@ -329,8 +329,8 @@ s32 func_8001ABAC(unk_func_8001A024* arg0, s32 arg1) {
     for (i = 0; i < arg0->unk_01; i++) {
         temp_s1 = &arg0->unk_08[var_s1];
         if (temp_s1->unk_00 & 1) {
-            if (func_80001C90() == 0) {
-                do { } while (func_80001C90() == 0); }
+            if (Display_IsReady() == 0) {
+                do { } while (Display_IsReady() == 0); }
 
             sp48.raw = 0;
             if (temp_s1->unk_00 & 2) {
@@ -378,7 +378,7 @@ s32 func_8001AD90(unk_func_8001A024* arg0, s32 arg1) {
     for (i = 0; i < arg0->unk_01; i++) {
         temp_s1 = &arg0->unk_08[var_s0];
         if (temp_s1->unk_00 & 1) {
-            while (func_80001C90() == 0) {}
+            while (Display_IsReady() == 0) {}
             
             if (temp_s1->unk_00 & 2) {
                 func_800198E4(arg0->unk_04, *temp_s1->unk_14.ptr, temp_s1->unk_10);
@@ -410,8 +410,8 @@ void func_8001AEEC(unk_func_8001A024* arg0, s32 arg1) {
     s32 i;
 
     if (arg1 == arg0->unk_03) {
-        func_80006498(&gDisplayListHead, arg0->unk_08[arg1].unk_0C);
-        func_8000699C(&gDisplayListHead, arg0->unk_08[arg1].unk_02);
+        ColorBuffer_Activate(&gDisplayListHead, arg0->unk_08[arg1].unk_0C);
+        GFX_ClearScreen(&gDisplayListHead, arg0->unk_08[arg1].unk_02);
         func_8001533C(1);
         func_80015094(arg0->unk_0C);
         return;
@@ -512,9 +512,9 @@ unk_func_8001B1FC* func_8001B1FC(unk_D_86002F58_004_000_010* arg0, s16 arg1, s16
         temp_v0->unk_08 = arg5;
         temp_v0->unk_0A = arg6;
         temp_v0->unk_0C = arg7;
-        temp_v0->unk_28 = func_80006314(0, 2, arg1, arg2, 0);
-        temp_v0->unk_2C = func_80006314(0, 2, arg1, arg2, 1);
-        func_80006414(temp_v0->unk_28, temp_v0->unk_2C);
+        temp_v0->unk_28 = ColorBuffer_Alloc(0, 2, arg1, arg2, 0);
+        temp_v0->unk_2C = ColorBuffer_Alloc(0, 2, arg1, arg2, 1);
+        ColorBuffer_AttachDepth(temp_v0->unk_28, temp_v0->unk_2C);
         func_8001B154(temp_v0, arg3, arg4, arg5, arg6);
     }
     return temp_v0;
@@ -669,7 +669,7 @@ void func_8001B834(unk_func_8001B1FC* arg0) {
     s32 i;
 
     if (arg0->unk_0C == 0) {
-        func_8000699C(&gDisplayListHead, arg0->unk_02);
+        GFX_ClearScreen(&gDisplayListHead, arg0->unk_02);
         return;
     }
 
@@ -692,12 +692,12 @@ void func_8001B834(unk_func_8001B1FC* arg0) {
     gDPPipeSync(gDisplayListHead++);
     gDPSetTexturePersp(gDisplayListHead++, G_TP_PERSP);
 
-    func_800067E4(&gDisplayListHead, 0, 0, arg0->unk_08, arg0->unk_0A);
+    GFX_ClearDepth(&gDisplayListHead, 0, 0, arg0->unk_08, arg0->unk_0A);
 }
 
 u8* func_8001B9D4(unk_func_8001B1FC* arg0) {
     func_8001B778(arg0);
-    func_80006498(&gDisplayListHead, arg0->unk_28);
+    ColorBuffer_Activate(&gDisplayListHead, arg0->unk_28);
     func_8001B834(arg0);
     func_80015348();
     func_80015094(arg0->unk_20);

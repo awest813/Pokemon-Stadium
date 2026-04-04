@@ -477,8 +477,8 @@ void func_83401D0C(s32 arg0, s32 arg1, s32 arg2) {
 void func_83401D68(unk_D_83407B38* arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, unk_D_86002F58_004_000_010* arg5,
                    BinArchive* arg6, unk_D_83403C60* arg7, s32 arg8, s32 arg9) {
     UNUSED s32 pad;
-    unk_D_80068BB0* sp168;
-    unk_D_80068BB0* sp68[64];
+    ColorBuffer* sp168;
+    ColorBuffer* sp68[64];
     UNUSED s32 pad2;
     s32 i;
 
@@ -496,10 +496,10 @@ void func_83401D68(unk_D_83407B38* arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
     arg0->unk_18 = arg4;
     arg0->unk_1C = arg3 / arg4;
 
-    sp168 = func_80006314(G_IM_FMT_RGBA, IMAGE_SIZE_BITS_16b, arg1, arg2, 1);
+    sp168 = ColorBuffer_Alloc(G_IM_FMT_RGBA, IMAGE_SIZE_BITS_16b, arg1, arg2, 1);
 
     for (i = 0; i < arg3; i++) {
-        sp68[i] = func_80006314(G_IM_FMT_RGBA, IMAGE_SIZE_BITS_16b, arg1, arg2, 0);
+        sp68[i] = ColorBuffer_Alloc(G_IM_FMT_RGBA, IMAGE_SIZE_BITS_16b, arg1, arg2, 0);
     }
 
     if (arg9 != 0) {

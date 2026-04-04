@@ -747,7 +747,7 @@ void func_83602C14(void) {
     f32 sp18;
 
     func_83402210(&D_83603300, &sp28, &sp24, D_83603300.unk_00);
-    func_800079C4();
+    Stage_ActivateFramebuffer();
     func_83602458();
     func_836009A4(0, 0x4F, 0x280, 1);
     func_836009A4(0, 0x151, 0x280, 0);
@@ -768,14 +768,14 @@ void func_83602C14(void) {
     func_836028E8(&D_83603300, 0xA5, 0x16B);
     func_8360296C(0xF0, 0x14E);
     func_83602A8C(0x1E0, 0x14E);
-    func_80007778();
+    Stage_AdvanceFrame();
 }
 
 void func_83602D98(void) {
     if (gPlayer1Controller->buttonPressed & 0x8000) {
         D_836032F0 = 3;
-        func_80007990(0xFFFF);
-        func_80006CB4(0xF);
+        Stage_SetFillColor(0xFFFF);
+        Stage_FadeIn(0xF);
         func_80048B90(0x1D);
     } else if (gPlayer1Controller->buttonPressed & 0x4000) {
         D_836032F4 = 0;
@@ -792,7 +792,7 @@ s32 func_83602E14(void) {
 
     switch (D_836032F0) {
         case 0:
-            if (func_80007604() == 0) {
+            if (Stage_GetFadeMode() == 0) {
                 D_836032D0--;
                 if (D_836032D0 <= 0) {
                     D_836032F0 = 1;
@@ -805,11 +805,11 @@ s32 func_83602E14(void) {
             if (temp_v0_2 != 0) {
                 D_836032F0 = 3;
                 if (temp_v0_2 == 2) {
-                    func_80007990(1);
-                    func_80006CB4(1);
+                    Stage_SetFillColor(1);
+                    Stage_FadeIn(1);
                 } else {
-                    func_80007990(0xFFFF);
-                    func_80006CB4(0xF);
+                    Stage_SetFillColor(0xFFFF);
+                    Stage_FadeIn(0xF);
                 }
             }
             break;
@@ -819,7 +819,7 @@ s32 func_83602E14(void) {
             break;
 
         case 3:
-            if (func_80007604() == 1) {
+            if (Stage_GetFadeMode() == 1) {
                 sp1C = 0;
             }
             break;
@@ -835,9 +835,9 @@ void func_83602F1C(void) {
 
 void func_83602F4C(void) {
     if (D_836033BC == 0) {
-        func_80006C6C(1);
+        Stage_FadeOut(1);
     } else {
-        func_80006C6C(7);
+        Stage_FadeOut(7);
     }
 
     do {
@@ -880,12 +880,12 @@ s32 func_83602FF4(unk_D_83407B38* arg0) {
 }
 
 void func_836030A8(s32 arg0, UNUSED s32 arg1) {
-    unk_func_80007444* sp24;
+    RenderContext* sp24;
 
     main_pool_push_state('FILM');
 
-    func_80005E40(0x10000, 0);
-    sp24 = func_80007444(1, 0, 2, 0, 2, 1);
+    DLBuf_Init(0x10000, 0);
+    sp24 = Stage_CreateRenderContext(1, 0, 2, 0, 2, 1);
     D_8250A304 = func_8001E94C(0x18, 0);
 
     ASSET_LOAD(D_1000000, common_menu1_ui, 0);
@@ -899,11 +899,11 @@ void func_836030A8(s32 arg0, UNUSED s32 arg1) {
     func_8002D510();
     func_83402340();
     func_8360086C(arg0);
-    func_80007678(sp24);
+    Stage_SetRenderContext(sp24);
     func_83602F4C();
-    func_800076C0();
+    Stage_FreeRenderContext();
     func_8001E9CC();
-    func_80005EAC();
+    DLBuf_Free();
 
     main_pool_pop_state('FILM');
 

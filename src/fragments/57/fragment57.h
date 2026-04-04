@@ -40,7 +40,7 @@ typedef struct unk_D_82D09F1C {
 
 s32 func_82D00020(s32 arg0);
 void func_82D00088(void);
-void func_82D002C4(unk_D_80068BB0* arg0, s16 arg1, s16 arg2);
+void func_82D002C4(ColorBuffer* arg0, s16 arg1, s16 arg2);
 void func_82D0053C(s16 arg0, s16 arg1, s16 arg2, s16 arg3, u8 arg4, u8 arg5, u8 arg6, u8 arg7);
 void func_82D00D3C(s16 arg0, s16 arg1, s16 arg2, s16 arg3, u8 arg4, u8 arg5, u8 arg6, u8 arg7);
 void func_82D0153C(s16 arg0, s16 arg1, s16 arg2, s16 arg3, u8 arg4, u8 arg5, u8 arg6, u8 arg7);
@@ -75,11 +75,11 @@ s32 func_82D04EB8(void);
 void func_82D04FA0(s32 arg0, s32 arg1);
 void func_82D05258(s32 arg0, s32 arg1);
 void func_82D053F4(s32 arg0, s32 arg1);
-unk_D_80068BB0* func_82D0580C(s32 arg0);
-unk_D_80068BB0* func_82D05A5C(void);
-unk_D_80068BB0* func_82D05BE0(void);
-unk_D_80068BB0* func_82D05D64(void);
-unk_D_80068BB0* func_82D05EE8(s8* arg0, u8 arg1, u8 arg2, u8 arg3);
+ColorBuffer* func_82D0580C(s32 arg0);
+ColorBuffer* func_82D05A5C(void);
+ColorBuffer* func_82D05BE0(void);
+ColorBuffer* func_82D05D64(void);
+ColorBuffer* func_82D05EE8(s8* arg0, u8 arg1, u8 arg2, u8 arg3);
 void func_82D06014(void);
 void func_82D06388(void);
 s32 func_82D063E4(void);

@@ -56,18 +56,18 @@ void func_82800050(u8* arg0) {
 }
 
 void func_828001D0(void) {
-    func_800079C4();
+    Stage_ActivateFramebuffer();
     func_82800050(D_828006A4);
-    func_800067E4(&gDisplayListHead, 0, 0, 0x140, 0xF0);
+    GFX_ClearDepth(&gDisplayListHead, 0, 0, 0x140, 0xF0);
     func_80015348();
     func_80015094(D_82800534);
-    func_80007778();
+    Stage_AdvanceFrame();
 }
 
 void func_82800238(void) {
     s32 i;
 
-    func_80006C6C(0x10);
+    Stage_FadeOut(0x10);
 
     for (i = 0; i < 16; i++) {
         func_82900020();
@@ -79,14 +79,14 @@ void func_82800238(void) {
         func_828001D0();
     } while (!(BTN_IS_PRESSED(gPlayer1Controller, BTN_A)));
 
-    func_80006CB4(0x10);
+    Stage_FadeIn(0x10);
 
     for (i = 0; i < 16; i++) {
         func_82900020();
         func_828001D0();
     }
 
-    func_800077B4(2);
+    Stage_AdvanceFrames(2);
 }
 
 void func_828002E4(void) {
@@ -103,12 +103,12 @@ void func_828002E4(void) {
 }
 
 s32 func_82900390(UNUSED s32 arg0, UNUSED s32 arg1) {
-    unk_func_80007444* sp24;
+    RenderContext* sp24;
 
     main_pool_push_state('MTWO');
 
-    func_80005E40(0x10000, 0);
-    sp24 = func_80007444(0, 1, 3, 1, 2, 1);
+    DLBuf_Init(0x10000, 0);
+    sp24 = Stage_CreateRenderContext(0, 1, 3, 1, 2, 1);
     func_8001E94C(6, 0);
 
     ASSET_LOAD(D_1000000, common_menu1_ui, 0);
@@ -118,11 +118,11 @@ s32 func_82900390(UNUSED s32 arg0, UNUSED s32 arg1) {
     D_828006A4 = func_8000484C(D_828006A0, 2);
 
     func_828002E4();
-    func_80007678(sp24);
+    Stage_SetRenderContext(sp24);
     func_82800238();
-    func_800076C0();
+    Stage_FreeRenderContext();
     func_8001E9CC();
-    func_80005EAC();
+    DLBuf_Free();
 
     main_pool_pop_state('MTWO');
 

@@ -58,8 +58,8 @@ Gfx* func_84367660(Gfx* arg0, Vec3f* arg1, Vec3f* arg2, Vec3f* arg3, f32 arg4, u
     f32 tmp2;
     f32 tmp3;
 
-    sp1DC = func_80005F5C(sizeof(Mtx) * 1);
-    sp1E8 = func_80005F5C(sizeof(Vtx) * 10);
+    sp1DC = DLBuf_AllocTemp(sizeof(Mtx) * 1);
+    sp1E8 = DLBuf_AllocTemp(sizeof(Vtx) * 10);
 
     temp_v1 = sp1E8;
     var_a1 = &D_84389810[0];

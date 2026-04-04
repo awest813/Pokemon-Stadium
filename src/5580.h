@@ -3,36 +3,36 @@
 
 #include "global.h"
 
-typedef struct UnkStruct80001380 {
+typedef struct RSPTask {
     /* 0x00 */ OSMesg mesg;
     /* 0x04 */ OSMesgQueue queue;
-    /* 0x1C */ u16 unk_1C;
-    /* 0x1E */ u16 unk_1E;
+    /* 0x1C */ u16 state;     // 0=new, 1=running, 2=yielded, 3=done
+    /* 0x1E */ u16 rdp_state; // 0=none, 1=queued, 2=complete
     /* 0x20 */ OSTask task;
-    /* 0x60 */ char unk60[0x8];
-} UnkStruct80001380; // size = 0x68
+    /* 0x60 */ char pad[0x8];
+} RSPTask; // size = 0x68
 
-typedef struct unk_D_800A62E0 {
+typedef struct Scheduler {
     /* 0x000 */ OSThread thread;
     /* 0x1B0 */ char unk1B0[0x800];
     /* 0x9B0 */ u8 stack[64];
     /* 0x9F0 */ OSMesgQueue queue;
     /* 0xA08 */ u64 time;
-    /* 0xA10 */ unk_D_800AA660* unk_A10;
-    /* 0xA14 */ UnkStruct80001380* unk_A14;
-    /* 0xA18 */ UnkStruct80001380* unk_A18;
-    /* 0xA1C */ UnkStruct80001380* unk_A1C;
-    /* 0xA20 */ UnkStruct80001380* unk_A20;
-    /* 0xA24 */ UnkStruct80001380* unk_A24;
-    /* 0xA28 */ s32 unk_A28;
-    /* 0xA2C */ s32 unk_A2C;
-    /* 0xA30 */ s32 unk_A30;
-    /* 0xA34 */ s32 unk_A34;
-    /* 0xA38 */ s16 unk_A38;
+    /* 0xA10 */ unk_D_800AA660* clients;
+    /* 0xA14 */ RSPTask* cur_task;
+    /* 0xA18 */ RSPTask* cur_audio;
+    /* 0xA1C */ RSPTask* cur_gfx;
+    /* 0xA20 */ RSPTask* next_audio;
+    /* 0xA24 */ RSPTask* next_gfx;
+    /* 0xA28 */ s32 audio_pending;
+    /* 0xA2C */ s32 gfx_pending;
+    /* 0xA30 */ s32 task4_pending;
+    /* 0xA34 */ s32 vblank_count;
+    /* 0xA38 */ s16 pre_nmi;
     /* 0xA3A */ char unkA3A[0x6];
-} unk_D_800A62E0; // size = 0xA40
+} Scheduler; // size = 0xA40
 
-typedef struct UnkArray4 {
+typedef struct FrameConfig {
     /* 0x00 */ u8 unk_00;
     /* 0x01 */ u8 unk_01;
     /* 0x02 */ u8 unk_02;
@@ -40,10 +40,10 @@ typedef struct UnkArray4 {
     /* 0x04 */ u32 unk_04;
     /* 0x08 */ u32 unk_08;
     /* 0x0C */ u32 unk_0C;
-} UnkArray4; // size = 0x10
+} FrameConfig; // size = 0x10
 
 // there's some wonkyness going on like the compiler trying to 8-align filler arrays? I dont understand.
-typedef struct UnkStruct80083CA0_2 {
+typedef struct DisplayCtx {
     /* 0x000 */ OSThread thread;
     /* 0x1B0 */ OSMesg unk_1B0;
     /* 0x1B4 */ char unk1B4[0xC];
@@ -51,7 +51,7 @@ typedef struct UnkStruct80083CA0_2 {
     /* 0x1D8 */ s32 unk_1D8;
     /* 0x1DC */ s32 unk_1DC;
     /* 0x1E0 */ u8 unk1E0[0x800];
-    /* 0x9E0 */ UnkArray4* unk_9E0;
+    /* 0x9E0 */ FrameConfig* unk_9E0;
     /* 0x9E4 */ char unk9E4[0x48];
     /* 0xA2C */ s32 unk_A2C;
     /* 0xA30 */ char unkA30[0x58];
@@ -71,26 +71,26 @@ typedef struct UnkStruct80083CA0_2 {
     /* 0xA9F */ u8 unk_A9F;
     /* 0xAA0 */ s32 unk_AA0;
     /* 0xAA4 */ char unkAA4[0x4];
-    /* 0xAA8 */ UnkArray4* unk_AA8;
+    /* 0xAA8 */ FrameConfig* unk_AA8;
     /* 0xAAC */ u8 unk_AAC;
     /* 0xAAD */ u8 unk_AAD;
     /* 0xAAE */ u8 unk_AAE;
     /* 0xAAF */ u8 unk_AAF;
     /* 0xAB0 */ char unkAB0[0x8];
     /* 0xAB8 */ s32 unk_AB8;
-} UnkStruct80083CA0_2; // size >= 0xABC
+} DisplayCtx; // size >= 0xABC
 
-extern unk_D_800A62E0 D_800A62E0;
+extern Scheduler D_800A62E0;
 
-void func_80004CC0(UnkStruct80083CA0_2*, s32, s32);
-s32 func_80004CF4(UnkStruct80083CA0_2*);
-s32 func_80004D20(UnkStruct80083CA0_2*);
-void func_800052B4(void);
-void func_80005328(unk_D_800AA660*);
-void func_80004980(UnkStruct80001380* arg0);
-void func_800049AC(UnkStruct80001380* arg0);
-void func_80005370(unk_D_800AA660* arg0);
-void func_800053B4(UnkStruct80001380* arg0, s32 arg1);
+void SchedClient_Init(DisplayCtx*, s32, s32);
+s32 SchedClient_WaitMsg(DisplayCtx*);
+s32 SchedClient_PollMsg(DisplayCtx*);
+void Sched_Init(void);
+void Sched_RegisterClient(unk_D_800AA660*);
+void RSPTask_Reset(RSPTask* arg0);
+void RSPTask_WaitDone(RSPTask* arg0);
+void Sched_UnregisterClient(unk_D_800AA660* arg0);
+void Sched_QueueTask(RSPTask* arg0, s32 arg1);
 
 
 #endif // _5580_H_

@@ -13,7 +13,7 @@
 static BinArchive* D_8FA00A20;
 static u8* D_8FA00A24;
 static BinArchive* D_8FA00A28;
-static unk_func_80007444* D_8FA00A2C;
+static RenderContext* D_8FA00A2C;
 
 static u8 D_8FA009F0[] = {
     0x00, 0x11, 0x01, 0x02, 0x04, 0x06, 0x03, 0x0A, 0x0B, 0x07, 0x08, 0x09, 0x0C, 0x10, 0x0F, 0x14,
@@ -21,7 +21,7 @@ static u8 D_8FA009F0[] = {
 static unk_func_80031270* D_8FA00A00 = NULL;
 
 void func_8FA00020(s32 arg0) {
-    func_800079C4();
+    Stage_ActivateFramebuffer();
 
     gDPPipeSync(gDisplayListHead++);
 
@@ -70,7 +70,7 @@ s32 func_8FA00510(void) {
 s32 func_8FA0051C(s32 arg0, s32 arg1) {
     s32 i;
     unk_D_86002F58_004_000_010* temp_s0;
-    unk_func_80007444* temp_v0;
+    RenderContext* temp_v0;
     unk_D_83403C60* sp60 = (D_83407AE4 != 0) ? D_83407AC0 : D_83407ABC;
     u8 sp50[] = {
         0x00, 0x00, 0x01, 0x01, 0x00, 0x00, 0x01, 0x01, 0x02, 0x02, 0x03, 0x03, 0x02, 0x02, 0x03, 0x03,
@@ -88,8 +88,8 @@ s32 func_8FA0051C(s32 arg0, s32 arg1) {
     main_pool_push_state('SEAL');
 
     func_8001E94C(0x10, 0);
-    func_80005E40(0x10000, 0);
-    temp_v0 = func_80007444(1, 0, 1, 0, 2, 1);
+    DLBuf_Init(0x10000, 0);
+    temp_v0 = Stage_CreateRenderContext(1, 0, 1, 0, 2, 1);
     D_8FA00A2C = temp_v0;
 
     ASSET_LOAD(D_1000000, common_menu1_ui, 0);
@@ -107,17 +107,17 @@ s32 func_8FA0051C(s32 arg0, s32 arg1) {
         D_8FA00A00 = func_80031270(0x280, 0x1E0, D_8FA00A2C->unk_18[0], NULL, temp_s0, D_8FA00A28, sp60);
     }
 
-    func_80007678(temp_v0);
+    Stage_SetRenderContext(temp_v0);
     func_8000B6FC(1);
     func_8FA0047C(0xC8);
-    func_80006C6C(1);
+    Stage_FadeOut(1);
 
-    while (func_80007604() != 0) {
-        func_80007778();
+    while (Stage_GetFadeMode() != 0) {
+        Stage_AdvanceFrame();
     }
 
     osViBlack(1);
-    func_80001CB8();
+    VI_SetBlack();
 
     sp4E = 0;
     for (i = 0; i < 16; i++) {
@@ -152,12 +152,12 @@ s32 func_8FA0051C(s32 arg0, s32 arg1) {
             main_pool_pop_state('DRAW');
         }
 
-        func_80007778();
+        Stage_AdvanceFrame();
 
-        while (func_80001C90() == 0) {}
+        while (Display_IsReady() == 0) {}
 
         osViBlack(0);
-        func_80001CC8();
+        VI_ClearBlack();
         func_8FA0047C(0xC8);
         func_8000B6FC(2);
 
@@ -166,7 +166,7 @@ s32 func_8FA0051C(s32 arg0, s32 arg1) {
         }
 
         osViBlack(1);
-        func_80001CB8();
+        VI_SetBlack();
     }
 
     func_8000B6FC(4);
@@ -175,8 +175,8 @@ s32 func_8FA0051C(s32 arg0, s32 arg1) {
         func_8FA0047C(0x14);
     }
 
-    func_80001CC8();
-    func_800076C0();
+    VI_ClearBlack();
+    Stage_FreeRenderContext();
 
     main_pool_pop_state('SEAL');
 

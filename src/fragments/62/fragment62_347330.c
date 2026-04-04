@@ -548,7 +548,7 @@ s32 func_8435D8C0(void) {
 
 Gfx* func_8435D97C(Gfx* arg0, unk_D_843925E0* arg1) {
     s32 i;
-    Vtx* temp_v0 = func_80005F5C(sizeof(Vtx) * 62);
+    Vtx* temp_v0 = DLBuf_AllocTemp(sizeof(Vtx) * 62);
     Vtx* vtx = temp_v0;
     Vtx* var_a0 = &arg1->unk_050[0];
 
@@ -1037,7 +1037,7 @@ Gfx* func_8435EE78(Gfx* arg0) {
     s32 idx1;
     s32 idx2;
 
-    D_843951D0.unk_000C = func_80005F5C(sizeof(Vtx) * 16 * 16);
+    D_843951D0.unk_000C = DLBuf_AllocTemp(sizeof(Vtx) * 16 * 16);
     vtx = D_843951D0.unk_000C;
     var_v1 = &D_843951D0.unk_1010[0][0];
 
@@ -1104,7 +1104,7 @@ Gfx* func_8435EE78(Gfx* arg0) {
     temp_fv0 = func_8435E158(sp120, sp128, &sp110);
 
     if ((sp130 < sp11C) || (sp124 < temp_fv0)) {
-        temp_v0 = func_80005F5C(sizeof(Vtx) * 4);
+        temp_v0 = DLBuf_AllocTemp(sizeof(Vtx) * 4);
 
         temp_v0[0].v.ob[0] = (D_843975E8.unk_00 - D_843975E8.unk_0C) - D_843975E8.unk_18;
         temp_v0[0].v.ob[1] = sp11C;

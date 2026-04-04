@@ -1140,13 +1140,13 @@ void func_86502110(s32 arg0) {
     u8 i;
     u8 j;
     Gfx* var_s1;
-    Mtx* var_s4 = func_80005F5C(sizeof(Mtx) * 4 * 12);
+    Mtx* var_s4 = DLBuf_AllocTemp(sizeof(Mtx) * 4 * 12);
 
     for (i = 0; i < 4; i++) {
         D_8650AB28 = &D_8650A528[i];
         D_8650AD70 = &D_8650AB30[i];
 
-        var_s1 = func_80005F5C(sizeof(Gfx) * 256);
+        var_s1 = DLBuf_AllocTemp(sizeof(Gfx) * 256);
 
         D_8650AB28->unk_17C->unk_18 = var_s1;
 

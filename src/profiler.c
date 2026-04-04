@@ -74,7 +74,7 @@ void draw_profiler_rect(s32 ulx, s32 lrx, s32 uly_in, u16 color) {
     s32 uly = uly_in;
     s32 lry = uly + 2;
 
-    if (func_80007A58() != 0) {
+    if (Stage_IsHighRes() != 0) {
         ulx <<= 1;
         lrx <<= 1;
         uly <<= 1;
@@ -316,7 +316,7 @@ void draw_profiler(s32 profiler_mode) {
     ulx_off = 196;
     uly_off = 9;
 
-    if (func_80007A58() != 0) {
+    if (Stage_IsHighRes() != 0) {
         ulx <<= 1;
         uly <<= 1;
         ulx_off <<= 1;

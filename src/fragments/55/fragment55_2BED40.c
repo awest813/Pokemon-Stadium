@@ -634,7 +634,7 @@ void func_830017C0(void) {
 }
 
 void func_83001A9C(void) {
-    func_800079C4();
+    Stage_ActivateFramebuffer();
     if (D_83003C90 != 0) {
         if (D_800AE540.unk_0000 == 0xA) {
             func_830007F4();
@@ -655,7 +655,7 @@ void func_83001A9C(void) {
 
     func_8300243C();
     func_83003484();
-    func_80007778();
+    Stage_AdvanceFrame();
 }
 
 void func_83001B64(void) {
@@ -815,9 +815,9 @@ s32 func_83002120(UNUSED s32 arg0, UNUSED s32 arg1) {
     func_8002D510();
     D_830039C0 = func_8002D5AC(0x20);
     D_830039C4 = func_8002D5AC(0x24);
-    func_80007754();
+    Stage_SetSegments();
     func_830020D0();
-    func_8000771C();
+    Stage_WaitFrame();
 
     main_pool_pop_state('EXPL');
 

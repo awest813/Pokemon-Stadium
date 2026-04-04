@@ -14,7 +14,7 @@
 #include "src/stage_loader.h"
 
 static unk_D_82F21140 D_82F21140;
-static unk_D_80068BB0* D_82F2115C;
+static ColorBuffer* D_82F2115C;
 static unk_D_82F21160 D_82F21160[2];
 static unk_D_82F211A0 D_82F211A0[2];
 static unk_D_82F21238 D_82F21238;
@@ -201,7 +201,7 @@ void func_82F0CC3C(void) {
 
             if (sp84 == 0) {
                 sp84 = 1;
-                func_800060E0(&gDisplayListHead, 0xEC, 0x50, 0xAA, 0x50);
+                GFX_SetScissor(&gDisplayListHead, 0xEC, 0x50, 0xAA, 0x50);
             }
 
             gDPPipeSync(gDisplayListHead++);
@@ -246,7 +246,7 @@ void func_82F0CC3C(void) {
     }
 
     if (sp84 != 0) {
-        func_800060E0(&gDisplayListHead, 0, 0, 0x280, 0x1E0);
+        GFX_SetScissor(&gDisplayListHead, 0, 0, 0x280, 0x1E0);
     }
 }
 
@@ -756,7 +756,7 @@ void func_82F0EE58(void) {
         if (ptr->unk_12 > 0) {
             if (ptr->unk_14 > 0) {
                 sp24 = 1;
-                func_800060E0(&gDisplayListHead, ptr->unk_0E, ptr->unk_10, ptr->unk_12, ptr->unk_14);
+                GFX_SetScissor(&gDisplayListHead, ptr->unk_0E, ptr->unk_10, ptr->unk_12, ptr->unk_14);
                 if (ptr->unk_20 != 0) {
                     func_82F0E97C(&D_82F21238);
                 }
@@ -765,7 +765,7 @@ void func_82F0EE58(void) {
         }
 
         if (sp24 != 0) {
-            func_800060E0(&gDisplayListHead, 0, 0, 0x280, 0x1E0);
+            GFX_SetScissor(&gDisplayListHead, 0, 0, 0x280, 0x1E0);
         }
 
         func_82F0E5C8(ptr->unk_0E, ptr->unk_10, ptr->unk_12, ptr->unk_14);
@@ -1127,14 +1127,14 @@ void func_82F0FCC0(void) {
             if (var_s0->unk_08 < 0) {
                 var_s0->unk_08 = 0;
             }
-            func_800060E0(&gDisplayListHead, var_s0->unk_08, var_s0->unk_0A, var_s0->unk_0C, var_s0->unk_0E);
+            GFX_SetScissor(&gDisplayListHead, var_s0->unk_08, var_s0->unk_0A, var_s0->unk_0C, var_s0->unk_0E);
         }
 
         func_82F0F9E0(var_s0->unk_04, var_s0->unk_06, var_s0->unk_14, var_s0->unk_18);
     }
 
     if (var_s3 != 0) {
-        func_800060E0(&gDisplayListHead, 0, 0, 0x280, 0x1E0);
+        GFX_SetScissor(&gDisplayListHead, 0, 0, 0x280, 0x1E0);
     }
 }
 
@@ -1764,7 +1764,7 @@ void func_82F12614(void) {
     f32 temp_fa8;
     f32 temp_faC;
 
-    func_80006498(&gDisplayListHead, D_82F2115C);
+    ColorBuffer_Activate(&gDisplayListHead, D_82F2115C);
 
     gSPDisplayList(gDisplayListHead++, D_82F14060);
 
@@ -1803,7 +1803,7 @@ void func_82F12614(void) {
 
     gDPPipeSync(gDisplayListHead++);
 
-    func_800079C4();
+    Stage_ActivateFramebuffer();
 }
 
 void func_82F12DE4(s16 arg0, s16 arg1, f32 arg2, s16 arg3, s16 arg4, s16 arg5) {
@@ -1850,7 +1850,7 @@ void func_82F13278(void) {
     func_82F0EF68();
     func_82F0C630();
     func_82F0D084();
-    D_82F2115C = func_80006314(0, 2, 0x20, 0x20, 1);
+    D_82F2115C = ColorBuffer_Alloc(0, 2, 0x20, 0x20, 1);
 }
 
 void func_82F132D0(void) {

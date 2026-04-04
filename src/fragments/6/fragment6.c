@@ -269,7 +269,7 @@ void func_86000020(void) {
 }
 
 s32 func_86000410(void) {
-    if (func_80007604() != 0) {
+    if (Stage_GetFadeMode() != 0) {
         return -1;
     }
 
@@ -488,7 +488,7 @@ void func_86000C10(void) {
 
 void func_86000C18(void) {
     Gfx* gfx = gDisplayListHead;
-    Mtx* var_s1 = (Mtx*)func_80005F5C(sizeof(MtxF) * 4);
+    Mtx* var_s1 = (Mtx*)DLBuf_AllocTemp(sizeof(MtxF) * 4);
     Mtx sp100;
     Mtx spC0;
     UNUSED Mtx sp80;
@@ -512,8 +512,8 @@ void func_86000C18(void) {
 }
 
 void func_86000D88(s32 arg0) {
-    func_800079C4();
-    func_800067E4(&gDisplayListHead, 0, 0, 0x140, 0xF0);
+    Stage_ActivateFramebuffer();
+    GFX_ClearDepth(&gDisplayListHead, 0, 0, 0x140, 0xF0);
     func_87A00DB8(D_86002F50);
 
     if (D_8780FC94 != 1) {
@@ -530,7 +530,7 @@ void func_86000D88(s32 arg0) {
     }
 
     func_87804FD4();
-    func_80007778();
+    Stage_AdvanceFrame();
 
     D_86002F42++;
 }
@@ -574,8 +574,8 @@ s32 func_86000FD4(void) {
     s32 var_s0_2;
     s32 i;
 
-    func_800077B4(0xA);
-    func_80006C6C(0x10);
+    Stage_AdvanceFrames(0xA);
+    Stage_FadeOut(0x10);
 
     for (i = 0; i < 4; i++) {
         D_86003B5C = &D_86002F58[i];
@@ -1074,7 +1074,7 @@ void func_86002264(void) {
     s32 j;
 
     func_8004B9C4(30);
-    func_80006CB4(30);
+    Stage_FadeIn(30);
 
     for (i = 0; i < 30; i++) {
         func_86000410();
@@ -1195,12 +1195,12 @@ void func_86002440(void) {
 }
 
 void func_86002778(UNUSED s32 arg0, UNUSED s32 arg1) {
-    unk_func_80007444* sp24;
+    RenderContext* sp24;
 
     main_pool_push_state('MINI');
 
-    func_80005E40(0x20000, 0);
-    sp24 = (unk_func_80007444*)func_80007444(0, 1, 3, 1, 2, 1);
+    DLBuf_Init(0x20000, 0);
+    sp24 = (RenderContext*)Stage_CreateRenderContext(0, 1, 3, 1, 2, 1);
     D_86003B7C = func_8001E94C(0x36, 0);
 
     ASSET_LOAD(D_1000000, common_menu1_ui, 0);
@@ -1210,7 +1210,7 @@ void func_86002778(UNUSED s32 arg0, UNUSED s32 arg1) {
 
     func_86002440();
     func_878029C0();
-    func_80007678(sp24);
+    Stage_SetRenderContext(sp24);
 
     if (func_86000FD4() != -1) {
         func_8004B9C4(0x3C);
@@ -1228,9 +1228,9 @@ void func_86002778(UNUSED s32 arg0, UNUSED s32 arg1) {
     }
 
     func_86002264();
-    func_800076C0();
+    Stage_FreeRenderContext();
     func_8001E9CC();
-    func_80005EAC();
+    DLBuf_Free();
 
     main_pool_pop_state('MINI');
 

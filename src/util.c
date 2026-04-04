@@ -15,7 +15,7 @@ u32 gExpansionRAMStart = FALSE;
 extern MainPool** gMainPool; // gMainPool
 
 void func_80003860(void);
-s32 func_80007A58(void);
+s32 Stage_IsHighRes(void);
 
 /**
  * Convert any valid address to its virtual (KSEG0) counterpart.
@@ -95,7 +95,7 @@ void Util_DrawRect(Gfx** dlist, s32 ulx, s32 lrx, u16 color) {
     s32 lry = 17;
     Gfx* gfx = *dlist;
 
-    if (func_80007A58() != 0) {
+    if (Stage_IsHighRes() != 0) {
         ulx <<= 1;
         lrx <<= 1;
         uly <<= 1;

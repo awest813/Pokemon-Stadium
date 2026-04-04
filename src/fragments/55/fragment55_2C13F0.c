@@ -385,7 +385,7 @@ void func_83003484(void) {
 
         if (ptr->unk_00 == 3) {
             s16 sp4A = spA4 - ((ptr->unk_0A * 0x3C * (4 - ptr->unk_02)) / 4);
-            func_800060E0(&gDisplayListHead, spA6 + 0x18, spA4 + 0x24, 0x1F8, 0x12C);
+            GFX_SetScissor(&gDisplayListHead, spA6 + 0x18, spA4 + 0x24, 0x1F8, 0x12C);
             if (ptr->unk_0A > 0) {
                 var_s0 = ptr->unk_10->unk_1C;
                 for (i = 0; i < 6; i++) {
@@ -399,7 +399,7 @@ void func_83003484(void) {
                     var_s0 = var_s0->unk_18;
                 }
             }
-            func_800060E0(&gDisplayListHead, 0, 0, 0x280, 0x1E0);
+            GFX_SetScissor(&gDisplayListHead, 0, 0, 0x280, 0x1E0);
         } else {
             var_s0 = ptr->unk_10;
             for (i = 0; i < 5; i++) {
