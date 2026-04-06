@@ -48,13 +48,12 @@ typedef struct unk_D_86002F58_004_000_010 {
     /* 0x00 */ u8 unk_00;
     /* 0x01 */ u8 unk_01;
     /* 0x02 */ u8 unk_02;
-    /* 0x04 */ s32 unk_04[1];
-    /* 0x08 */ char pad8[0x10];
-    /* 0x18 */ s32 unk_18;
+    /* 0x04 */ void* unk_04[5];
+    /* 0x18 */ void* unk_18;
     /* 0x1C */ s32 unk_1C;
     /* 0x20 */ s32 unk_20;
     /* 0x24 */ unk_D_86002F58_004_000_010_024* unk_24;
-    /* 0x28 */ s32 unk_28;
+    /* 0x28 */ void* unk_28;
     /* 0x2C */ arg1_func_80010CA8 unk_2C;
     /* 0x30 */ OSMesgQueue unk_30;
     /* 0x48 */ OSMesg unk_48;

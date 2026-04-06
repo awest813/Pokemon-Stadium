@@ -50,7 +50,7 @@ typedef struct BinArchive {
 typedef struct BinArchiveFile {
     /* 0x00 */ u32 offset;
     /* 0x04 */ u32 size;
-    /* 0x08 */ u32 unk_08;
+    /* 0x08 */ void* unk_08;
     /* 0x0C */ char unk0C[0x4];
 } BinArchiveFile; // size = 0x10
 
