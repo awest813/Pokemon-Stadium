@@ -1044,7 +1044,7 @@ void func_80014D70(GraphNode* arg0) {
         gDPSetFogColor(gDisplayListHead++, 255, 255, 255, 0);
         gDPSetPrimColor(gDisplayListHead++, 0, D_8006F09C->unk_01D, 255, 255, 255, 255);
 
-        Renderer_SetDisplayList((u32)temp_s1 & 0x1FFFFFFF, 1);
+        Renderer_SetDisplayList(temp_s1, 1);
         SceneGraph_HandleCallbackAndVisitChildren(arg0);
 
         D_800AA8C8.unk_10A0--;
