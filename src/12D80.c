@@ -62,6 +62,28 @@ void SceneGraph_HandleCallbackAndVisitChildren(GraphNode* arg0);
 void SceneGraph_UpdateAndProcessNode(GraphNode* arg0);
 void func_8001638C(s32 arg0, s32 arg1);
 void func_8001660C(void);
+void func_8000E990(Vec3f* arg0, Vec3s* arg1);
+void func_800122B4(MtxF* arg0);
+void func_80012344(Vec3f* arg0);
+MtxF* func_800123D4(s32 arg0);
+MtxF* func_80012400(s32 arg0);
+void func_80012458(Vec3f* arg0);
+void func_80013330(GraphNode* arg0);
+void func_800133D8(GraphNode* arg0);
+void func_80013464(GraphNode* arg0);
+void func_80013764(GraphNode* arg0);
+void func_8001378C(GraphNode* arg0);
+void func_800138F0(GraphNode* arg0);
+void func_8001395C(GraphNode* arg0);
+void func_800139E8(GraphNode* arg0);
+void func_80013AF8(GraphNode* arg0);
+void func_80013B8C(UNUSED GraphNode* arg0);
+void func_80013C14(UNUSED GraphNode* arg0);
+void func_80013C1C(GraphNode* arg0);
+void func_80013D34(GraphNode* arg0);
+void func_80013F7C(UNUSED GraphNode* arg0);
+void func_80013F84(GraphNode* arg0);
+void func_80014124(GraphNode* arg0);
 
 typedef void (*func_D_8006F0A4)(GraphNode* arg0);
 
