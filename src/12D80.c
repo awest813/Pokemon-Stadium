@@ -492,7 +492,7 @@ void GraphNode_ProcessCamera(GraphNode* arg0) {
 
     guOrtho(temp_s2->mtx, temp_s2->l, temp_s2->r, temp_s2->b, temp_s2->t, temp_s2->n, temp_s2->f, temp_s2->scale);
     guPerspective(sp48->mtx, &sp48->perspNorm, sp48->fovy, sp48->aspect, sp48->near, sp48->far, sp48->scale);
-    guLookAtReflectF(&temp_s1->mtxf, temp_s1->lookat, temp_s1->eye.x, temp_s1->eye.y, temp_s1->eye.z, temp_s1->at.x,
+    guLookAtReflectF(temp_s1->mtxf.mf, temp_s1->lookat, temp_s1->eye.x, temp_s1->eye.y, temp_s1->eye.z, temp_s1->at.x,
                      temp_s1->at.y, temp_s1->at.z, temp_s1->up.x, temp_s1->up.y, temp_s1->up.z);
     MtxF_ToMtx(temp_s1->p_mtxf, &temp_s1->mtxf);
 
@@ -775,7 +775,7 @@ void GraphNode_ProcessBillboard(GraphNode* arg0) {
     if (arg->unk_31 & 2) {
         func_80010228(&sp38, &sp84, &sp90, &sp78, &D_8006F088->unk_60.mtxf, &D_800AA8C8.unk_0000[D_800AA8C8.unk_10A0]);
         D_800AA8C8.unk_10A0++;
-        func_80012230(&sp38);
+        SceneGraph_UpdateMatrixState(&sp38);
     } else if (arg->unk_31 & 1) {
         func_8000F5A8(&sp38, &sp84, &sp90, &sp78);
         SceneGraph_MulMatrixStack(&sp38);
