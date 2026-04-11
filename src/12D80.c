@@ -25,6 +25,7 @@
  */
 #include "12D80.h"
 #include "src/12D80.h"
+#include "src/11BA0.h"
 #include "src/1CF30.h"
 #include "src/1CF30.h"
 #include "src/17300.h"
@@ -575,10 +576,10 @@ void GraphNode_ProcessTransform(GraphNode* arg0) {
 }
 
 void GraphNode_ProcessBackground(GraphNode* arg0) {
-    unk_D_86002F34_alt2* arg = (unk_D_86002F34_alt2*)arg0;
+    unk_D_8690A610* arg = (unk_D_8690A610*)arg0;
     unk_D_86002F34_00C_018* ptr = &D_8006F088->unk_18;
 
-    GFX_FillRect(&gDisplayListHead, ptr->x, ptr->y, ptr->width, ptr->height, arg->unk_18);
+    GFX_FillRect(&gDisplayListHead, ptr->x, ptr->y, ptr->width, ptr->height, arg->unk_18.unk_04.rgba);
 
     gDPPipeSync(gDisplayListHead++);
     gDPSetCycleType(gDisplayListHead++, G_CYC_2CYCLE);
