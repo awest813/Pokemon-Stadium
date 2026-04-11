@@ -7,6 +7,13 @@ It builds the following ROMs:
 
 Note: To use this repository, you must already have a rom for the game.
 
+## Reverse-engineering guides
+
+These documents are for human contributors and AI coding agents working on disassembly, naming, and promotion:
+
+* **[AI_MIPS_HEADER_GUIDE.md](AI_MIPS_HEADER_GUIDE.md)** — How to write headers, comments, and metadata for N64/MIPS decomp work (certainty labels, address identity, overlay conventions).
+* **[POKEMON_STADIUM_USA_PARTIAL_SYSTEMS_BLOCKER_GUIDE.md](POKEMON_STADIUM_USA_PARTIAL_SYSTEMS_BLOCKER_GUIDE.md)** — Current frontier: Fragment 62 battle shell, `12D80.c` scene-graph traversal, and what still blocks cleaner promotion.
+
 # Decomp Progress
 
 ## Current State
@@ -45,7 +52,7 @@ The repository uses [splat](https://github.com/ethteck/splat) for ROM splitting 
 | Geometry / scene graph | ✅ Named (`geo_layout.c`) |
 | Scheduler / audio manager start | ⚠️ Split but still unnamed (`6A40.c` area) |
 | Fragment load/unload engine | ⚠️ Split across fragments, relocation understood, not yet renamed |
-| Battle / minigame logic | ⚠️ Unnamed fragments — code is decompiled, purpose not documented |
+| Battle / minigame logic | ⚠️ Partially named; see [partial-systems / promotion guide](POKEMON_STADIUM_USA_PARTIAL_SYSTEMS_BLOCKER_GUIDE.md) (Fragment 62 focus) |
 | Asset formats (textures, models, sound) | ❌ All binary blobs — no extraction tooling merged yet |
 
 ---
