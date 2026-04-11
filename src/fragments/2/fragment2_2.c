@@ -1878,7 +1878,7 @@ void func_87804AD0(s16 arg0) {
     }
 }
 
-s32 func_87804FD4(void) {
+s32 Minigame_AdvanceFrame(void) {
     static s32 D_8780FE3C;
     static s32 D_8780FE40;
     static s32 D_8780FE44;
@@ -1934,7 +1934,7 @@ s32 func_87804FD4(void) {
                         }
                     }
                 }
-            } else if (D_8780FC92 == 0) {
+            } else if (gMinigameExitFlag == 0) {
                 if (D_8780FC94 != 0) {
                     if ((D_8780FC9C->buttonPressed & 0x800) || ((sp67 == 1) && (D_8780FC9A == 0))) {
                         func_8004AF44(2);
@@ -1954,7 +1954,7 @@ s32 func_87804FD4(void) {
                             D_8780FC94 = 0;
                         } else if (D_8780FC5C == 1) {
                             func_8004AF44(3);
-                            D_8780FC92 = 1;
+                            gMinigameExitFlag = 1;
                             D_8780FE01 = 1;
                         }
                     } else if (D_8780FC9C->buttonPressed & 0x1000) {
@@ -2085,7 +2085,7 @@ s32 func_87804FD4(void) {
                         D_8780FCA8 = 0x2F;
                     } else {
                         D_8780FC40 = 4;
-                        D_8780FE3C = 0x60 - func_878001E8(0x20);
+                        D_8780FE3C = 0x60 - Minigame_Random(0x20);
                         D_8780FC90 = 0;
                     }
                 } else {

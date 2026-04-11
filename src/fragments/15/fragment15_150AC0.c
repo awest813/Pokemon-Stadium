@@ -238,7 +238,6 @@ void func_869050C8(u8* arg0, s16 arg1, s16 arg2, s16 arg3, s16 arg4) {
     gSPTexture(gDisplayListHead++, 0xFFFF, 0xFFFF, 0, G_TX_RENDERTILE, G_OFF);
 }
 
-#ifdef NON_MATCHING
 void func_86905734(u8* arg0, s16 arg1, s16 arg2, s16 arg3, s16 arg4, s16 arg5, u8 arg6) {
     f32 a1;
     f32 a2;
@@ -316,10 +315,6 @@ void func_86905734(u8* arg0, s16 arg1, s16 arg2, s16 arg3, s16 arg4, s16 arg5, u
 
     gSPTexture(gDisplayListHead++, 0xFFFF, 0xFFFF, 0, G_TX_RENDERTILE, G_OFF);
 }
-#else
-void func_86905734(u8* arg0, s16 arg1, s16 arg2, s16 arg3, s16 arg4, s16 arg5, u8 arg6);
-#pragma GLOBAL_ASM("asm/us/nonmatchings/fragments/15/fragment15_150AC0/func_86905734.s")
-#endif
 
 void func_86905F24(u8* arg0, s16 arg1, s16 arg2, s16 arg3, s16 arg4, s16 arg5, u8 arg6) {
     f32 a1;

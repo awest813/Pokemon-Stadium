@@ -233,11 +233,11 @@ void func_862002F4(void) {
                 if (D_86204590->unk_002 > 0) {
                     temp_s0 = &D_86203CEC[D_86204590->unk_002 - 1];
 
-                    if (func_878001E8(0x64) < temp_s0->unk_04) {
+                    if (Minigame_Random(0x64) < temp_s0->unk_04) {
                         D_86204590->unk_170 |= 0x8000;
                     }
 
-                    if (func_878001E8(0x64) < temp_s0->unk_06) {
+                    if (Minigame_Random(0x64) < temp_s0->unk_06) {
                         temp_fv0 = D_86204590->unk_1A8;
                         temp_fv1 = D_86204590->unk_1A4;
                         if (((temp_fv0 + 10.0f) < temp_fv1) && (temp_fv1 < (temp_fv0 + 20.0f))) {
@@ -490,7 +490,7 @@ void func_86200EC4(s32 arg0) {
     }
 
     if (D_86204718 == 0) {
-        func_87804FD4();
+        Minigame_AdvanceFrame();
     } else {
         func_8780005C();
     }
@@ -512,7 +512,7 @@ s32 func_862011E8(void) {
         func_8001BD04(D_86204594, 0);
         func_80017788(D_86204594);
         D_86204594->unk_040.unk_0C = 0x10000;
-        D_86204594->unk_040.unk_08 = func_878001E8(0x14) << 0x10;
+        D_86204594->unk_040.unk_08 = Minigame_Random(0x14) << 0x10;
     }
 
     for (i = 0; i < 4; i++) {
@@ -696,7 +696,6 @@ void func_86201814(unk_D_86203E50* arg0, s32 arg1) {
     }
 }
 
-#ifdef NON_MATCHING
 void func_86201900(unk_D_86203E50* arg0) {
     s32 i;
     f32 sp64;
@@ -706,24 +705,17 @@ void func_86201900(unk_D_86203E50* arg0) {
     s32 arg0_unk000 = arg0->unk_000;
 
     for (i = 0; i < 10; i++) {
-        f32 unk_190;
         D_86208280 = &D_86204720[arg0_unk000][i];
         D_86208280->unk_000 = 0;
 
         temp_fs1 = D_86203BA0[D_8620471C][i];
         sp64 = temp_fs1 * 10.44f * 1.7f - 30.0f;
         temp_s1 = &D_86204720[arg0_unk000][i].unk_004;
-        unk_190 = arg0->unk_190;
 
-        // if ((sp64 >= unk_190) || (unk_190 >= (sp64 + 67.64706f))) {
-        //	continue;
-        // }
-
-        if ((sp64 >= unk_190) && (unk_190 >= (sp64 + 67.64706f))) {
-
+        if ((sp64 < arg0->unk_190) && (arg0->unk_190 < (sp64 + 67.64706f))) {
             switch (D_86208280->unk_002) {
                 case 0:
-                    if ((unk_190 - sp64) < 5.0f) {
+                    if ((arg0->unk_190 - sp64) < 5.0f) {
                         D_86208280->unk_002 = 1;
                         func_8001BC34(temp_s1, 0, 0xB0, D_86203E34->unk_08->unk_00[arg0_unk000]);
                     }
@@ -746,7 +738,7 @@ void func_86201900(unk_D_86203E50* arg0) {
                     break;
             }
 
-            if ((D_86208280->unk_002 > 0) && ((unk_190 - sp64) > 64.70588f)) {
+            if ((D_86208280->unk_002 > 0) && ((arg0->unk_190 - sp64) > 64.70588f)) {
                 D_86208280->unk_002 = 0;
                 func_8001BCF0(temp_s1);
             }
@@ -759,7 +751,7 @@ void func_86201900(unk_D_86203E50* arg0) {
                 }
             }
 
-            temp_v0 = ((unk_190 - temp_fs1 * 10.44f * 1.7f) + 30.0f) * 1.7f * 65536.0f;
+            temp_v0 = ((arg0->unk_190 - temp_fs1 * 10.44f * 1.7f) + 30.0f) * 1.7f * 65536.0f;
             temp_s1->unk_040.unk_08 = (D_86208280->unk_16C + temp_v0) >> 1;
             D_86208280->unk_16C = temp_v0;
 
@@ -777,13 +769,7 @@ void func_86201900(unk_D_86203E50* arg0) {
             D_86208280->unk_000 = 1;
         }
     }
-
-    if (arg0) {}
 }
-#else
-void func_86201900(unk_D_86203E50* arg0);
-#pragma GLOBAL_ASM("asm/us/nonmatchings/fragments/8/fragment8/func_86201900.s")
-#endif
 
 s16 func_86201CD8(void) {
     s32 i;
@@ -996,7 +982,7 @@ void func_862023F8(void) {
 
         func_8001BD04(var_s2, 1);
         func_80017788(var_s2);
-        var_s2->unk_040.unk_08 = (func_878001E8(5) * 0x3) << 0x10;
+        var_s2->unk_040.unk_08 = (Minigame_Random(5) * 0x3) << 0x10;
         func_862015C8(temp_s1);
         temp_s1->unk_1C8 = 0;
         temp_s1->unk_1B2 = 4;
@@ -1179,17 +1165,22 @@ void func_86202C7C(void) {
         D_86204590 = &D_86203E50[i];
         D_86204594 = &D_86204590->unk_008;
 
-        if (((D_86204590->unk_19E <= 0) || (D_86204590->unk_1C8 != 1)) &&
-            ((func_80017514(D_86204594) != 0) || (D_86204594->unk_040.unk_08 >= 0x340000))) {
-            func_8001BD04(D_86204594, 5);
-            D_86204594->unk_040.unk_08 = 0x270000;
+        if (D_86204590->unk_19E > 0) {
+            if (D_86204590->unk_1C8 == 1) {
+                continue;
+            }
         }
+
+        if (func_80017514(D_86204594, 5) == 0) {
+            if (D_86204594->unk_040.unk_08 < 0x340000) {
+                continue;
+            }
+        }
+
+        func_8001BD04(D_86204594, 0);
+        D_86204594->unk_040.unk_08 = 0x270000;
     }
 }
-#else
-void func_86202C7C(void);
-#pragma GLOBAL_ASM("asm/us/nonmatchings/fragments/8/fragment8/func_86202C7C.s")
-#endif
 
 void func_86202D5C(void) {
     s32 i;
@@ -1344,7 +1335,7 @@ void func_86203380(void) {
 
     D_86208298 = 0;
     D_8620470A = 0;
-    D_8620471C = func_878001E8(3);
+    D_8620471C = Minigame_Random(3);
 
     for (i = 0; i < 4; i++) {
         D_86204590 = &D_86203E50[i];

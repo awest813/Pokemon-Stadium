@@ -2357,7 +2357,7 @@ void func_86F01F58(s32 arg0) {
         if (D_8780FC98 == 0) {
             func_86F01EF4(arg0);
         }
-        func_87804FD4();
+        Minigame_AdvanceFrame();
     } else {
         showDebuggCameraInfo();
         showDebuggJoystickInfo();

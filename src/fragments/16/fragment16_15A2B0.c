@@ -3200,7 +3200,6 @@ static unk_D_86A04328 D_86A04328[18][6] = {
     },
 };
 
-#ifdef NON_MATCHING
 void func_86A018D0(unk_D_86002F34_00C* arg0, u16 arg1, s8 arg2, u8 arg3) {
     f32 scale = 1.0f;
     unk_D_86A04328* ptr = &D_86A04328[arg2 - 1][arg3 - 3];
@@ -3233,9 +3232,6 @@ void func_86A018D0(unk_D_86002F34_00C* arg0, u16 arg1, s8 arg2, u8 arg3) {
 
     D_86A06244 = ((ptr->unk_2C - ptr->unk_28) * scale) / arg1;
 }
-#else
-#pragma GLOBAL_ASM("asm/us/nonmatchings/fragments/16/fragment16_15A2B0/func_86A018D0.s")
-#endif
 
 void func_86A01BEC(void) {
     if (D_86A06220 < D_86A06222) {
@@ -3252,7 +3248,6 @@ void func_86A01BEC(void) {
     }
 }
 
-#ifdef NON_MATCHING
 void func_86A01CF0(s16* arg0, s16* arg1, s16* arg2, unk_D_86002F34_00C* arg3, u16 arg4, s8 arg5, u8 arg6) {
     unk_D_86A03170* temp_v1;
 
@@ -3320,9 +3315,6 @@ void func_86A01CF0(s16* arg0, s16* arg1, s16* arg2, unk_D_86002F34_00C* arg3, u1
         D_86A06254->unk_24.far = D_86A03D40[arg5 - 2][arg6].unk_18;
     }
 }
-#else
-#pragma GLOBAL_ASM("asm/us/nonmatchings/fragments/16/fragment16_15A2B0/func_86A01CF0.s")
-#endif
 
 void func_86A02164(void) {
     if (D_86A06220 < D_86A06222) {

@@ -39,13 +39,15 @@ s32 D_8140E72C;
 s32 D_8140E730;
 s32 D_8140E734;
 
-void func_81400020(s32* arg0, s32 arg1) {
+void Minigame_SetFlag(s32* arg0, s32 arg1) {
     *arg0 |= arg1;
 }
 
-void func_81400030(s32* arg0, s32 arg1) {
+
+void Minigame_ClearFlag(s32* arg0, s32 arg1) {
     *arg0 &= ~arg1;
 }
+
 
 void func_81400044(s32* arg0, s32 arg1) {
     *arg0 ^= arg1;
@@ -69,9 +71,8 @@ s32 func_81400074(s32* arg0, s32 arg1) {
     return var_v1;
 }
 
-s32 func_81400094(f32* arg0, f32 arg1, f32 arg2) {
+s32 Minigame_ApproachFloat(f32* arg0, f32 arg1, f32 arg2) {
     s32 var_v1 = 0;
-
     if (*arg0 < arg1) {
         *arg0 += arg2;
         if (arg1 <= *arg0) {
@@ -81,6 +82,7 @@ s32 func_81400094(f32* arg0, f32 arg1, f32 arg2) {
     }
     return var_v1;
 }
+
 
 s32 func_814000E0(f32* arg0, f32 arg1, f32 arg2) {
     s32 var_v1 = 0;
@@ -519,7 +521,7 @@ void func_81400A60(void) {
     D_8140E710++;
 }
 
-u32 func_81400A78(s32 arg0) {
+u32 Minigame_GetRandom(s32 arg0) {
     u32 temp_a0 = guRandom() + D_8140E710;
     u32 var_v1;
 
@@ -530,6 +532,7 @@ u32 func_81400A78(s32 arg0) {
     }
     return var_v1;
 }
+
 
 s32 func_81400ADC(s32 arg0, s32 arg1) {
     return func_81400A78(arg0) + arg1;

@@ -3546,7 +3546,6 @@ Gfx* func_88805960(Gfx* arg0, s16 arg1, s16 arg2) {
     return arg0;
 }
 
-#ifdef NON_MATCHING
 Gfx* func_88805AEC(Gfx* arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
     UNUSED s32 sp44;
     u32 temp_v0;
@@ -3669,9 +3668,6 @@ Gfx* func_88805AEC(Gfx* arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, 
 
     return arg0;
 }
-#else
-#pragma GLOBAL_ASM("asm/us/nonmatchings/fragments/28/fragment28_2190D0/func_88805AEC.s")
-#endif
 
 void func_888069B0(void) {
     s16 sp46;
@@ -4086,7 +4082,6 @@ s32 func_88807AC0(void) {
     return 0;
 }
 
-#ifdef NON_MATCHING
 void func_88807D04(s32 arg0, MainPoolState* arg1, UNUSED s32 arg2, s32 arg3, s32 arg4, char* arg5, char** arg6) {
     s32 i;
     unk_D_86002F34_00C* ptr;
@@ -4175,9 +4170,6 @@ void func_88807D04(s32 arg0, MainPoolState* arg1, UNUSED s32 arg2, s32 arg3, s32
     ptr->unk_60.at = D_8882627C;
     ptr->unk_60.eye = D_88826288;
 }
-#else
-#pragma GLOBAL_ASM("asm/us/nonmatchings/fragments/28/fragment28_2190D0/func_88807D04.s")
-#endif
 
 void func_8880812C(void) {
     main_pool_pop_state('MAPV');

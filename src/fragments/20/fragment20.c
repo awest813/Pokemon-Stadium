@@ -698,8 +698,8 @@ s32 func_86E00518(UNUSED MiniActor* metapod, s32 arg1) {
             break;
     }
 
-    sp18 = func_878001E8(0x64);
-    temp_v0 = func_878001E8(0x64);
+    sp18 = Minigame_Random(0x64);
+    temp_v0 = Minigame_Random(0x64);
 
     if (sp18 < sp1C) {
         var_v1 = 0;
@@ -716,32 +716,32 @@ void func_86E0063C(MiniActor* metapod, s32 arg1) {
     s32 sp2C;
     s32 sp28;
     u32 sp24;
-    u32 temp_s1 = func_878001E8(arg1);
+    u32 temp_s1 = Minigame_Random(arg1);
 
     switch (miniDifficulty) {
         case 0:
-            sp2C = func_878001E8(0xA) + 2;
+            sp2C = Minigame_Random(0xA) + 2;
             sp28 = arg1 - temp_s1;
             sp2C += sp28;
-            sp24 = func_878001E8(3);
+            sp24 = Minigame_Random(3);
             break;
 
         case 1:
-            sp2C = func_878001E8(5) + 2;
+            sp2C = Minigame_Random(5) + 2;
             sp28 = arg1 - temp_s1;
             sp2C += sp28;
             sp24 = 0;
             break;
 
         case 2:
-            sp2C = func_878001E8(4);
+            sp2C = Minigame_Random(4);
             sp28 = arg1 - temp_s1;
             sp2C += sp28;
             sp24 = 0;
             break;
 
         case 3:
-            sp2C = func_878001E8(3);
+            sp2C = Minigame_Random(3);
             sp28 = arg1 - temp_s1;
             sp2C += sp28;
             sp24 = 0;
@@ -767,8 +767,8 @@ void func_86E0073C(MiniActor* arg0, s32 arg1) {
         var_a2 = arg1;
     } else {
         sp1C = arg1 - 4;
-        sp2C = func_878001E8(sp1C);
-        temp_v0_2 = func_878001E8(sp1C - sp2C);
+        sp2C = Minigame_Random(sp1C);
+        temp_v0_2 = Minigame_Random(sp1C - sp2C);
         var_a0 = temp_v0_2 + 2;
         var_a2 = ((arg1 - sp2C) - temp_v0_2) - 2;
     }
@@ -1094,19 +1094,19 @@ void func_86E01188(void) {
             break;
 
         case 0:
-            var_s5 = func_878001E8(0x14) + 0xF;
+            var_s5 = Minigame_Random(0x14) + 0xF;
             break;
 
         case 1:
-            var_s5 = func_878001E8(0x14) + 0xA;
+            var_s5 = Minigame_Random(0x14) + 0xA;
             break;
 
         case 2:
-            var_s5 = func_878001E8(0x1E) + 5;
+            var_s5 = Minigame_Random(0x1E) + 5;
             break;
 
         case 3:
-            var_s5 = func_878001E8(0x1E) + 5;
+            var_s5 = Minigame_Random(0x1E) + 5;
             break;
     }
 
@@ -1702,7 +1702,7 @@ void func_86E02880(s32 arg0) {
         if (D_8780FC98 == 0) {
             miniMetapodDrawPlayerHUBs(arg0);
         }
-        func_87804FD4();
+        Minigame_AdvanceFrame();
     } else {
         showDebuggCameraInfo();
     }
@@ -1834,7 +1834,7 @@ void func_86E02C5C(void) {
     for (i = 0; i < 4; i++) {
         randN = D_8780FA68[i] - 1;
         if (D_8780FA68[i] == 0) {
-            randN = func_878001E8(2);
+            randN = Minigame_Random(2);
         }
 
         miniMetapods[i].unk_23C = playerVariations[randN][0];

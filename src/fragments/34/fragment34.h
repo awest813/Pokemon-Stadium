@@ -331,13 +331,14 @@ extern s32 D_8140E72C;
 extern s32 D_8140E730;
 extern s32 D_8140E734;
 
-void func_81400020(s32* arg0, s32 arg1);
-void func_81400030(s32* arg0, s32 arg1);
+void Minigame_SetFlag(s32* arg0, s32 arg1);
+void Minigame_ClearFlag(s32* arg0, s32 arg1);
 void func_81400044(s32* arg0, s32 arg1);
 s32 func_81400054(s32* arg0, s32 arg1);
 s32 func_81400074(s32* arg0, s32 arg1);
-s32 func_81400094(f32* arg0, f32 arg1, f32 arg2);
-s32 func_814000E0(f32* arg0, f32 arg1, f32 arg2);
+s32 Minigame_ApproachFloat(f32* arg0, f32 arg1, f32 arg2);
+void func_814000E0(f32* arg0, f32 arg1, f32 arg2);
+
 s32 func_8140012C(s32* arg0, s32 arg1, s32 arg2);
 s32 func_8140015C(s32* arg0, s32 arg1, s32 arg2);
 s32 func_8140018C(s16* arg0, s16 arg1, s16 arg2);
@@ -365,7 +366,8 @@ void func_8140099C(Vec3s* arg0, Vec3s* arg1);
 f32 func_814009D0(Vec3f arg0, Vec3f arg1);
 s32 func_81400A10(f32 arg0, f32 arg1, f32 arg2, f32 arg3, f32 arg4);
 void func_81400A60(void);
-u32 func_81400A78(s32 arg0);
+u32 Minigame_GetRandom(s32 arg0);
+
 s32 func_81400ADC(s32 arg0, s32 arg1);
 s32 func_81400B00(s32 arg0);
 s32 func_81400B28(s32 arg0, s32 arg1);

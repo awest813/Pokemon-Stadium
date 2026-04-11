@@ -1534,8 +1534,6 @@ s32 func_86A01020(Color_RGBA8_u32* arg0, u16 arg1, u16 arg2, u8 arg3) {
     return 1;
 }
 
-#ifdef NON_MATCHING
-// Needs the in-fucntion static but that breaks bss ordering
 void func_86A013C8(u8 arg0, u8 arg1, unk_D_86A03014* arg2) {
     static char** D_86A06218;
 
@@ -1556,11 +1554,7 @@ void func_86A013C8(u8 arg0, u8 arg1, unk_D_86A03014* arg2) {
     D_86A06212 = 0;
     D_86A06214 = arg2;
 }
-#else
-#pragma GLOBAL_ASM("asm/us/nonmatchings/fragments/16/fragment16_158A00/func_86A013C8.s")
-#endif
 
-#ifdef NON_MATCHING
 void func_86A01490(void) {
     static u32 D_86A0621C;
 
@@ -1575,9 +1569,6 @@ void func_86A01490(void) {
     }
     D_86A0621C = temp_v0;
 }
-#else
-#pragma GLOBAL_ASM("asm/us/nonmatchings/fragments/16/fragment16_158A00/func_86A01490.s")
-#endif
 
 void func_86A014F0(void) {
     u8 var_a1;

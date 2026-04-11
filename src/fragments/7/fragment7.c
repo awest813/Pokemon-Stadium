@@ -368,7 +368,7 @@ unk_D_861047B8* func_86100084(s32 arg0, s32 arg1) {
             }
         }
 
-        val = func_878001E8(arg1);
+        val = Minigame_Random(arg1);
         if (val < temp_s1) {
             sp34 = var_s0;
             break;
@@ -781,7 +781,7 @@ void func_861017E4(s32 arg0) {
         func_86100C30(arg0);
     }
 
-    func_87804FD4();
+    Minigame_AdvanceFrame();
     Stage_AdvanceFrame();
     D_86105496 += 1;
 }
@@ -820,7 +820,7 @@ s32 func_8610197C(void) {
     D_86105498 = 0;
 
     while (var_s0 == 1) {
-        func_878001E8(0x3E8);
+        Minigame_Random(0x3E8);
 
         temp_v1 = gPlayer1Controller->buttonPressed;
         if (temp_v1 & 0x1000) {
@@ -1070,10 +1070,10 @@ s16 func_86102460(s32 arg0) {
     s16 var_v1;
     u32 temp_v0;
 
-    if (func_878001E8(0x64) < arg0) {
+    if (Minigame_Random(0x64) < arg0) {
         var_v1 = D_86106450[D_86105BC4->unk_18C].unk_000;
     } else {
-        temp_v0 = func_878001E8(4);
+        temp_v0 = Minigame_Random(4);
         switch (temp_v0) {
             case 0:
                 var_v1 = 0;
@@ -1191,7 +1191,7 @@ s32 func_86102750(void) {
                             var_s0 = func_86102460(D_861049B4[D_86105BC4->unk_000 - 1][3]);
                         }
 
-                        D_86105BC4->unk_1B0 = func_878001E8(0xA) + D_861049B4[D_86105BC4->unk_000 - 1][5] + 5;
+                        D_86105BC4->unk_1B0 = Minigame_Random(0xA) + D_861049B4[D_86105BC4->unk_000 - 1][5] + 5;
                     }
                 }
 
@@ -1759,7 +1759,7 @@ void func_86103E9C(void) {
         }
 
         D_86105BC4->unk_002 = i;
-        D_86105BC4->unk_1B0 = func_878001E8(0xA) + 0xA;
+        D_86105BC4->unk_1B0 = Minigame_Random(0xA) + 0xA;
         D_86105BC8 = &D_86105BC4->unk_008;
 
         func_8001BB58(D_86105BC8);

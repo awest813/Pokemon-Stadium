@@ -945,7 +945,6 @@ f32 func_86803BC4(s16 arg0, s32 arg1) {
     return ret;
 }
 
-#ifdef NON_MATCHING
 void func_86803C6C(unk_D_86807558* arg0) {
     s32 pad;
     s32 pad1;
@@ -1011,7 +1010,7 @@ void func_86803C6C(unk_D_86807558* arg0) {
             if (arg0->unk_060 == 2) {
                 arg0->unk_0D0.g = arg0->unk_0D0.b = 255.0f * spB8;
                 if (!(arg0->unk_006 & 0xF)) {
-                    func_81407D48(1.0f, arg0->unk_0E4.unk_0FC, D_8006F05C, func_879023EC, &D_87903E10, 4);
+                    func_81407D48(1.0f, arg0->unk_0E4.unk_0FC, D_8006F5C, func_879023EC, &D_87903E10, 4);
                 }
             } else {
                 arg0->unk_0D0.r = arg0->unk_0D0.b = 255.0f * spB8;
@@ -1126,12 +1125,7 @@ void func_86803C6C(unk_D_86807558* arg0) {
         }
     }
 }
-#else
-void func_86803C6C(unk_D_86807558* arg0);
-#pragma GLOBAL_ASM("asm/us/nonmatchings/fragments/14/fragment14_1462A0/func_86803C6C.s")
-#endif
 
-#ifdef NON_MATCHING
 unk_D_868084D8* func_86804634(unk_D_86807558* arg0) {
     s32 i;
     Vec3f sp14;
@@ -1156,10 +1150,6 @@ unk_D_868084D8* func_86804634(unk_D_86807558* arg0) {
 
     return var_v1;
 }
-#else
-unk_D_868084D8* func_86804634(unk_D_86807558* arg0);
-#pragma GLOBAL_ASM("asm/us/nonmatchings/fragments/14/fragment14_1462A0/func_86804634.s")
-#endif
 
 s32 func_86804700(unk_D_86807558* arg0) {
     UNUSED s32 pad;

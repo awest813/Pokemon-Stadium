@@ -670,7 +670,7 @@ void func_86401A9C(s32 arg0) {
         func_86401544(arg0);
     }
 
-    func_87804FD4();
+    Minigame_AdvanceFrame();
     Stage_AdvanceFrame();
 
     if (D_8780FC94 == 0) {

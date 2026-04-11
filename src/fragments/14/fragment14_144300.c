@@ -147,7 +147,6 @@ void func_86800070(void) {
     if (1) {}
 }
 
-#ifdef NON_MATCHING
 Gfx* func_868001A8(Gfx* arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     s32 sp34;
     unk_D_86806E20** var_a3;
@@ -193,9 +192,6 @@ Gfx* func_868001A8(Gfx* arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
 
     return arg0;
 }
-#else
-#pragma GLOBAL_ASM("asm/us/nonmatchings/fragments/14/fragment14_144300/func_868001A8.s")
-#endif
 
 void func_868004F4(void) {
     s32 i;
@@ -264,7 +260,6 @@ void func_8680091C(s32 arg0, s16 arg1, s16 arg2, f32 arg3) {
     }
 }
 
-#ifdef NON_MATCHING
 void func_86800B38(void) {
     s32 pad1;
     s32 pad2;
@@ -468,14 +463,11 @@ void func_86800B38(void) {
         }
 
         func_87801D5C(0, 0x5A, 0xA8, D_86806E88);
-        func_87801684(0xC8, 0xB0, D_86806E38);
+        func_87801644(0xC8, 0xB0, (f32)D_86806E38);
         func_87801824(0x74, 0xC6, D_86806E60);
         func_87801F48(0, 0x19, 0xA6);
     }
 }
-#else
-#pragma GLOBAL_ASM("asm/us/nonmatchings/fragments/14/fragment14_144300/func_86800B38.s")
-#endif
 
 void func_86801644(void) {
     Stage_ActivateFramebuffer();
@@ -493,7 +485,7 @@ void func_86801644(void) {
     }
 
     if (D_8680753E == 0) {
-        func_87804FD4();
+        Minigame_AdvanceFrame();
     }
 
     if (D_8680753E != 0) {
@@ -504,7 +496,7 @@ void func_86801644(void) {
 }
 
 void func_86801700(void) {
-    func_878001E8(0x80);
+    Minigame_Random(0x80);
 
     if (Stage_GetFadeMode() == 0) {
         if (D_8680753E != 0) {
@@ -543,7 +535,6 @@ s32 func_86801840(void) {
     return var_v1;
 }
 
-#ifdef NON_MATCHING
 s32 func_86801884(void) {
     s32 sp1C;
     s32 sp18;
@@ -561,7 +552,7 @@ s32 func_86801884(void) {
         }
     }
 
-    if (((D_8780FC92 != 0) || (sp18 != 0)) && (D_8680750C != 7)) {
+    if (((gMinigameExitFlag != 0) || (sp18 != 0)) && (D_8680750C != 7)) {
         D_8680750C = 7;
         D_86807540 = 0x1E;
         Stage_FadeIn(D_86807540);
@@ -671,9 +662,6 @@ s32 func_86801884(void) {
 
     return sp1C;
 }
-#else
-#pragma GLOBAL_ASM("asm/us/nonmatchings/fragments/14/fragment14_144300/func_86801884.s")
-#endif
 
 void func_86801CA8(void) {
     s32 var_s0;

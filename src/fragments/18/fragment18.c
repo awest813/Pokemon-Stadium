@@ -1968,7 +1968,7 @@ s32 func_86C00B0C(MiniActor* compEkans) {
 
 s16 func_86C00BB4(void) {
     s32 i;
-    s32 var_v1 = func_878001E8(0x64) % 3;
+    s32 var_v1 = Minigame_Random(0x64) % 3;
     s16 var_t0 = -1;
 
     for (i = 0; i < 3; i++) {
@@ -1997,7 +1997,7 @@ s16 func_86C00C40(MiniActor* arg0) {
     } else {
         sp18 = 0;
         sp1E = -1;
-        var_a0 = func_878001E8(0x64) % 3;
+        var_a0 = Minigame_Random(0x64) % 3;
     }
 
     for (i = 0; i < 3; i++) {
@@ -2041,7 +2041,7 @@ s16 func_86C00D50(MiniActor* arg0) {
         }
     }
 
-    var_a0 = func_878001E8(0x64) % 3;
+    var_a0 = Minigame_Random(0x64) % 3;
 
     for (i = 0; i < 3; i++) {
         if (activeDigletts[var_a0].state == 6) {
@@ -2131,7 +2131,7 @@ void func_86C00F70(MiniActor* compEkans) {
     sp3C.z = tempDiglett->totalPos.z - compEkans->totalPos.z;
 
     compEkans->unk_222 = func_86C00668(compEkans, func_81400BBC(sp3C) + func_81400B00(sp36) + 0x8000);
-    compEkans->ySpinSpeed = func_878001E8(sp32) + sp34;
+    compEkans->ySpinSpeed = Minigame_Random(sp32) + sp34;
 }
 
 void miniEkansCompGetForce(MiniActor* compEkans) {
@@ -2141,41 +2141,41 @@ void miniEkansCompGetForce(MiniActor* compEkans) {
     switch (miniDifficulty) {
         case 0:
             if (diglettId < 3) {
-                force = func_878001E8(0x28) + 0x14;
+                force = Minigame_Random(0x28) + 0x14;
             } else if (diglettId < 6) {
-                force = func_878001E8(0x23) + 0x14;
+                force = Minigame_Random(0x23) + 0x14;
             } else {
-                force = func_878001E8(0x19) + 0x28;
+                force = Minigame_Random(0x19) + 0x28;
             }
             break;
 
         case 1:
             if (diglettId < 3) {
-                force = func_878001E8(0x1E) + 0x14;
+                force = Minigame_Random(0x1E) + 0x14;
             } else if (diglettId < 6) {
-                force = func_878001E8(0x1E) + 0x1E;
+                force = Minigame_Random(0x1E) + 0x1E;
             } else {
-                force = func_878001E8(0xF) + 0x32;
+                force = Minigame_Random(0xF) + 0x32;
             }
             break;
 
         case 2:
             if (diglettId < 3) {
-                force = func_878001E8(0xF) + 0x18;
+                force = Minigame_Random(0xF) + 0x18;
             } else if (diglettId < 6) {
-                force = func_878001E8(0xF) + 0x28;
+                force = Minigame_Random(0xF) + 0x28;
             } else {
-                force = func_878001E8(0xA) + 0x36;
+                force = Minigame_Random(0xA) + 0x36;
             }
             break;
 
         case 3:
             if (diglettId < 3) {
-                force = func_878001E8(0xA) + 0x1C;
+                force = Minigame_Random(0xA) + 0x1C;
             } else if (diglettId < 6) {
-                force = func_878001E8(0xA) + 0x2A;
+                force = Minigame_Random(0xA) + 0x2A;
             } else {
-                force = func_878001E8(6) + 0x3A;
+                force = Minigame_Random(6) + 0x3A;
             }
             break;
     }
@@ -2767,12 +2767,12 @@ s16 miniEkansChooseRandDiglett(UNUSED s16 activeDiglett) {
     }
 
     if (var_s0 == 0) {
-        rand = func_878001E8(0x64) % 9;
+        rand = Minigame_Random(0x64) % 9;
     } else {
         var_s3 = 0;
         while (true) {
             var_s0 = 0;
-            rand = func_878001E8(0x64) % 9;
+            rand = Minigame_Random(0x64) % 9;
             while (true) {
                 s16 tmp = var_s0 + 1;
                 if (rand == sp44[var_s0]) {
@@ -2806,7 +2806,7 @@ void func_86C02A1C(MiniActor* diglett) {
             sp18 = 1;
         } else {
             sp18 = 0;
-            temp_v0 = func_878001E8(0x64);
+            temp_v0 = Minigame_Random(0x64);
             if ((miniEkansCountdown < 0xA) && (temp_v0 < 0x14)) {
                 sp18 = 1;
             } else if ((miniEkansCountdown < 0x14) && (temp_v0 < 0xF)) {
@@ -2818,7 +2818,7 @@ void func_86C02A1C(MiniActor* diglett) {
             }
         }
     } else {
-        temp_v0 = func_878001E8(0x64);
+        temp_v0 = Minigame_Random(0x64);
         if ((miniEkansCountdown < 0x2D) && (temp_v0 < 5)) {
             sp18 = 1;
         }
@@ -2885,7 +2885,7 @@ void miniDiglettStateMachine(void) {
 
             case 3: //	get random time delay
                 activeDigletts[i].state = 4;
-                activeDigletts[i].timer = func_878001E8(0x14);
+                activeDigletts[i].timer = Minigame_Random(0x14);
                 break;
 
             case 4:                        // pre-spawn
@@ -3290,7 +3290,7 @@ void func_86C03E8C(s32 arg0) {
     }
 
     if (ekansMinigameCountdownStarted == false) {
-        func_87804FD4();
+        Minigame_AdvanceFrame();
     }
 }
 
