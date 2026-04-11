@@ -1,3 +1,28 @@
+/*
+ * File: 12D80.c
+ * ROM / VRAM Range: unknown / 0x80012180
+ * Source Type: Static Engine Core
+ * Status: CONTROL_FLOW_MAPPED
+ *
+ * Purpose:
+ *     Main Scene Graph Traversal and Renderer Dispatcher.
+ *     Handles node-type processing for Cameras, Backgrounds, and 3D Scenes.
+ *
+ * Evidence:
+ *     - Contains the RenderClass dispatch table (D_8006F0A4)
+ *     - Implements recursive child node processing (SceneGraph_VisitChildren)
+ *     - Links common RSP matrix utilities to scene entities
+ *
+ * Verified:
+ *     - Coordinates the high-level rendering loop for all game states
+ *     - Manages the Matrix stack for node-local coordinate spaces
+ *
+ * Likely:
+ *     - Supports dynamic node attachment and detachment (GraphNode API)
+ *
+ * Unknown:
+ *     - Full layout of every specialized node struct beyond common headers
+ */
 #include "12D80.h"
 #include "src/12D80.h"
 #include "src/1CF30.h"
@@ -10,6 +35,32 @@
 #include "src/F420.h"
 #include "src/memmap.h"
 #include "src/util.h"
+#include "6BC0.h"
+
+void SceneGraph_VisitChildren(GraphNode* arg0);
+void GraphNode_ProcessCamera(GraphNode* arg0);
+void GraphNode_ProcessPerspective(GraphNode* arg0);
+void GraphNode_ProcessScene(GraphNode* arg0);
+void GraphNode_ProcessTransform(GraphNode* arg0);
+void GraphNode_ProcessBillboard(GraphNode* arg0);
+void GraphNode_ProcessBackground(GraphNode* arg0);
+void GraphNode_ProcessClearDepth(UNUSED GraphNode* arg0);
+void GraphNode_ProcessMaster(GraphNode* arg0);
+void GraphNode_ProcessViewportChild(GraphNode* arg0);
+void GraphNode_ProcessTranslationRotation(GraphNode* arg0);
+void GraphNode_ProcessMasterChild(GraphNode* arg0);
+void GraphNode_ProcessDisplayList(GraphNode* arg0);
+void Renderer_SetMatrix(s16 arg0, MtxF* arg1);
+void Renderer_SetDisplayList(Gfx* arg0, s32 arg1);
+void Renderer_SetColor(Color_RGBA8_u32 arg0, u8 arg1, u32 arg2);
+void Renderer_SetViewport(s32 arg0, s32 arg1);
+void Renderer_ResetViewport(void);
+void RenderGraph_HandleTranslucentNode(GraphNode* arg0);
+void SceneGraph_ProcessNodeVariant(GraphNode* arg0);
+void SceneGraph_HandleCallbackAndVisitChildren(GraphNode* arg0);
+void SceneGraph_UpdateAndProcessNode(GraphNode* arg0);
+void func_8001638C(s32 arg0, s32 arg1);
+void func_8001660C(void);
 
 typedef void (*func_D_8006F0A4)(GraphNode* arg0);
 
@@ -30,9 +81,9 @@ unk_D_86002F34_alt1* D_8006F098 = NULL;
 unk_D_86002F58_004_000* D_8006F09C = NULL;
 unk_D_86002F34_alt11* D_8006F0A0 = NULL;
 static func_D_8006F0A4 D_8006F0A4[] = {
-    func_80013330, func_800133D8, func_80013464, func_80013764, func_8001378C, func_8001395C, func_800139E8,
-    func_80013AF8, func_80013B8C, func_80013C14, func_80013C1C, func_80013D34, func_80013F7C, func_80013F84,
-    func_80014124, func_80014D70, func_80014214, func_800142BC, func_80014334, func_80014384, func_800143C0,
+    SceneGraph_VisitChildren, SceneGraph_ProcessNodeVariant, GraphNode_ProcessCamera, GraphNode_ProcessPerspective, GraphNode_ProcessScene, GraphNode_ProcessTransform, GraphNode_ProcessBillboard,
+    GraphNode_ProcessBackground, GraphNode_ProcessClearDepth, GraphNode_ProcessMaster, GraphNode_ProcessViewportChild, GraphNode_ProcessTranslationRotation, GraphNode_ProcessMasterChild, GraphNode_ProcessDisplayList,
+    RenderGraph_HandleTranslucentNode, func_80014D70, func_80014214, func_800142BC, func_80014334, func_80014384, func_800143C0,
     func_80014624, func_80014690, func_800148D8, func_80014980, func_80014A60, func_80014AEC, func_80014D24,
     func_80014D50, NULL,          NULL,
 };
@@ -119,7 +170,7 @@ static unk_D_800ABB28 D_800ABB28[10];
 static unk_D_800ABB28* D_800ABCB8;
 static s32 D_800ABCBC;
 
-void func_80012180(void) {
+void GraphNode_RenderInit(void) {
     D_800AA8C8.unk_10A0 = 0;
     D_800AA8C8.unk_1080[0] = 0;
     MtxF_Identity(&D_800AA8C8.unk_0000[0]);
@@ -127,20 +178,20 @@ void func_80012180(void) {
     MtxF_ToMtx(D_800AA8C8.unk_1000[0], D_800AA8C8.unk_0000);
 }
 
-void func_800121C8(void) {
+void Renderer_UpdateMatrixStack(void) {
     D_800AA8C8.unk_1080[D_800AA8C8.unk_10A0] = 0;
     D_800AA8C8.unk_1000[D_800AA8C8.unk_10A0] = DLBuf_AllocTemp(sizeof(MtxF) * 1);
     MtxF_ToMtx(D_800AA8C8.unk_1000[D_800AA8C8.unk_10A0], &D_800AA8C8.unk_0000[D_800AA8C8.unk_10A0]);
 }
 
-void func_80012230(MtxF* arg0) {
+void SceneGraph_UpdateMatrixState(MtxF* arg0) {
     MtxF_Copy(&D_800AA8C8.unk_0000[D_800AA8C8.unk_10A0], arg0);
     D_800AA8C8.unk_1080[D_800AA8C8.unk_10A0] = 0;
     D_800AA8C8.unk_1000[D_800AA8C8.unk_10A0] = DLBuf_AllocTemp(sizeof(MtxF) * 1);
     MtxF_ToMtx(D_800AA8C8.unk_1000[D_800AA8C8.unk_10A0], &D_800AA8C8.unk_0000[D_800AA8C8.unk_10A0]);
 }
 
-void func_800122B4(MtxF* arg0) {
+void SceneGraph_MulMatrixStack(MtxF* arg0) {
     MtxF* temp_a0;
 
     D_800AA8C8.unk_10A0++;
@@ -152,7 +203,7 @@ void func_800122B4(MtxF* arg0) {
     MtxF_ToMtx(D_800AA8C8.unk_1000[D_800AA8C8.unk_10A0], &D_800AA8C8.unk_0000[D_800AA8C8.unk_10A0]);
 }
 
-void func_80012344(Vec3f* arg0) {
+void SceneGraph_MulVec3fMatrixStack(Vec3f* arg0) {
     MtxF* temp_a0;
 
     D_800AA8C8.unk_10A0++;
@@ -166,7 +217,7 @@ void func_80012344(Vec3f* arg0) {
     MtxF_ToMtx(D_800AA8C8.unk_1000[D_800AA8C8.unk_10A0], &D_800AA8C8.unk_0000[D_800AA8C8.unk_10A0]);
 }
 
-MtxF* func_800123D4(s32 arg0) {
+MtxF* SceneGraph_GetMatrixRelative(s32 arg0) {
     MtxF* var_v1 = NULL;
 
     if (arg0 <= 0) {
@@ -176,7 +227,7 @@ MtxF* func_800123D4(s32 arg0) {
     return var_v1;
 }
 
-MtxF* func_80012400(s32 arg0) {
+MtxF* SceneGraph_GetMatrixAbsolute(s32 arg0) {
     MtxF* var_v1 = NULL;
 
     if ((arg0 >= 0) && (arg0 < 0x20)) {
@@ -186,12 +237,12 @@ MtxF* func_80012400(s32 arg0) {
     return var_v1;
 }
 
-void func_80012428(void) {
+void SceneGraph_ResetMatrixStack(void) {
     D_800AB970.unk_180 = 0;
     D_800AB970.unk_000[0] = D_8006F064;
 }
 
-void func_80012458(Vec3f* arg0) {
+void SceneGraph_MulScaleMatrixStack(Vec3f* arg0) {
     D_800AB970.unk_000[D_800AB970.unk_180 + 1].x = D_800AB970.unk_000[D_800AB970.unk_180].x * arg0->x;
     D_800AB970.unk_000[D_800AB970.unk_180 + 1].y = D_800AB970.unk_000[D_800AB970.unk_180].y * arg0->y;
     D_800AB970.unk_000[D_800AB970.unk_180 + 1].z = D_800AB970.unk_000[D_800AB970.unk_180].z * arg0->z;
@@ -199,7 +250,7 @@ void func_80012458(Vec3f* arg0) {
     D_800AB970.unk_180++;
 }
 
-Vtx* func_800124D4(unk_D_86002F34_00C_0CC* arg0, unk_D_86002F34_00C_040* arg1) {
+Vtx* RenderGraph_ProcessVertices(unk_D_86002F34_00C_0CC* arg0, unk_D_86002F34_00C_040* arg1) {
     u8 sp47;
     Vtx* temp_v0 = DLBuf_AllocTemp(sizeof(Vtx) * 4);
 
@@ -227,8 +278,8 @@ Vtx* func_800124D4(unk_D_86002F34_00C_0CC* arg0, unk_D_86002F34_00C_040* arg1) {
     return temp_v0;
 }
 
-void func_80012768(unk_D_86002F34_00C_0CC* arg0, unk_D_86002F34_00C_040* arg1) {
-    Vtx* temp_v0 = func_800124D4(arg0, arg1);
+void RenderGraph_ProcessPrimitive(unk_D_86002F34_00C_0CC* arg0, unk_D_86002F34_00C_040* arg1) {
+    Vtx* temp_v0 = RenderGraph_ProcessVertices(arg0, arg1);
 
     if (temp_v0 != NULL) {
         gDPSetCombineMode(gDisplayListHead++, G_CC_SHADE, G_CC_SHADE);
@@ -313,7 +364,7 @@ Vtx* func_80012960(unk_D_86002F34_00C_0CC* arg0) {
     return temp_v0;
 }
 
-void func_80012D88(unk_D_86002F34_00C_0CC* arg0, UNUSED unk_D_86002F34_00C_040* arg1) {
+void RenderGraph_ProcessTexturePrimitive(unk_D_86002F34_00C_0CC* arg0, unk_D_86002F34_00C_040* arg1) {
     Vtx* temp_v0 = func_80012960(arg0);
 
     if (temp_v0 != 0) {
@@ -359,7 +410,7 @@ void func_80012D88(unk_D_86002F34_00C_0CC* arg0, UNUSED unk_D_86002F34_00C_040* 
     }
 }
 
-void func_800131B4(unk_D_86002F34_00C_0CC* arg0, unk_D_86002F34_00C_040* arg1) {
+void RenderGraph_HandlePrimitiveNode(unk_D_86002F34_00C_0CC* arg0, unk_D_86002F34_00C_040* arg1) {
     if (arg0->unk_00 != 0) {
         gDPPipeSync(gDisplayListHead++);
 
@@ -370,17 +421,17 @@ void func_800131B4(unk_D_86002F34_00C_0CC* arg0, unk_D_86002F34_00C_040* arg1) {
         gSPMatrix(gDisplayListHead++, (u32)&D_8006F010 & 0x1FFFFFFF, G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_MODELVIEW);
 
         if ((arg0->unk_00 == 1) || (arg0->unk_00 == 2) || (arg0->unk_00 == 3)) {
-            func_80012768(arg0, arg1);
-        } else {
-            func_80012D88(arg0, arg1);
-        }
+            RenderGraph_ProcessPrimitive(arg0, arg1);
+} else {
+    RenderGraph_ProcessTexturePrimitive(arg0, arg1);
+}
 
         gDPPipeSync(gDisplayListHead++);
         gDPSetCycleType(gDisplayListHead++, G_CYC_2CYCLE);
     }
 }
 
-void func_80013330(GraphNode* arg0) {
+void SceneGraph_VisitChildren(GraphNode* arg0) {
     GraphNode* temp_s2 = arg0->unk_0C;
     GraphNode* var_s0 = temp_s2;
 
@@ -398,7 +449,7 @@ void func_80013330(GraphNode* arg0) {
     }
 }
 
-void func_800133D8(GraphNode* arg0) {
+void SceneGraph_ProcessNodeVariant(GraphNode* arg0) {
     UNUSED s32 pad;
     GraphNode* temp_a1 = ((unk_D_86002F34*)arg0)->unk_18;
 
@@ -410,10 +461,10 @@ void func_800133D8(GraphNode* arg0) {
         D_8006F0A4[temp_a1->unk_00](temp_a1);
     }
 
-    func_80013330(arg0);
+    SceneGraph_HandleCallbackAndVisitChildren(arg0);
 }
 
-void func_80013464(GraphNode* arg0) {
+void GraphNode_ProcessCamera(GraphNode* arg0) {
     UNUSED MtxF pad_mtx;
     unk_D_86002F34_00C* arg = (unk_D_86002F34_00C*)arg0;
     unk_D_86002F34_00C_040* temp_s2 = &arg->unk_40;
@@ -447,20 +498,20 @@ void func_80013464(GraphNode* arg0) {
 
     D_8006F088 = arg;
     if ((arg->unk_CC.unk_00 != 1) && (arg->unk_00.unk_0C != NULL)) {
-        func_80013330(&arg->unk_00);
+        SceneGraph_HandleCallbackAndVisitChildren(&arg->unk_00);
     }
-    func_800131B4(&arg->unk_CC, temp_s2);
+    RenderGraph_HandlePrimitiveNode(&arg->unk_CC, temp_s2);
     GFX_RestoreScissor(&gDisplayListHead);
     D_8006F088 = NULL;
 }
 
-void func_80013764(GraphNode* arg0) {
+void GraphNode_ProcessPerspective(GraphNode* arg0) {
     D_8006F08C = arg0;
-    func_80013330(arg0);
+    SceneGraph_HandleCallbackAndVisitChildren(arg0);
     D_8006F08C = NULL;
 }
 
-void func_8001378C(GraphNode* arg0) {
+void GraphNode_ProcessScene(GraphNode* arg0) {
     unk_D_86002F34_alt1* arg = (unk_D_86002F34_alt1*)arg0;
 
     if (arg->unk_00.unk_0C != NULL) {
@@ -487,36 +538,28 @@ void func_8001378C(GraphNode* arg0) {
                   G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_MODELVIEW);
 
         D_8006F090 = arg;
-        func_80013330(arg0);
+        SceneGraph_HandleCallbackAndVisitChildren(arg0);
         D_8006F090 = NULL;
     }
 
     arg->unk_1A = D_8006F084;
 }
 
-void func_800138F0(GraphNode* arg0) {
+void SceneGraph_UpdateAndProcessNode(GraphNode* arg0) {
     unk_D_86002F34_00C* arg = (unk_D_86002F34_00C*)arg0;
 
     if ((D_8006F094 == NULL) && (arg->unk_00.unk_0C != NULL)) {
         D_8006F094 = arg;
         func_8001638C(arg->unk_00.unk_02 & 3, D_8006F080);
-        func_80013330(arg0);
+        SceneGraph_HandleCallbackAndVisitChildren(arg0);
         func_8001660C();
         D_8006F094 = NULL;
     }
 }
 
-void func_8001395C(GraphNode* arg0) {
-    if ((D_8006F094 == NULL) && (arg0->unk_0C != NULL)) {
-        gSPPerspNormalize(gDisplayListHead++, 0xFFFF);
-        gSPMatrix(gDisplayListHead++, (u32)D_8006F088->unk_40.mtx & 0x1FFFFFFF,
-                  G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_PROJECTION);
 
-        func_800138F0(arg0);
-    }
-}
 
-void func_800139E8(GraphNode* arg0) {
+void GraphNode_ProcessTransform(GraphNode* arg0) {
     if ((D_8006F094 == NULL) && (arg0->unk_0C != NULL)) {
         gSPLookAt(gDisplayListHead++, (u32)&D_8006F088->unk_60.lookat->l & 0x1FFFFFFF);
 
@@ -527,11 +570,11 @@ void func_800139E8(GraphNode* arg0) {
         gSPMatrix(gDisplayListHead++, (u32)D_8006F088->unk_60.p_mtxf & 0x1FFFFFFF,
                   G_MTX_NOPUSH | G_MTX_MUL | G_MTX_PROJECTION);
 
-        func_800138F0(arg0);
+        SceneGraph_UpdateAndProcessNode(arg0);
     }
 }
 
-void func_80013AF8(GraphNode* arg0) {
+void GraphNode_ProcessBackground(GraphNode* arg0) {
     unk_D_86002F34_alt2* arg = (unk_D_86002F34_alt2*)arg0;
     unk_D_86002F34_00C_018* ptr = &D_8006F088->unk_18;
 
@@ -541,7 +584,7 @@ void func_80013AF8(GraphNode* arg0) {
     gDPSetCycleType(gDisplayListHead++, G_CYC_2CYCLE);
 }
 
-void func_80013B8C(UNUSED GraphNode* arg0) {
+void GraphNode_ProcessClearDepth(UNUSED GraphNode* arg0) {
     unk_D_86002F34_00C_018* ptr = &D_8006F088->unk_18;
 
     GFX_ClearDepth(&gDisplayListHead, ptr->x, ptr->y, ptr->width, ptr->height);
@@ -550,10 +593,10 @@ void func_80013B8C(UNUSED GraphNode* arg0) {
     gDPSetCycleType(gDisplayListHead++, G_CYC_2CYCLE);
 }
 
-void func_80013C14(UNUSED GraphNode* arg0) {
+void GraphNode_ProcessMaster(UNUSED GraphNode* arg0) {
 }
 
-void func_80013C1C(GraphNode* arg0) {
+void GraphNode_ProcessFog(GraphNode* arg0) {
     unk_D_86002F34_alt3* arg = (unk_D_86002F34_alt3*)arg0;
 
     D_8006F090->unk_1D = 1;
@@ -565,7 +608,7 @@ void func_80013C1C(GraphNode* arg0) {
 }
 
 #ifdef NON_MATCHING
-void func_80013D34(GraphNode* arg0) {
+void GraphNode_ProcessLight(GraphNode* arg0) {
     unk_D_86002F34_alt4* arg = (unk_D_86002F34_alt4*)arg0;
     Lights7* lights;
     unk_D_86002F34_alt1* new_var;
@@ -611,10 +654,10 @@ void func_80013D34(GraphNode* arg0) {
 #pragma GLOBAL_ASM("asm/us/nonmatchings/12D80/func_80013D34.s")
 #endif
 
-void func_80013F7C(UNUSED GraphNode* arg0) {
+void GraphNode_ProcessDisplayListSetup(UNUSED GraphNode* arg0) {
 }
 
-void func_80013F84(GraphNode* arg0) {
+void GraphNode_ProcessDisplayList(GraphNode* arg0) {
     unk_D_86002F34_alt4* arg = (unk_D_86002F34_alt4*)arg0;
     s32 i;
     Lights7* lights;
@@ -640,7 +683,7 @@ void func_80013F84(GraphNode* arg0) {
     gSPLight(gDisplayListHead++, D_8006F090->lights, i + 1);
 }
 
-void func_80014124(GraphNode* arg0) {
+void RenderGraph_HandleTranslucentNode(GraphNode* arg0) {
     unk_D_86002F34_alt11* arg = (unk_D_86002F34_alt11*)arg0;
     MtxF* temp_v0 = &D_800AA8C8.unk_0000[D_800AA8C8.unk_10A0];
     Vec3f sp2C;
@@ -653,15 +696,15 @@ void func_80014124(GraphNode* arg0) {
 
         D_800AA8C8.unk_10A0++;
 
-        func_800121C8();
-        func_800160E0(0, D_800AA8C8.unk_1000[D_800AA8C8.unk_10A0]);
-        func_80016274(D_1002590, 1);
+        Renderer_UpdateMatrixStack();
+        Renderer_SetMatrix(0, D_800AA8C8.unk_1000[D_800AA8C8.unk_10A0]);
+        Renderer_SetDisplayList(D_1002590, 1);
 
         D_800AA8C8.unk_10A0--;
     }
 
     D_8006F0A0 = arg;
-    func_80013330(arg0);
+    SceneGraph_HandleCallbackAndVisitChildren(arg0);
     D_8006F0A0 = NULL;
 }
 
@@ -674,7 +717,7 @@ void func_80014214(GraphNode* arg0) {
     s16 temp_ft5 = ((a * mtx2->mf[0][2]) + (b * mtx2->mf[1][2]) + (c * mtx2->mf[2][2])) + mtx2->mf[3][2];
 
     if ((temp_ft5 >= arg->unk_18) && (temp_ft5 < arg->unk_1A)) {
-        func_80013330(arg0);
+        SceneGraph_HandleCallbackAndVisitChildren(arg0);
     }
 }
 
@@ -694,27 +737,27 @@ void func_800142BC(GraphNode* arg0) {
     }
 }
 
-void func_80014334(GraphNode* arg0) {
+void GraphNode_ProcessRotation(GraphNode* arg0) {
     MtxF sp20;
     unk_D_86002F34_alt5* arg = (unk_D_86002F34_alt5*)arg0;
 
     MtxF_FromPosRot(&sp20, &arg->unk_18, &arg->unk_24);
-    func_800122B4(&sp20);
-    func_80013330(arg0);
+    SceneGraph_MulMatrixStack(&sp20);
+    SceneGraph_HandleCallbackAndVisitChildren(arg0);
 
     D_800AA8C8.unk_10A0--;
 }
 
-void func_80014384(GraphNode* arg0) {
+void GraphNode_ProcessTranslation(GraphNode* arg0) {
     unk_D_86002F34_alt5* arg = (unk_D_86002F34_alt5*)arg0;
 
-    func_80012344(&arg->unk_18);
-    func_80013330(arg0);
+    SceneGraph_MulVec3fMatrixStack(&arg->unk_18);
+    SceneGraph_HandleCallbackAndVisitChildren(arg0);
 
     D_800AA8C8.unk_10A0--;
 }
 
-void func_800143C0(GraphNode* arg0) {
+void GraphNode_ProcessBillboard(GraphNode* arg0) {
     Vec3s sp90;
     Vec3f sp84;
     Vec3f sp78;
@@ -735,13 +778,13 @@ void func_800143C0(GraphNode* arg0) {
         func_80012230(&sp38);
     } else if (arg->unk_31 & 1) {
         func_8000F5A8(&sp38, &sp84, &sp90, &sp78);
-        func_800122B4(&sp38);
+        SceneGraph_MulMatrixStack(&sp38);
     } else {
         func_8000F730(&sp38, &sp84, &sp90, &D_800AB970.unk_000[D_800AB970.unk_180]);
 
         D_800AA8C8.unk_10A0++;
 
-        func_80012458(&sp78);
+        SceneGraph_MulScaleMatrixStack(&sp78);
         if (D_800AA8C8.unk_1080[D_800AA8C8.unk_10A0 - 1] == 1) {
             MtxF_Mul(&D_800AA8C8.unk_0000[D_800AA8C8.unk_10A0 + 32], &sp38,
                           &D_800AA8C8.unk_0000[D_800AA8C8.unk_10A0 + 31]);
@@ -751,13 +794,13 @@ void func_800143C0(GraphNode* arg0) {
         }
         MtxF_MulVec3f(&D_800AA8C8.unk_0000[D_800AA8C8.unk_10A0], &D_800AA8C8.unk_0000[D_800AA8C8.unk_10A0 + 32],
                       &D_800AB970.unk_000[D_800AB970.unk_180]);
-        func_800121C8();
+        Renderer_UpdateMatrixStack();
         D_800AA8C8.unk_1080[D_800AA8C8.unk_10A0] = 1;
         sp30 = 1;
     }
 
     D_800AA6C8[arg->unk_30] = D_800AA8C8.unk_1000[D_800AA8C8.unk_10A0];
-    func_80013330(arg0);
+    SceneGraph_HandleCallbackAndVisitChildren(arg0);
     D_800AA6C8[arg->unk_30] = NULL;
     D_800AA8C8.unk_10A0--;
 
@@ -770,11 +813,11 @@ void func_80014624(GraphNode* arg0) {
     unk_D_86002F34_alt7* arg = (unk_D_86002F34_alt7*)arg0;
 
     if (arg->unk_18 != NULL) {
-        func_800160E0(arg->unk_00.unk_03, D_800AA6C8[arg->unk_1C]);
-        func_80016274(arg->unk_18, (arg->unk_00.unk_02 & 4) != 0);
+        Renderer_SetMatrix(arg->unk_00.unk_03, D_800AA6C8[arg->unk_1C]);
+        Renderer_SetDisplayList(arg->unk_18, (arg->unk_00.unk_02 & 4) != 0);
     }
 
-    func_80013330(arg0);
+    SceneGraph_HandleCallbackAndVisitChildren(arg0);
 }
 
 void func_80014690(GraphNode* arg0) {
@@ -805,21 +848,21 @@ void func_80014690(GraphNode* arg0) {
         if (!(arg->unk_000.unk_02 & 4)) {
             D_800AA8C8.unk_10A0++;
 
-            func_800121C8();
+            Renderer_UpdateMatrixStack();
             D_8006F09C = arg0;
 
-            func_80016344(arg->unk_0A0, arg->unk_01D, arg->unk_01C);
+            Renderer_SetColor(arg->unk_0A0, arg->unk_01D, arg->unk_01C);
 
             if ((D_8006F08C->unk_18 < 0) && (arg->unk_01A > 0)) {
-                func_80032670(arg->unk_0A6, arg->unk_01A);
-                func_80013330(arg0);
-                func_80032738(arg->unk_0A6, arg->unk_01A);
+                Renderer_SetViewport(arg->unk_0A6, arg->unk_01A);
+                SceneGraph_VisitChildren(arg0);
+                Renderer_ResetViewport();
             } else {
-                func_80013330(arg0);
+                SceneGraph_VisitChildren(arg0);
             }
 
             sp34.rgba = 0xFFFFFF00;
-            func_80016344(sp34, 0xFF, 0);
+            Renderer_SetColor(sp34, 0xFF, 0);
             D_8006F09C = NULL;
         }
 
@@ -835,13 +878,13 @@ void func_800148D8(GraphNode* arg0) {
     func_800122B4(&arg->unk_1C);
 
     if ((arg->unk_18 != NULL) || (arg->unk_00.unk_10 != NULL)) {
-        func_800160E0(arg->unk_00.unk_03, D_800AA8C8.unk_1000[D_800AA8C8.unk_10A0]);
+        Renderer_SetMatrix(arg->unk_00.unk_03, D_800AA8C8.unk_1000[D_800AA8C8.unk_10A0]);
         if (arg->unk_00.unk_10 != NULL) {
             arg->unk_00.unk_10(5, arg0);
         }
-        func_80016274(arg->unk_18, (arg->unk_00.unk_02 & 4) != 0);
+        Renderer_SetDisplayList(arg->unk_18, (arg->unk_00.unk_02 & 4) != 0);
     }
-    func_80013330(arg0);
+    SceneGraph_HandleCallbackAndVisitChildren(arg0);
     D_800AA8C8.unk_10A0--;
 }
 
@@ -855,14 +898,14 @@ void func_80014980(GraphNode* arg0) {
     func_80012230(&sp30);
 
     if ((arg->unk_18 != NULL) || (arg->unk_00.unk_10 != NULL)) {
-        func_800160E0(arg->unk_00.unk_03, D_800AA8C8.unk_1000[D_800AA8C8.unk_10A0]);
+        Renderer_SetMatrix(arg->unk_00.unk_03, D_800AA8C8.unk_1000[D_800AA8C8.unk_10A0]);
         if (arg->unk_00.unk_10 != NULL) {
             arg->unk_00.unk_10(5, arg0);
         }
-        func_80016274(arg->unk_18, (arg->unk_00.unk_02 & 4) != 0);
+        Renderer_SetDisplayList(arg->unk_18, (arg->unk_00.unk_02 & 4) != 0);
     }
 
-    func_80013330(arg0);
+    SceneGraph_HandleCallbackAndVisitChildren(arg0);
     D_800AA8C8.unk_10A0--;
 }
 
@@ -870,13 +913,13 @@ void func_80014A60(GraphNode* arg0) {
     unk_D_86002F34_alt9* arg = (unk_D_86002F34_alt9*)arg0;
 
     if ((arg->unk_18 != NULL) || (arg->unk_00.unk_10 != NULL)) {
-        func_800160E0(arg->unk_00.unk_03, D_800AA8C8.unk_1000[D_800AA8C8.unk_10A0]);
+        Renderer_SetMatrix(arg->unk_00.unk_03, D_800AA8C8.unk_1000[D_800AA8C8.unk_10A0]);
         if (arg->unk_00.unk_10 != NULL) {
             arg->unk_00.unk_10(5, arg0);
         }
-        func_80016274(arg->unk_18, (arg->unk_00.unk_02 & 4) != 0);
+        Renderer_SetDisplayList(arg->unk_18, (arg->unk_00.unk_02 & 4) != 0);
     }
-    func_80013330(arg0);
+    SceneGraph_HandleCallbackAndVisitChildren(arg0);
 }
 
 void func_80014AEC(GraphNode* arg0) {
@@ -912,7 +955,7 @@ void func_80014AEC(GraphNode* arg0) {
 
     func_800176DC(&sp3C, D_8006F0A0->unk_18, arg->unk_20);
     func_80016364(arg->unk_22, sp44, sp3C, sp38, sp34);
-    func_80013330(arg0);
+    SceneGraph_HandleCallbackAndVisitChildren(arg0);
 }
 
 void func_80014CB8(s32 arg0) {
@@ -936,11 +979,11 @@ void func_80014D24(GraphNode* arg0) {
     unk_D_86002F34_alt3* arg = (unk_D_86002F34_alt3*)arg0;
 
     func_80014CB8(arg->unk_18);
-    func_80013330(arg0);
+    SceneGraph_HandleCallbackAndVisitChildren(arg0);
 }
 
 void func_80014D50(GraphNode* arg0) {
-    func_80013330(arg0);
+    SceneGraph_HandleCallbackAndVisitChildren(arg0);
 }
 
 void func_80014D70(GraphNode* arg0) {
@@ -982,7 +1025,7 @@ void func_80014D70(GraphNode* arg0) {
         MtxF_MulVec3f(&D_800AA8C8.unk_0000[D_800AA8C8.unk_10A0 + 1], &sp40, &sp84);
 
         D_800AA8C8.unk_10A0++;
-        func_800121C8();
+        Renderer_UpdateMatrixStack();
 
         if (arg->unk_18 == 0) {
             gSPBranchList(&temp_s1[1], Util_ConvertAddrToVirtAddr(D_1002480));
@@ -992,16 +1035,16 @@ void func_80014D70(GraphNode* arg0) {
         gDPSetEnvColor(&temp_s1[0], 0, 0, 0, (s32)(150.0f * sp80));
 
         if (D_8006F09C->unk_000.unk_02 & 2) {
-            func_800160E0(6, D_800AA8C8.unk_1000[D_800AA8C8.unk_10A0]);
+            Renderer_SetMatrix(6, D_800AA8C8.unk_1000[D_800AA8C8.unk_10A0]);
         } else {
-            func_800160E0(5, D_800AA8C8.unk_1000[D_800AA8C8.unk_10A0]);
+            Renderer_SetMatrix(5, D_800AA8C8.unk_1000[D_800AA8C8.unk_10A0]);
         }
 
         gDPSetFogColor(gDisplayListHead++, 255, 255, 255, 0);
         gDPSetPrimColor(gDisplayListHead++, 0, D_8006F09C->unk_01D, 255, 255, 255, 255);
 
-        func_80016274((u32)temp_s1 & 0x1FFFFFFF, 1);
-        func_80013330(arg0);
+        Renderer_SetDisplayList((u32)temp_s1 & 0x1FFFFFFF, 1);
+        SceneGraph_HandleCallbackAndVisitChildren(arg0);
 
         D_800AA8C8.unk_10A0--;
     }
@@ -1025,7 +1068,7 @@ void func_80015094(GraphNode* arg0) {
         gDPSetAlphaDither(gDisplayListHead++, G_AD_PATTERN);
 
         D_8006F08C = arg;
-        func_80013330(arg0);
+        SceneGraph_HandleCallbackAndVisitChildren(arg0);
         D_8006F08C = NULL;
     }
 
@@ -1068,7 +1111,7 @@ void func_80015220(GraphNode* arg0, s32 arg1) {
                 *var_s0 = var_s1;
             }
 
-            func_80015220(var_s1->unk_0C, arg1);
+            SceneGraph_VisitChildren(var_s1->unk_0C);
 
             if (var_s0 != NULL) {
                 *var_s0 = NULL;
@@ -1335,7 +1378,7 @@ s16 func_80016060(s16 arg0) {
     return var_v1;
 }
 
-void func_800160E0(s16 arg0, MtxF* arg1) {
+void Renderer_SetMatrix(s16 arg0, MtxF* arg1) {
     if ((D_8006F120 != 0) && !(D_800ABB04 & 2) && (D_800ABB10.unk_01 > 0)) {
         func_80016010(arg0);
         func_80015F64(func_80016060(arg0));
@@ -1377,7 +1420,7 @@ void func_800160E0(s16 arg0, MtxF* arg1) {
     }
 }
 
-void func_80016274(Gfx* arg0, s32 arg1) {
+void Renderer_SetDisplayList(Gfx* arg0, s32 arg1) {
     if ((D_8006F120 != 0) && !(D_800ABB04 & 2) && (D_800ABB10.unk_01 > 0)) {
         if (arg0 != NULL) {
             if (((u32)arg0 >= 0x81000000) && ((u32)arg0 < 0x90000000)) {
@@ -1393,7 +1436,7 @@ void func_80016274(Gfx* arg0, s32 arg1) {
     }
 }
 
-void func_80016344(Color_RGBA8_u32 arg0, u8 arg1, u32 arg2) {
+void Renderer_SetColor(Color_RGBA8_u32 arg0, u8 arg1, u32 arg2) {
     D_800ABB10.unk_08.rgba = arg0.rgba;
     D_800ABB10.unk_01 = arg1;
     D_800ABB10.unk_02 = arg2;
@@ -1408,7 +1451,7 @@ void func_80016364(s32 arg0, Color_RGBA8_u32 arg1, unk_D_86002F34_alt11_018* arg
     D_800ABB10.unk_14 = arg4;
 }
 
-void func_8001638C(s32 arg0, s32 arg1) {
+void Renderer_SetViewport(s32 arg0, s32 arg1) {
     s32 i;
     unk_D_800ABB28* ptr = D_800ABB28;
 
@@ -1462,7 +1505,7 @@ void func_8001638C(s32 arg0, s32 arg1) {
     D_8006F120 = 1;
 }
 
-void func_8001660C(void) {
+void Renderer_ResetViewport(void) {
     s32 sp1C = 0;
     Gfx* temp_t0;
     s32 temp_v0;
