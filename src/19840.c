@@ -5,7 +5,6 @@
 #include "src/memory.h"
 #include "src/util.h"
 #include <PR/os_internal_reg.h>
-#include <PR/leo.h>
 
 typedef struct ret_func_unk_gFragmentLoader {
     /* 0x00 */ char unk00[0x3];
