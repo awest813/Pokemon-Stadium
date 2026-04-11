@@ -3352,7 +3352,7 @@ void func_86C040B4(s32 arg0) {
     Stage_AdvanceFrame();
 }
 
-void initEkansMinigameAssets(void) {
+void EkansMinigame_Init Assets(void) {
     ekansMinigameInitObjects(); //	init game objects
     hideMiniGameHUD();
     func_87901620(); //	memory something
@@ -3368,7 +3368,7 @@ void initEkansMinigameAssets(void) {
     }
 }
 
-void miniEkansTutoScreenControls(void) {
+void EkansMinigame_StartScreen(void) {
     s32 var_s1 = 1;
 
     while (var_s1 != 0) {
@@ -3408,7 +3408,7 @@ void miniEkansTutoScreenControls(void) {
     }
 }
 
-void ekansMinigameUpdate(void) {
+void EkansMinigame_Update(void) {
     s32 i;
 
     Stage_FadeIn(0x1E);
@@ -3483,7 +3483,7 @@ void func_86C044B4(void) {
     }
 }
 
-s32 ekansMinigameLoad(s32 arg0, UNUSED s32 arg1) {
+s32 EkansMinigame_Entry(s32 arg0, UNUSED s32 arg1) {
     RenderContext* sp24;
 
     if (arg0 == 1) {
@@ -3508,9 +3508,9 @@ s32 ekansMinigameLoad(s32 arg0, UNUSED s32 arg1) {
 
     func_86C044B4(); // memory
     Stage_SetRenderContext(sp24);
-    initEkansMinigameAssets();
-    miniEkansTutoScreenControls();
-    ekansMinigameUpdate();
+    EkansMinigame_InitAssets();
+    EkansMinigame_StartScreen();
+    EkansMinigame_Update();
     Stage_FreeRenderContext();
     func_8001E9CC(); //	main_pool_try_free(D_800AC870);
     DLBuf_Free(); //	main_pool_try_free(D_800A7428.unk4); main_pool_try_free(D_800A7428.unk0);

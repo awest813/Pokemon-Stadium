@@ -3,7 +3,7 @@
 
 #include "global.h"
 
-void func_86D00020(void);
+void func_86D00020(void);s32 UnusedMinigame_Entry(s32 arg0, s32 arg1);
 void miniUnkUpdateCamera(void);
 void miniUnkDrawHUB(UNUSED s32 arg0);
 void func_86D00134(void);

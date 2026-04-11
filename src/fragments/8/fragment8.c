@@ -141,8 +141,8 @@ static s16 D_86203E44;
 static u16 D_86203E46;
 static s32 D_86203E48;
 static s16 D_86203E4C;
-static unk_D_86203E50 D_86203E50[4];
-static unk_D_86203E50* D_86204590;
+static RattataPlayerState D_86203E50[4];
+static RattataPlayerState* D_86204590;
 static unk_D_86002F58_004_000* D_86204594;
 static unk_D_86002F58_004_000 D_86204598;
 static s16 D_86204700;
@@ -156,14 +156,14 @@ static unk_D_800AC870* D_86204714;
 static s16 D_86204718;
 static s16 D_8620471A;
 static s16 D_8620471C;
-static unk_D_86204720 D_86204720[4][10];
-static unk_D_86204720* D_86208280;
+static RattataHurdle D_86204720[4][10];
+static RattataHurdle* D_86208280;
 static s32 D_86208288[4];
 static s32 D_86208298;
 static s16 D_8620829C;
 u32 D_862082A0[4];
 
-void func_86200020(unk_D_86203E50* arg0) {
+void func_86200020(RattataPlayerState* arg0) {
     arg0->unk_002 = D_8780FA38 + 1;
 }
 
@@ -256,7 +256,7 @@ void func_862002F4(void) {
     }
 }
 
-void func_862004D8(void) {
+void RattataMinigame_ProcessInputs(void) {
     D_8620471A = 0;
     if (Stage_GetFadeMode() == 0) {
         D_8620471A = 1;
@@ -466,7 +466,7 @@ void func_86200940(s32 arg0) {
     }
 }
 
-void func_86200EC4(s32 arg0) {
+void RattataMinigame_Update(s32 arg0) {
     s32 i;
 
     for (i = 0; i < 4; i++) {
@@ -499,7 +499,7 @@ void func_86200EC4(s32 arg0) {
     D_86203E46++;
 }
 
-s32 func_862011E8(void) {
+s32 RattataMinigame_StartScreen(void) {
     s32 i;
     s32 var_s1_3;
 
@@ -529,12 +529,12 @@ s32 func_862011E8(void) {
         var_s1_3 = 1;
     } else {
         func_86200620();
-        func_86200EC4(D_86203E48);
+        RattataMinigame_Update(D_86203E48);
         return 0;
     }
 
     while (var_s1_3 == 1) {
-        func_862004D8();
+        RattataMinigame_ProcessInputs();
         func_86200620();
         if (D_8620471A == 1) {
             if (gPlayer1Controller->buttonPressed & 0x1000) {
@@ -547,7 +547,7 @@ s32 func_862011E8(void) {
                 return -1;
             }
         }
-        func_86200EC4(D_86203E48);
+        RattataMinigame_Update(D_86203E48);
     }
 
     return 0;
@@ -578,7 +578,7 @@ void func_862013C0(void) {
                 break;
         }
 
-        func_862004D8();
+        RattataMinigame_ProcessInputs();
 
         if ((D_86204718 == 1) && (Stage_GetFadeMode() == 0) &&
             ((gPlayer1Controller->buttonPressed | gPlayer2Controller->buttonPressed |
@@ -589,12 +589,12 @@ void func_862013C0(void) {
 
             for (i = 0; i < 30; i++) {
                 func_86200620();
-                func_86200EC4(D_86203E48);
+                RattataMinigame_Update(D_86203E48);
             }
 
             while (func_800484E0() != 0) {
                 func_86200620();
-                func_86200EC4(D_86203E48);
+                RattataMinigame_Update(D_86203E48);
             }
 
             func_8004B154();
@@ -602,18 +602,18 @@ void func_862013C0(void) {
         }
 
         func_86200620();
-        func_86200EC4(D_86203E48);
+        RattataMinigame_Update(D_86203E48);
     }
 }
 
-void func_862015A0(unk_D_86203E50* arg0) {
+void func_862015A0(RattataPlayerState* arg0) {
     f32 temp_fv0 = arg0->unk_178 - 30.0f;
 
     arg0->unk_008.unk_024.z = temp_fv0;
     arg0->unk_194 = temp_fv0 / 3.0f;
 }
 
-void func_862015C8(unk_D_86203E50* arg0) {
+void func_862015C8(RattataPlayerState* arg0) {
     arg0->unk_19C = 0;
     arg0->unk_180 = 30.0f;
     arg0->unk_184 = 30.0f;
@@ -626,7 +626,7 @@ void func_862015C8(unk_D_86203E50* arg0) {
     arg0->unk_190 = 0.0f - arg0->unk_194;
 }
 
-s32 func_86201640(unk_D_86203E50* arg0, unk_D_86204720* arg1) {
+s32 func_86201640(RattataPlayerState* arg0, RattataHurdle* arg1) {
     f32 temp_fv0;
     f32 temp_fv1;
 
@@ -660,11 +660,11 @@ s32 func_86201640(unk_D_86203E50* arg0, unk_D_86204720* arg1) {
     return -1;
 }
 
-void func_86201770(unk_D_86203E50* arg0) {
+void func_86201770(RattataPlayerState* arg0) {
     arg0->unk_008.unk_040.unk_0C = (arg0->unk_178 * 196608.0f) / arg0->unk_180;
 }
 
-void func_86201814(unk_D_86203E50* arg0, s32 arg1) {
+void func_86201814(RattataPlayerState* arg0, s32 arg1) {
     unk_D_86002F58_004_000* temp_s0 = &arg0->unk_008;
 
     switch (arg1) {
@@ -696,7 +696,7 @@ void func_86201814(unk_D_86203E50* arg0, s32 arg1) {
     }
 }
 
-void func_86201900(unk_D_86203E50* arg0) {
+void func_86201900(RattataPlayerState* arg0) {
     s32 i;
     f32 sp64;
     f32 temp_fs1;
@@ -967,12 +967,12 @@ void func_862023F8(void) {
     s16 temp_s1_2;
     s16 var_s3;
     unk_D_86002F58_004_000* var_s2;
-    unk_D_86203E50* temp_s1;
+    RattataPlayerState* temp_s1;
     s16 var_v0_2;
     s16 sp8C;
-    unk_D_86203E50* temp_v1;
-    unk_D_86203E50* sp78[4];
-    unk_D_86203E50* var_s0_3;
+    RattataPlayerState* temp_v1;
+    RattataPlayerState* sp78[4];
+    RattataPlayerState* var_s0_3;
 
     spA4 = 1;
 
@@ -1000,7 +1000,7 @@ void func_862023F8(void) {
     D_86204710 = 99999.0f;
 
     while (spA4 != 0) {
-        func_862004D8();
+        RattataMinigame_ProcessInputs();
         func_86200620();
 
         if (D_8780FC92 != 0) {
@@ -1097,7 +1097,7 @@ void func_862023F8(void) {
             D_86204704++;
         }
 
-        func_86200EC4(D_86203E48);
+        RattataMinigame_Update(D_86203E48);
     }
 
     var_s3 = 0;
@@ -1108,7 +1108,7 @@ void func_862023F8(void) {
     }
 
     while (var_s3 > 0) {
-        func_862004D8();
+        RattataMinigame_ProcessInputs();
         func_86200620();
         if (D_8780FC92 == 0) {
             if (D_8780FC94 == 0) {
@@ -1126,7 +1126,7 @@ void func_862023F8(void) {
                 }
             }
 
-            func_86200EC4(D_86203E48);
+            RattataMinigame_Update(D_86203E48);
         } else {
             return;
         }
@@ -1182,7 +1182,7 @@ void func_86202C7C(void) {
     }
 }
 
-void func_86202D5C(void) {
+void RattataMinigame_ShowResults(void) {
     s32 i;
 
     for (i = 0; i < 4; i++) {
@@ -1200,30 +1200,30 @@ void func_86202D5C(void) {
     }
 
     while (D_8780FC94 != 0) {
-        func_862004D8();
-        func_86200EC4(D_86203E48);
+        RattataMinigame_ProcessInputs();
+        RattataMinigame_Update(D_86203E48);
     }
 
     func_87802EB8(1);
     D_86203E48 = 3;
 
     for (i = 0; i < 120; i++) {
-        func_862004D8();
+        RattataMinigame_ProcessInputs();
         func_86200620();
-        func_86200EC4(D_86203E48);
+        RattataMinigame_Update(D_86203E48);
     }
 
     for (i = 0; i < 30; i++) {
-        func_862004D8();
+        RattataMinigame_ProcessInputs();
         func_86200620();
-        func_86200EC4(D_86203E48);
+        RattataMinigame_Update(D_86203E48);
     }
 }
 
 void func_86202EE4(void) {
     while (func_800484E0() != 0) {
-        func_862004D8();
-        func_86200EC4(D_86203E48);
+        RattataMinigame_ProcessInputs();
+        RattataMinigame_Update(D_86203E48);
     }
     func_8004B154();
 }
@@ -1235,23 +1235,23 @@ void func_86202F3C(void) {
     Stage_FadeIn(0x1E);
 
     for (i = 0; i < 30; i++) {
-        func_862004D8();
-        func_86200EC4(D_86203E48);
+        RattataMinigame_ProcessInputs();
+        RattataMinigame_Update(D_86203E48);
     }
 }
 
-void func_86202FA4(s32 arg0) {
+void RattataMinigame_ReadyWait(s32 arg0) {
     s32 i;
 
     D_86203E48 = 6;
 
     for (i = 0; i < arg0; i++) {
-        func_862004D8();
-        func_86200EC4(D_86203E48);
+        RattataMinigame_ProcessInputs();
+        RattataMinigame_Update(D_86203E48);
     }
 }
 
-void func_86203008(void) {
+void RattataMinigame_ExitLoop(void) {
     D_86203E48 = 5;
 
     while (D_8780FC96 == 0) {
@@ -1262,14 +1262,14 @@ void func_86203008(void) {
             }
         }
 
-        func_862004D8();
+        RattataMinigame_ProcessInputs();
         func_86200620();
         func_86202C7C();
-        func_86200EC4(D_86203E48);
+        RattataMinigame_Update(D_86203E48);
     }
 }
 
-void func_862030D0(void) {
+void RattataMinigame_Init(void) {
     s32 i;
     s32 j;
     MemoryBlock* temp_v0 = func_80002D10(main_pool_get_available(), 0);
@@ -1377,7 +1377,7 @@ void func_86203380(void) {
     }
 }
 
-void func_8620369C(s32 arg0, UNUSED s32 arg1) {
+void RattataMinigame_Entry(s32 arg0, UNUSED s32 arg1) {
     RenderContext* sp24;
 
     if (arg0 == 1) {
@@ -1400,19 +1400,19 @@ void func_8620369C(s32 arg0, UNUSED s32 arg1) {
 
     func_80004454((((u32)&D_8D000000 & 0x0FF00000) >> 0x14) - 0x10, _5C7A70_ROM_START, _5C7A70_ROM_END);
 
-    func_862030D0();
+    RattataMinigame_Init();
     func_878029C0();
     Stage_SetRenderContext(sp24);
     func_86203380();
 
-    if (func_862011E8() != -1) {
+    if (RattataMinigame_StartScreen() != -1) {
         func_8004B9C4(0x3C);
-        func_86202FA4(5);
+        RattataMinigame_ReadyWait(5);
         func_862013C0();
         func_862023F8();
         if ((D_8780FC92 == 0) && (D_86204718 == 0)) {
-            func_86202D5C();
-            func_86203008();
+            RattataMinigame_ShowResults();
+            RattataMinigame_ExitLoop();
         }
     }
 

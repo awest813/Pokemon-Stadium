@@ -202,7 +202,7 @@ void func_86300238(s32 arg0) {
     func_8001F444();
 }
 
-void func_863006D8(s32 arg0) {
+void JigglypuffMinigame_UpdateAndDraw(s32 arg0) {
     Stage_ActivateFramebuffer();
     GFX_ClearScreen(&gDisplayListHead, 0x53D);
     GFX_ClearDepth(&gDisplayListHead, 0, 0, 0x140, 0xF0);
@@ -214,7 +214,7 @@ void func_863006D8(s32 arg0) {
     D_86301722++;
 }
 
-s32 func_86300764(void) {
+s32 JigglypuffMinigame_StartScreen(void) {
     s32 i;
     s32 var_s5;
 
@@ -254,7 +254,7 @@ s32 func_86300764(void) {
             func_86300C50(i);
         }
 
-        func_863006D8(D_86301724);
+        JigglypuffMinigame_UpdateAndDraw(D_86301724);
     }
 
     return 0;
@@ -294,7 +294,7 @@ void func_863008C0(void) {
             func_86300C50(i);
         }
 
-        func_863006D8(D_86301724);
+        JigglypuffMinigame_UpdateAndDraw(D_86301724);
     }
 }
 
@@ -439,7 +439,7 @@ void func_86300C50(s32 arg0) {
 void func_86300F60(void) {
 }
 
-void func_86300F68(void) {
+void JigglypuffMinigame_MainLoop(void) {
     s32 i;
     s32 var_s6 = 1;
 
@@ -470,11 +470,11 @@ void func_86300F68(void) {
         }
 
         D_86301D40++;
-        func_863006D8(D_86301724);
+        JigglypuffMinigame_UpdateAndDraw(D_86301724);
     }
 }
 
-void func_86301094(void) {
+void JigglypuffMinigame_ShowResults(void) {
     s32 i;
     s32 j;
     int var = -1;
@@ -495,7 +495,7 @@ void func_86301094(void) {
 
     for (j = 0; j < 0x5A; j++) {
         func_8630011C();
-        func_863006D8(D_86301724);
+        JigglypuffMinigame_UpdateAndDraw(D_86301724);
     }
 }
 
@@ -506,7 +506,7 @@ void func_86301168(void) {
 
     for (i = 0; i < 30; i++) {
         func_8630011C();
-        func_863006D8(D_86301724);
+        JigglypuffMinigame_UpdateAndDraw(D_86301724);
     }
 }
 
@@ -516,11 +516,11 @@ void func_863011C8(void) {
 
     while (D_8780FC96 == 0) {
         func_8630011C();
-        func_863006D8(D_86301724);
+        JigglypuffMinigame_UpdateAndDraw(D_86301724);
     }
 }
 
-void func_86301234(void) {
+void JigglypuffMinigame_Init(void) {
     s32 i;
     MemoryBlock* temp_v0 = func_80002D10(main_pool_get_available(), 0);
 
@@ -576,7 +576,7 @@ void func_86301234(void) {
     func_86300154();
 }
 
-void func_86301474(UNUSED s32 arg0, UNUSED s32 arg1) {
+void JigglypuffMinigame_Entry(UNUSED s32 arg0, UNUSED s32 arg1) {
     RenderContext* sp24;
 
     main_pool_push_state('MINI');
@@ -590,14 +590,14 @@ void func_86301474(UNUSED s32 arg0, UNUSED s32 arg1) {
 
     func_80004454((((u32)&D_8D000000 & 0x0FF00000) >> 0x14) - 0x10, _5C7A70_ROM_START, _5C7A70_ROM_END);
 
-    func_86301234();
+    JigglypuffMinigame_Init();
     func_878029C0();
     Stage_SetRenderContext(sp24);
 
-    if (func_86300764() != -1) {
+    if (JigglypuffMinigame_StartScreen() != -1) {
         func_863008C0();
-        func_86300F68();
-        func_86301094();
+        JigglypuffMinigame_MainLoop();
+        JigglypuffMinigame_ShowResults();
         func_863011C8();
     }
 

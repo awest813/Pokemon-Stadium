@@ -3,6 +3,6 @@
 
 #include "global.h"
 
-void func_8002F2A0(void);
+void KidsClub_Dispatch(void);
 
 #endif // _2FEA0_H_

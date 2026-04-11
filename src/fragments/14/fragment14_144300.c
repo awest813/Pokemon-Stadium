@@ -688,7 +688,7 @@ void func_86801CA8(void) {
     }
 }
 
-void func_86801D48(void) {
+void SushiGoRoundMinigame_Init(void) {
     UNUSED s32 pad;
     MemoryBlock* sp18;
 
@@ -719,7 +719,7 @@ void func_86801D48(void) {
     func_86805108(0xF, 2);
 }
 
-void func_86801E2C(s32 arg0, UNUSED s32 arg1) {
+void SushiGoRoundMinigame_Entry(s32 arg0, UNUSED s32 arg1) {
     RenderContext* sp24;
 
     if (arg0 == 1) {
@@ -741,7 +741,7 @@ void func_86801E2C(s32 arg0, UNUSED s32 arg1) {
     FRAGMENT_LOAD(fragment31);
     func_80004454((((u32)D_87000000 & 0x0FF00000) >> 0x14) - 0x10, sushi_go_round_ROM_START, order_select_ui_ROM_START);
 
-    func_86801D48();
+    SushiGoRoundMinigame_Init();
     Stage_SetRenderContext(sp24);
     func_86801CA8();
     Stage_FreeRenderContext();

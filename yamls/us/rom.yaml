@@ -2138,7 +2138,7 @@
     - [0x2E93C0, rodatabin,    fragments/61/fragment61_reloc]
 
 # battle system code
-  - name: fragment62
+  - name: BattleScene_Run
     type: code
     bss_size: 0x37D20
     start: 0x2EA8C0
@@ -2308,7 +2308,7 @@
     - [0x378D00, rodatabin,    fragments/62/fragment62_reloc]
 
 # battle preparation flags, rules, code
-  - name: fragment63
+  - name: BattleShell_Begin
     type: code
     bss_size: 0xCD70
     start: 0x394100
@@ -2357,7 +2357,7 @@
     - [0x3ADA10, rodatabin,    fragments/63/fragment63_reloc]
 
 # menu selector before battle code
-  - name: fragment64
+  - name: BattleShell_Tick
     type: code
     bss_size: 0x12D00
     start: 0x3AEE50

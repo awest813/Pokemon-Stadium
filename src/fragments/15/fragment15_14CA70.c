@@ -983,7 +983,7 @@ s32 func_869019BC(void) {
     }
 }
 
-void func_86901A44(void) {
+void SnapMode_UpdateAndDraw(void) {
     Stage_ActivateFramebuffer();
 
     if ((D_8690A688 == -1) || (D_8690A688 == 0)) {
@@ -1022,7 +1022,7 @@ void func_86901B28(void) {
 
     for (i = 0; i < 15; i++) {
         func_86900B6C();
-        func_86901A44();
+        SnapMode_UpdateAndDraw();
     }
 
     tmp2 = 5.7f;
@@ -1067,15 +1067,15 @@ void func_86901B28(void) {
             break;
         }
 
-        func_86901A44();
+        SnapMode_UpdateAndDraw();
     }
 
     func_86900B6C();
     D_8690B360.unk_0C = 251.0f;
-    func_86901A44();
+    SnapMode_UpdateAndDraw();
 }
 
-void func_86901ECC(void) {
+void SnapMode_MainLoop(void) {
     s32 var_s0 = 1;
     void (*temp_s1)(void) = Util_ConvertAddrToVirtAddr(func_8140C734);
 
@@ -1098,7 +1098,7 @@ void func_86901ECC(void) {
 
         temp_s1();
 
-        func_86901A44();
+        SnapMode_UpdateAndDraw();
     }
 }
 
@@ -1109,11 +1109,11 @@ void func_86901FB4(void) {
 
     for (i = 0; i < 30; i++) {
         func_86900B6C();
-        func_86901A44();
+        SnapMode_UpdateAndDraw();
     }
 }
 
-void func_86902004(s32 arg0) {
+void SnapMode_Init(s32 arg0) {
     D_8690A70C = arg0;
     func_8690060C();
 
@@ -1129,7 +1129,7 @@ void func_86902004(s32 arg0) {
     func_86900484(D_8690A710->unk_00C);
 }
 
-s32 func_86902098(s32 arg0, UNUSED s32 arg1) {
+s32 SnapMode_Entry(s32 arg0, UNUSED s32 arg1) {
     RenderContext* sp24;
 
     main_pool_push_state('SNAP');
@@ -1148,10 +1148,10 @@ s32 func_86902098(s32 arg0, UNUSED s32 arg1) {
     D_8690A698 = ASSET_LOAD2(stadium_models, 1, 1);
     func_8002D510();
     D_8690A678 = func_8002D5AC(0x2B);
-    func_86902004(arg0);
+    SnapMode_Init(arg0);
     Stage_SetRenderContext(sp24);
     func_86901B28();
-    func_86901ECC();
+    SnapMode_MainLoop();
     func_86901FB4();
     Stage_FreeRenderContext();
     func_8001E9CC();

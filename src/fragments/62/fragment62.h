@@ -29,7 +29,14 @@ typedef struct unk_D_84390010_168 {
     /* 0x16E */ char unk16E[0x2];
 } unk_D_84390010_168; // size = 0x170
 
-typedef struct unk_D_84390010_654 {
+/*
+ * BattleActor
+ * Original symbol: unk_D_84390010_654
+ * 
+ * Summary:
+ *     The primary actor context for a Pokemon during battle execution.
+ */
+typedef struct BattleActor {
     /* 0x00 */ char unk00[0x4];
     /* 0x04 */ u32 unk_04;
     /* 0x08 */ s32 unk_08;
@@ -51,7 +58,7 @@ typedef struct unk_D_84390010_654 {
     /* 0x32 */ char unk32[0x2];
     /* 0x34 */ u16 unk_34;
     /* 0x36 */ u16 unk_36;
-    /* 0x38 */ unk_D_800FCB18 unk_38;
+    /* 0x38 */ BattleActorState state;
     /* 0x9C */ unk_D_84390010_654_09C unk_9C;
     /* 0xAC */ unk_D_84390010_654_0AC unk_AC;
     /* 0xBC */ s16 unk_BC;
@@ -59,7 +66,7 @@ typedef struct unk_D_84390010_654 {
     /* 0xC0 */ char unkC0[1];
     /* 0xC1 */ u8 unk_C1[4];
     /* 0xC8 */ Controller* unk_C8;
-} unk_D_84390010_654; // size = 0xCC
+} BattleActor; // size = 0xCC
 
 typedef struct unk_D_84390010_728_0168 {
     /* 0x00 */ unk_D_86002F58_004_000_000 unk_00;
@@ -783,7 +790,7 @@ typedef struct unk_D_843C60AC {
     /* 0x04 */ u8 unk_04;
     /* 0x05 */ u8 unk_05[1];
     /* 0x0C */ char unk06[0xC];
-    /* 0x12 */ unk_D_800FCB18 unk_12;
+    /* 0x12 */ BattleActorState unk_12;
 } unk_D_843C60AC; // size = 0x76
 
 typedef struct unk_D_843C60A4 {
@@ -961,17 +968,17 @@ extern u8 D_8438ACF0[];
 extern u8* D_8438E778;
 extern u8* D_8438E77C;
 
-extern u8 D_843C4DA4;
-extern u8 D_843C4DA5;
+extern u8 gBattleMoveFailed;
+extern u8 gBattleCritStatus;
 extern u8 D_843C4DA9;
 extern u8 D_843C4DAA;
 extern s32 D_843C4DEC;
 //extern unk_D_843C4E44 D_843C4E44;
 extern u8 D_843C4E44;
 extern u8 D_843C4E45;
-extern u16 D_843C4DC4;
-extern unk_D_800FCB18* D_843C5238;
-extern unk_D_800FCB18* D_843C523C;
+extern u16 gBattleDamage;
+extern BattleActorState* gActiveBattleActorState;
+extern BattleActorState* gTargetBattleActorState;
 
 
 extern unk_D_84390010* D_84390010[2];
@@ -1039,7 +1046,7 @@ extern arg1_func_80019420* D_843924E0[40];
 
 
 
-s32 func_84300020(s32 arg0, GraphNode* arg1);
+s32 BattleScene_Run(s32 arg0, GraphNode* arg1);
 s32 func_84300058(s32 arg0, unk_D_86002F34_alt18* arg1);
 s32 func_843000C0(s32 arg0, unk_D_86002F34_alt18* arg1);
 s32 func_8430012C(s32 arg0, unk_D_86002F58_004_000* arg1);
@@ -1481,7 +1488,7 @@ void func_84317558(unk_D_84390010* arg0, unk_D_84390010_654* arg1);
 void func_84317810(void);
 void func_8431790C(void);
 void func_84317940(s8* arg0, s8* arg1, ...);
-void func_843179F4(s8* arg0, s8 arg1);
+void Battle_QueueMessage(s8* arg0, s8 arg1);
 void func_84317AA8(char* arg0, s32 arg1);
 void func_84317B38(void);
 void func_84317B40(void);
@@ -1788,7 +1795,7 @@ void func_8432B4F0(void);
 void func_8432B510(unk_D_84390010* arg0, s16 arg1);
 void func_8432B554(unk_D_84390010* arg0);
 void func_8432B588(unk_D_84390010* arg0);
-void func_8432B5B8(unk_D_84390010* arg0, unk_D_800FCB18* arg1, s32 arg2);
+void func_8432B5B8(unk_D_84390010* arg0, BattleActorState* arg1, s32 arg2);
 void func_8432B604(void);
 void func_8432B704(void);
 void func_8432B808(void);
@@ -3044,10 +3051,10 @@ void func_843703BC(void);
 void func_843706E8(s32 arg0);
 void func_84370790(void);
 void func_843708A0(void);
-void func_843708CC(void);
+void Battle_CheckMoveEffectHits(void);
 void func_84370ADC(unk_D_84390010* arg0);
-void func_84370B0C(unk_D_84390010* arg0);
-void func_84370B44(unk_D_84390010* arg0);
+void Battle_ApplyStatusParalysis(unk_D_84390010* arg0);
+void Battle_ApplyStatusBurn(unk_D_84390010* arg0);
 void func_84370B7C(unk_D_84390010* arg0);
 s32 func_84370E30(unk_D_84390010* arg0);
 void func_84370E70(void);
@@ -3081,42 +3088,42 @@ void func_8437345C(void);
 void func_84373570(unk_D_84390010* arg0);
 
 
-u16 func_843736B0(u16* arg0, u16 arg1, u8 arg2);
-void func_84373754(void);
-void func_84373A30(void);
-void func_84373D04(void);
-void func_84373E24(void);
-void func_84373E60(void);
-void func_843741C4(void);
-void func_843744F0(void);
-void func_8437483C(void);
-void func_84374C9C(void);
-void func_84374D08(void);
-void func_84374D58(void);
-void func_84374E08(void);
-void func_84374EE4(void);
+u16 Battle_CalcStatWithStage(u16* arg0, u16 arg1, u8 arg2);
+void BattleEffect_Confusion(void);
+void BattleEffect_FlinchChance(void);
+void BattleEffect_DrainHP(void);
+void BattleEffect_OHKO(void);
+void BattleEffect_StatusChance(void);
+void BattleEffect_IncreaseStatReflectTarget(void);
+void BattleEffect_IncreaseStat(void);
+void BattleEffect_ReduceStat(void);
+void BattleEffect_ThrashLock(void);
+void BattleEffect_RageLock(void);
+void BattleEffect_Teleport(void);
+void BattleEffect_BindingMove(void);
+void BattleEffect_ConfusionChance(void);
 void func_84374FD4(void);
-void func_84375038(void);
-void func_843751F8(void);
-void func_843752C0(void);
+void BattleEffect_ChargingMove(void);
+void BattleEffect_Recharge(void);
+void BattleEffect_RecoverHP(void);
 void func_84375384(void);
-void func_84375424(void);
+void BattleEffect_Recoil(void);
 void func_84375508(void);
-void func_843755E8(void);
-void func_84375700(void);
-void func_84375894(void);
+void BattleEffect_Disable(void);
+void BattleEffect_PoisonChance(void);
+void BattleEffect_Substitute(void);
 void func_843759C4(void);
 void func_843759DC(void);
-void func_843759F4(void);
+void BattleEffect_Mimic(void);
 void func_84375B1C(void);
 void func_84375C24(void);
 void func_84375C60(void);
-void func_84375D78(void);
-void func_84375DA4(void);
-void func_84375E6C(void);
-void func_8437600C(void);
-void func_84376258(void);
-void func_843765E8(void);
+void BattleEffect_PayDay(void);
+void BattleEffect_MirrorMove(void);
+void BattleEffect_Haze(void);
+void BattleEffect_Rest(void);
+void BattleEffect_Transform(void);
+void BattleEffect_Barrier(void);
 void func_8437670C(void);
 void func_84376768(void);
 
@@ -3125,21 +3132,21 @@ void func_84376790(s32 arg0, u32 arg1);
 void func_843767DC(void);
 s32 func_843767E4(s32 arg0);
 void func_843768D8(u8 arg0);
-u8 func_84376920(unk_D_800FCB18* arg0, unk_D_800FCB18* arg1, u8 arg2);
-u16 func_84376A34(unk_D_800FCB18* arg0, unk_D_800FCB18* arg1);
+u8 func_84376920(BattleActorState* arg0, BattleActorState* arg1, u8 arg2);
+u16 func_84376A34(BattleActorState* arg0, BattleActorState* arg1);
 void func_84376B38(void);
-void func_84376B9C(unk_D_800FCB18* arg0, unk_D_800FCB18* arg1);
-void func_84376C90(unk_D_800FCB18* arg0, unk_D_800FCB18* arg1, u8 arg2);
-void func_84376E40(unk_D_800FCB18* arg0, unk_D_800FCB18* arg1);
-u16 func_84376F68(unk_D_800FCB18* arg0, unk_D_800FCB18* arg1, u8 arg2, u8 arg3);
+void func_84376B9C(BattleActorState* arg0, BattleActorState* arg1);
+void func_84376C90(BattleActorState* arg0, BattleActorState* arg1, u8 arg2);
+void func_84376E40(BattleActorState* arg0, BattleActorState* arg1);
+u16 func_84376F68(BattleActorState* arg0, BattleActorState* arg1, u8 arg2, u8 arg3);
 void func_84377030(unk_D_843C60AC* arg0);
 s32 func_84377068(s32 arg0, s32 arg1);
 void func_8437717C(unk_D_800AE540_0004* arg0);
 s32 func_84377280(s32 arg0);
 s32 func_843772E4(u8 arg0, u8 arg1);
-u16 func_8437731C(unk_D_800FCB18* arg0);
-u16 func_84377354(unk_D_800FCB18* arg0);
-f32 func_8437738C(u8 arg0, unk_D_800FCB18* arg1);
+u16 func_8437731C(BattleActorState* arg0);
+u16 func_84377354(BattleActorState* arg0);
+f32 func_8437738C(u8 arg0, BattleActorState* arg1);
 s32 func_84377430(u8 arg0, unk_D_843C60A4* arg1);
 s32 func_84377550(u8 arg0, u8 arg1);
 s32 func_84377644(unk_D_843C60A4* arg0, u8 arg1);
@@ -3153,13 +3160,13 @@ u8 func_8437828C(unk_D_843C60AC* arg0, unk_D_843C60AC* arg1);
 s32 func_843783CC(unk_D_843C60A4* arg0);
 void func_84378474(unk_D_800AE540_0004* arg0, unk_D_800AE540_0004* arg1, unk_D_800AE540_0004* arg2, unk_D_843C5568* arg3, s32 arg4);
 void func_84378578(unk_D_843C60AC* arg0, u8 arg1);
-u16 func_8437865C(unk_D_800FCB18* arg0, unk_D_800FCB18* arg1, u8 arg2);
-void func_843787F4(unk_D_800FCB18* arg0, unk_D_800FCB18* arg1, u16* arg2, u8* arg3, u8 arg4, u8 arg5);
+u16 func_8437865C(BattleActorState* arg0, BattleActorState* arg1, u8 arg2);
+void func_843787F4(BattleActorState* arg0, BattleActorState* arg1, u16* arg2, u8* arg3, u8 arg4, u8 arg5);
 s32 func_84378B0C(unk_D_843C60AC* arg0, unk_D_843C60AC* arg1, u8* arg2, u8 arg3);
 s32 func_843791AC(unk_D_843C60AC* arg0, unk_D_843C60AC* arg1, u8* arg2, u8 arg3);
 s32 func_843791E4(unk_D_843C60AC* arg0, unk_D_843C60AC* arg1, u8* arg2, u8 arg3);
 void func_8437921C(void);
-u8 func_84379224(unk_D_800FCB18* arg0, unk_D_800FCB18* arg1, u8 arg2, u8 arg3);
+u8 func_84379224(BattleActorState* arg0, BattleActorState* arg1, u8 arg2, u8 arg3);
 void func_843793E0(u8 arg0, u8* arg1);
 void func_843794CC(unk_D_843C60AC* arg0, unk_D_843C60AC* arg1, s32 arg2, u8 arg3, u8 arg4, unk_func_843794CC* arg5);
 s32 func_8437AC20(unk_func_843794CC* arg0, u8 arg1, u8 arg2);
@@ -3181,7 +3188,7 @@ s32 func_8437F2EC(unk_D_843C60A4* arg0, unk_D_843C60A4* arg1, u8* arg2, s32* arg
 s32 func_8437F85C(unk_D_843C60A4* arg0, s32* arg1, s32 arg2, unk_func_8437F85C_arg3* arg3, u8* arg4, u8 arg5, u8 arg6);
 void func_8437FB14(unk_D_843C60A4* arg0, u8* arg1, s32 arg2);
 s32 func_8437FC10(unk_D_843C60A4* arg0);
-s32 func_8437FCCC(unk_D_800FCB18* arg0);
+s32 func_8437FCCC(BattleActorState* arg0);
 s32 func_8437FD74(unk_D_843C60A4* arg0, s32* arg1, s32* arg2, u8 arg3);
 s32 func_84380164(unk_D_843C60A4* arg0, unk_D_843C60A4* arg1, u8* arg2, u8* arg3, s32* arg4);
 s32 func_843804F4(unk_D_843C60A4* arg0, unk_D_843C60A4* arg1, u8* arg2, u8* arg3, s32 arg4);
@@ -3194,7 +3201,7 @@ s32 func_843811D0(unk_D_843C60AC* arg0, unk_D_843C60AC* arg1, unk_D_843C60A4* ar
 s32 func_843813D4(unk_D_843C60AC* arg0, unk_D_843C60AC* arg1, unk_D_843C60A4* arg2, u8* arg3, unk_func_8438220C* arg4);
 u8 func_84381584(unk_D_843C60AC* arg0, unk_D_843C60AC* arg1, unk_D_843C60A4* arg2, unk_D_843C60A4* arg3, u8* arg4, unk_func_8438220C* arg5);
 u16 func_84381BD4(u16* arg0, u16 arg1, u8 arg2);
-void func_84381C78(unk_D_800FCB18* arg0, unk_D_800FCB18* arg1, u8 arg2, u8 arg3);
+void func_84381C78(BattleActorState* arg0, BattleActorState* arg1, u8 arg2, u8 arg3);
 void func_84381DD4(unk_func_8438220C* arg0);
 void func_84381F50(unk_func_8438220C* arg0);
 u8 func_843820B8(unk_func_8438220C* arg0);
@@ -3204,8 +3211,8 @@ s32 func_8438249C(u8 arg0, u8 arg1);
 s32 func_8438255C(u8 arg0, u8 arg1);
 s32 func_843825D8(u8 arg0);
 s32 func_84382614(u8 arg0);
-s32 func_84382668(unk_D_800FCB18* arg0, s32 arg1, u8 arg2, u8 arg3);
-s32 func_84382840(unk_D_800FCB18* arg0, unk_D_800FCB18* arg1, u8 arg2);
+s32 func_84382668(BattleActorState* arg0, s32 arg1, u8 arg2, u8 arg3);
+s32 func_84382840(BattleActorState* arg0, BattleActorState* arg1, u8 arg2);
 void func_84382ACC(void);
 s32 func_843831A0(unk_D_800AE540_0004* arg0, unk_D_800AE540_0004* arg1, unk_D_800AE540_0004* arg2, s32 arg3, u8* arg4, s32 arg5, s32 arg6);
 void func_8438363C(UNUSED s32 arg0, UNUSED s32 arg1, s32 arg2);

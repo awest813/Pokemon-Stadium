@@ -210,7 +210,6 @@ void func_87A009F0(s32 arg0) {
     gDisplayListHead = gfx;
 }
 
-#ifdef NON_MATCHING
 void func_87A00DB8(s32 arg0) {
     Gfx* gfx = gDisplayListHead;
     s32 i;
@@ -242,9 +241,6 @@ void func_87A00DB8(s32 arg0) {
 
     gDisplayListHead = gfx;
 }
-#else
-#pragma GLOBAL_ASM("asm/us/nonmatchings/fragments/4/fragment4/func_87A00DB8.s")
-#endif
 
 typedef void (*ret_func_87A010C8)(void);
 

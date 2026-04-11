@@ -1310,7 +1310,7 @@ void miniMetapodCameraControls(void) {
     miniUpdateCamera();
 }
 
-void initMetapodMinigameAssets(void) {
+void MetapodMinigame_InitAssets(void) {
     func_87900854(); //	minigame variables
     miniInitRocks();
     miniInitMetapodPlayers();
@@ -1710,8 +1710,8 @@ void func_86E02880(s32 arg0) {
     Stage_AdvanceFrame();
 }
 
-void metapodMinigameInit(void) {
-    initMetapodMinigameAssets();
+void MetapodMinigame_Init(void) {
+    MetapodMinigame_InitAssets();
     Stage_AdvanceFrames(0xA);
     Stage_FadeOut(0x10);
     miniTutoScreenState = 3;
@@ -1721,7 +1721,7 @@ void metapodMinigameInit(void) {
 void func_86E0296C(void) {
 }
 
-void miniMetapodTutoScreenControls(void) {
+void MetapodMinigame_StartScreen(void) {
     if ((miniDebugMode == false) && (miniShowHUB == false) && (Stage_GetFadeMode() == 0)) {
         if (BTN_IS_PRESSED(gPlayer1Controller, BTN_START)) {
             miniTutoScreenState = 1;
@@ -1761,7 +1761,7 @@ void func_86E02A64(void) {
             }
         }
 
-        miniMetapodTutoScreenControls();
+        MetapodMinigame_StartScreen();
 
         if (D_8780FC94 == 0) {
             func_8140C5D0();
@@ -1860,7 +1860,7 @@ void func_86E02C5C(void) {
     }
 }
 
-s32 metapodMinigameLoad(s32 arg0, s32 arg1) {
+s32 MetapodMinigame_Entry(s32 arg0, s32 arg1) {
     RenderContext* sp24;
 
     if (arg0 == 1) {
@@ -1881,7 +1881,7 @@ s32 metapodMinigameLoad(s32 arg0, s32 arg1) {
 
     func_86E02C5C();
     Stage_SetRenderContext(sp24);
-    metapodMinigameInit();
+    MetapodMinigame_Init();
     func_86E02A64(); //	tutorial screen ?
     func_86E02BB0();
     Stage_FreeRenderContext();

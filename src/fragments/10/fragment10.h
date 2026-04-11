@@ -3,7 +3,7 @@
 
 #include "global.h"
 #include "src/11BA0.h"
-#include "src/fragments/5/fragment5.h"
+#include "src/fragments/5/fragment5.h"void DrowzeeMinigame_Entry(s32 arg0, s32 arg1);
 
 typedef struct unk_D_86404778 {
     /* 0x000 */ s32 unk_000;

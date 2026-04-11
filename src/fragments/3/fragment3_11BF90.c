@@ -81,7 +81,6 @@ void func_879038AC(f32 arg0, f32 arg1, f32 arg2, f32 arg3, s16 arg4, s16 arg5, s
     sp34->unk_000.unk_000.unk_14 = 2;
 }
 
-#ifdef NON_MATCHING
 Gfx* func_87903920(Gfx* arg0, arg1_func_87903D64_014* arg1) {
     s32 sp38;
     s32 sp34;
@@ -224,9 +223,6 @@ Gfx* func_87903920(Gfx* arg0, arg1_func_87903D64_014* arg1) {
 
     return arg0;
 }
-#else
-#pragma GLOBAL_ASM("asm/us/nonmatchings/fragments/3/fragment3_11BF90/func_87903920.s")
-#endif
 
 void func_87903D64(s32 arg0, arg1_func_87903D64* arg1) {
     if (arg0 == 5) {

@@ -3,7 +3,7 @@
 
 #include "global.h"
 #include "src/11BA0.h"
-
+void PikachuMinigame_Entry(s32 arg0, s32 arg1);
 typedef struct unk_D_8650A528 {
     /* 0x000 */ s32 unk_000;
     /* 0x004 */ s32 unk_004;

@@ -3,7 +3,7 @@
 
 #include "global.h"
 #include "src/controller.h"
-#include "src/1C720.h"
+#include "src/1C720.h"s32 SnapMode_Entry(s32 arg0, s32 arg1);
 
 typedef struct unk_D_8690B2F8 {
     /* 0x00 */ f32 unk_00;

@@ -26,15 +26,22 @@ typedef struct unk_func_80026268_arg0_000 {
     /* 0x01 */ u8 unk_01;
 } unk_func_80026268_arg0_000; // size = 0x2
 
-typedef struct unk_func_80026268_arg0 {
-    /* 0x00 */ unk_func_80026268_arg0_000 unk_00;
-    /* 0x02 */ u16 unk_02;
+/*
+ * PartyPokemon
+ * Original symbol: unk_func_80026268_arg0
+ * 
+ * Summary:
+ *     Persistent data for a Pokemon in a player's party.
+ */
+typedef struct PartyPokemon {
+    /* 0x00 */ u16 species;
+    /* 0x02 */ u16 hp;
     /* 0x04 */ u8 unk_04;
-    /* 0x05 */ u8 unk_05;
-    /* 0x06 */ u8 unk_06;
+    /* 0x05 */ u8 status;
+    /* 0x06 */ u8 sleepCycles;
     /* 0x07 */ u8 unk_07;
     /* 0x08 */ u8 unk_08;
-    /* 0x09 */ u8 unk_09[4];
+    /* 0x09 */ u8 moves[4];
     /* 0x0D */ u8 pad0D;
     /* 0x0E */ u16 unk_0E;
     /* 0x10 */ u32 unk_10;
@@ -44,21 +51,21 @@ typedef struct unk_func_80026268_arg0 {
     /* 0x1A */ u16 unk_1A;
     /* 0x1C */ u16 unk_1C;
     /* 0x1E */ u16 unk_1E;
-    /* 0x20 */ u8 unk_20[4];
-    /* 0x24 */ u8 unk_24;
+    /* 0x20 */ u8 pp[4];
+    /* 0x24 */ u8 level;
     /* 0x25 */ u8 unk_25;
-    /* 0x26 */ u16 unk_26;
-    /* 0x28 */ u16 unk_28;
-    /* 0x2A */ u16 unk_2A;
-    /* 0x2C */ u16 unk_2C;
-    /* 0x2E */ u16 unk_2E;
+    /* 0x26 */ u16 maxHP;
+    /* 0x28 */ u16 attack;
+    /* 0x2A */ u16 defense;
+    /* 0x2C */ u16 speed;
+    /* 0x2E */ u16 special;
     /* 0x30 */ u8 unk_30[11];
     /* 0x3B */ u8 unk_3B[11];
     /* 0x46 */ u8 unk_46[11];
     /* 0x51 */ u8 pad51;
     /* 0x52 */ u8 unk_52;
     /* 0x53 */ u8 unk_53;
-} unk_func_80026268_arg0; // size = 0x54
+} PartyPokemon; // size = 0x54
 
 typedef struct unk_D_800AE540_0874 {
     /* 0x000 */ u16 unk_000;
@@ -102,31 +109,50 @@ typedef struct unk_D_800AE540_1194 {
     /* 0x24 */ arg1_func_80019420* unk_24;
 } unk_D_800AE540_1194; // size = 0x28
 
-typedef struct unk_D_800AE540 {
+/*
+ * BattleContext
+ * Original symbol: unk_D_800AE540
+ *
+ * Size:
+ *     0x11F8 bytes
+ *
+ * Confidence:
+ *     Medium
+ *
+ * Verified fields:
+ *     0x11F5: battleFlowFlagsIn
+ *     0x11F6: battleFlowFlagsOut
+ *     0x11F2: battleResultFlags
+ *     0x0003: pendingCutsceneFlags
+ *
+ * Likely:
+ *     Shared battle/session state passed across orchestrator fragments.
+ */
+typedef struct BattleContext {
     /* 0x0000 */ s8 unk_0000;
     /* 0x0001 */ s8 unk_0001;
     /* 0x0002 */ s8 unk_0002;
-    /* 0x0003 */ s8 unk_0003;
+    /* 0x0003 */ s8 pendingCutsceneFlags;
     /* 0x0004 */ unk_D_800AE540_0004 unk_0004[4];
     /* 0x0874 */ unk_D_800AE540_0874 unk_0874[4];
     /* 0x1194 */ unk_D_800AE540_1194 unk_1194[2];
     /* 0x11E4 */ u8 unk_11E4[2][4];
     /* 0x11EC */ u8 unk_11EC;
-    /* 0x11EC */ u8 unk_11ED;
-    /* 0x11EC */ u8 unk_11EE;
-    /* 0x11EC */ u8 unk_11EF;
+    /* 0x11ED */ u8 unk_11ED;
+    /* 0x11EE */ u8 unk_11EE;
+    /* 0x11EF */ u8 unk_11EF;
     /* 0x11F0 */ u8 unk_11F0;
     /* 0x11F1 */ char unk11F1[0x1];
-    /* 0x11F2 */ u8 unk_11F2;
+    /* 0x11F2 */ u8 battleResultFlags;
     /* 0x11F3 */ u8 unk_11F3;
     /* 0x11F4 */ u8 unk_11F4;
-    /* 0x11F5 */ u8 unk_11F5;
-    /* 0x11F6 */ u16 unk_11F6;
-} unk_D_800AE540; // size = 0x11F8
+    /* 0x11F5 */ u8 battleFlowFlagsIn;
+    /* 0x11F6 */ u16 battleFlowFlagsOut;
+} BattleContext; // size = 0x11F8
 
 extern s32 gCurrentGameState;
 extern DeferredFragment gDeferredFragment;
-extern unk_D_800AE540 D_800AE540;
+extern BattleContext D_800AE540;
 extern BinArchive* D_800AF738;
 
 s32 Game_DoCopyProtection(s32 state);

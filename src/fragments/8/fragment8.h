@@ -78,6 +78,6 @@ void func_86202FA4(s32 arg0);
 void func_86203008(void);
 void func_862030D0(void);
 void func_86203380(void);
-void func_8620369C(s32 arg0, UNUSED s32 arg1);
+void RattataMinigame_Entry(s32 arg0, s32 arg1);
 
 #endif // _FRAGMENT8_H_

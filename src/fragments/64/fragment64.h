@@ -47,7 +47,7 @@ typedef struct unk_D_84803548 {
     /* 0x02 */ u16 unk_02;
 } unk_D_84803548; // size = 0x4
 
-void func_84800020(void);
+void BattleShell_Tick(void);
 void func_84800184(void);
 void func_84800458(unk_D_84803760* arg0, unk_D_800AE540_1194* arg1, s32 arg2);
 void func_84800530(s32 arg0, s32 arg1, unk_D_84803760* arg2);

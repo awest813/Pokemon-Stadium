@@ -1437,7 +1437,7 @@ void func_86A00D00(void) {
     func_80010354(&D_86A061E8->unk_60.at, &D_86A061E8->unk_60.eye, D_86A061F0, D_86A061EC, D_86A061EE);
 }
 
-void func_86A00DAC(s32 arg0) {
+void KidsClubCredits_Init(s32 arg0) {
     MemoryBlock* sp2C;
     MemoryBlock* temp_v0;
 
@@ -1458,7 +1458,7 @@ void func_86A00DAC(s32 arg0) {
     main_pool_push_state('BACK');
 }
 
-s32 func_86A00ED8(s32 arg0, s32 arg1) {
+s32 KidsClubCredits_Entry(s32 arg0, s32 arg1) {
     RenderContext* sp24;
 
     main_pool_push_state('ROLE');
@@ -1471,7 +1471,7 @@ s32 func_86A00ED8(s32 arg0, s32 arg1) {
     ASSET_LOAD(D_3000000, kids_club_game_ui, 0);
     FRAGMENT_LOAD(fragment31);
 
-    func_86A00DAC(arg1);
+    KidsClubCredits_Init(arg1);
     Stage_SetRenderContext(sp24);
     func_86A00840();
     func_86A0092C(arg1);

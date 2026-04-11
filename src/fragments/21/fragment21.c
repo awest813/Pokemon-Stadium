@@ -2097,7 +2097,7 @@ void func_86F01488(void) {
     miniUpdateCamera();
 }
 
-void sandshrewMinigameInitObjects(void) {
+void SandshrewMinigame_InitObjects(void) {
     func_87900854(); //	init minigame variables
     initSandshrews();
     initSandshrewHoles();
@@ -2366,15 +2366,15 @@ void func_86F01F58(s32 arg0) {
     Stage_AdvanceFrame();
 }
 
-void sandshrewMinigameInit(void) {
-    sandshrewMinigameInitObjects();
+void SandshrewMinigame_Init(void) {
+    SandshrewMinigame_InitObjects();
     Stage_AdvanceFrames(0xA);
     Stage_FadeOut(0x10);
     miniTutoScreenState = 3;
     miniDifficulty = D_8780FA38;
 }
 
-void func_86F0204C(void) {
+void SandshrewMinigame_StartScreen(void) {
     s32 var_s5 = 1;
 
     func_87901620();
@@ -2450,7 +2450,7 @@ void func_86F02230(void) {
     func_86F00188(0xB, 0);
 }
 
-void func_86F02320(void) {
+void SandshrewMinigame_InitAssets(void) {
     s32 i;
     MemoryBlock* temp_v0 = func_80002D10(main_pool_get_available(), 0);
     unk_D_86002F30* temp_s1;
@@ -2501,7 +2501,7 @@ void func_86F02320(void) {
     }
 }
 
-s32 sandshrewMinigameLoad(s32 arg0, UNUSED s32 arg1) {
+s32 SandshrewMinigame_Entry(s32 arg0, UNUSED s32 arg1) {
     RenderContext* sp24;
 
     if (arg0 == 1) {
@@ -2520,10 +2520,10 @@ s32 sandshrewMinigameLoad(s32 arg0, UNUSED s32 arg1) {
     FRAGMENT_LOAD(fragment31);
     func_80004454((((u32)D_8D000000 & 0x0FF00000) >> 0x14) - 0x10, _5C7A70_ROM_START, pokedex_area_model_ROM_START);
 
-    func_86F02320();
+    SandshrewMinigame_InitAssets();
     Stage_SetRenderContext(sp24);
-    sandshrewMinigameInit();
-    func_86F0204C(); //	tutorial screen ?
+    SandshrewMinigame_Init();
+    SandshrewMinigame_StartScreen(); //	tutorial screen ?
     func_86F02230();
     Stage_FreeRenderContext();
     func_8001E9CC(); //	main_pool_try_free(D_800AC870);

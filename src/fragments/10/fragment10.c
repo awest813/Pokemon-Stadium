@@ -678,7 +678,7 @@ void func_86401A9C(s32 arg0) {
     }
 }
 
-void func_86401B3C(void) {
+void DrowzeeMinigame_StartScreen(void) {
     u8 i;
     u8 var_s1;
     s32 var_s2;
@@ -740,7 +740,7 @@ void func_86401B3C(void) {
     }
 }
 
-void func_86401D1C(void) {
+void DrowzeeMinigame_MainLoop(void) {
     static u8 D_864029DC = 0;
     static u8 D_864029E0 = 0;
 
@@ -795,7 +795,7 @@ void func_86401D1C(void) {
     }
 }
 
-void func_86401EEC(void) {
+void DrowzeeMinigame_ShowResults(void) {
     u8 i;
 
     func_8004FC60(1, 0x1E);
@@ -841,7 +841,7 @@ void func_8640203C(void) {
     func_80002D60(temp_s5);
 }
 
-void func_86402130(void) {
+void DrowzeeMinigame_Init(void) {
     u8 i;
     u8 x;
     u8 y;
@@ -943,7 +943,7 @@ void func_86402130(void) {
     func_878029C0();
 }
 
-void func_864025A0(UNUSED s32 arg0, UNUSED s32 arg1) {
+void DrowzeeMinigame_Entry(UNUSED s32 arg0, UNUSED s32 arg1) {
     RenderContext* sp24;
 
     main_pool_push_state('MINI');
@@ -953,11 +953,11 @@ void func_864025A0(UNUSED s32 arg0, UNUSED s32 arg1) {
     D_87B000E0 = func_8001E94C(0x16, 0);
     ASSET_LOAD(D_1000000, common_menu1_ui, 0);
     FRAGMENT_LOAD(fragment31);
-    func_86402130();
+    DrowzeeMinigame_Init();
     Stage_SetRenderContext(sp24);
-    func_86401B3C();
-    func_86401D1C();
-    func_86401EEC();
+    DrowzeeMinigame_StartScreen();
+    DrowzeeMinigame_MainLoop();
+    DrowzeeMinigame_ShowResults();
     Stage_FreeRenderContext();
     func_8001E9CC();
     DLBuf_Free();

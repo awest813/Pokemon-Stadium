@@ -3,7 +3,7 @@
 
 #include "global.h"
 
-void func_86600020(void);
+void func_86600020(void);void SampleMinigame7_Entry(s32 arg0, s32 arg1);
 void func_86600050(void);
 void func_866000FC(void);
 void func_86600264(s32 arg0);

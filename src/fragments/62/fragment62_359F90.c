@@ -1,3 +1,28 @@
+/*
+ * File: fragment62_359F90.c
+ * ROM / VRAM Range: unknown / overlay-backed
+ * Source Type: N64 fragment overlay
+ * Status: READY_FOR_RENAME
+ *
+ * Purpose:
+ *     Core Battle Turn State Machine and Action Execution.
+ *     Handles move accuracy, immunity, damage application, and status interrupts.
+ *
+ * Evidence:
+ *     - Orchestrates the primary turn dispatcher (BattleTurn_MainDispatcher)
+ *     - Interacts with the global BattleContext struct
+ *     - Executes the 'Attack Phase' logic including multi-hit and charging moves
+ *
+ * Verified:
+ *     - Implements the Gen 1 variant damage and accuracy mechanics
+ *     - Manages active/target actor swapping during turn resolution
+ *
+ * Likely:
+ *     - Coordinates with Fragment 64 (Shell Tick) for timing and menu gates
+ *
+ * Unknown:
+ *     - Full state map for complex multi-turn effects (e.g., Rage, Thrash)
+ */
 #include "fragment62.h"
 #include "src/22630.h"
 #include "src/2E110.h"
@@ -78,8 +103,8 @@ static s32 pad_D_843C4DF0[21];
 u8 D_843C4E44;
 u8 D_843C4E45;
 static s32 pad_D_843C4E48[252];
-unk_D_800FCB18* D_843C5238;
-unk_D_800FCB18* D_843C523C;
+unk_D_800FCB18* gActiveBattleActorState;
+unk_D_800FCB18* gTargetBattleActorState;
 static unk_D_800FCB18 D_843C5240[2];
 
 u8 D_8438AC60[] = {
@@ -198,7 +223,7 @@ void func_8436F838(s32 arg0, s32 arg1) {
 
     if (temp_a2_2->unk_0C == 0) {
         func_8002D5D4(0x19, temp_a3->unk_01C[temp_v1->unk_18].unk_30);
-        func_843179F4(D_843901A0->unk_088, 0x21);
+        Battle_QueueTurnMessage(D_843901A0->unk_088, 0x21);
         return;
     }
 
@@ -208,13 +233,13 @@ void func_8436F838(s32 arg0, s32 arg1) {
     func_8002D5D4(0x19, temp_a3->unk_01C[temp_v1->unk_18].unk_30);
 
     if (sp18 >= 0x46) {
-        func_843179F4(D_843901A0->unk_088, 0x21);
+        Battle_QueueTurnMessage(D_843901A0->unk_088, 0x21);
     } else if (sp18 >= 0x28) {
-        func_843179F4(D_843901A0->unk_088, 0x22);
+        Battle_QueueTurnMessage(D_843901A0->unk_088, 0x22);
     } else if (sp18 >= 0xA) {
-        func_843179F4(D_843901A0->unk_088, 0x23);
+        Battle_QueueTurnMessage(D_843901A0->unk_088, 0x23);
     } else {
-        func_843179F4(D_843901A0->unk_088, 0x24);
+        Battle_QueueTurnMessage(D_843901A0->unk_088, 0x24);
     }
 }
 
@@ -254,17 +279,17 @@ void func_8436FA80(unk_D_84390010* arg0) {
     }
 
     if (var_v0 == 0) {
-        func_843179F4(D_843901A0->unk_1C8, 0x25);
+        Battle_QueueTurnMessage(D_843901A0->unk_1C8, 0x25);
     } else if (var_v0 < 0x1E) {
-        func_843179F4(D_843901A0->unk_1C8, 0x26);
+        Battle_QueueTurnMessage(D_843901A0->unk_1C8, 0x26);
     } else if (var_v0 < 0x46) {
-        func_843179F4(D_843901A0->unk_1C8, 0x27);
+        Battle_QueueTurnMessage(D_843901A0->unk_1C8, 0x27);
     } else {
-        func_843179F4(D_843901A0->unk_1C8, 0x28);
+        Battle_QueueTurnMessage(D_843901A0->unk_1C8, 0x28);
     }
 
     if (sp1C->unk_2D == 0x10) {
-        func_843179F4(D_843901A0->unk_1C8, 0);
+        Battle_QueueTurnMessage(D_843901A0->unk_1C8, 0);
     }
 }
 
@@ -447,31 +472,31 @@ void func_84370090(unk_func_80026268_arg0* arg0) {
 
 void func_843700F0(void) {
     D_843C4DC4 = 0;
-    D_843C4DC6 = D_843C5238->unk_44.unk_02;
+    D_843C4DC6 = gActiveBattleActorState->unk_44.unk_02;
     if (D_843C4DC6) {
-        if (D_843C5238->unk_44.unk_03 < 0x14) {
-            D_843C4DCA = D_843C523C->unk_2C;
-            if (D_843C523C->unk_4E & 4) {
+        if (gActiveBattleActorState->unk_44.unk_03 < 0x14) {
+            D_843C4DCA = gTargetBattleActorState->unk_2C;
+            if (gTargetBattleActorState->unk_4E & 4) {
                 D_843C4DCA *= 2;
             }
 
             if (D_843C4DA5 != 0) {
-                D_843C4DCA = D_843C523C->unk_3A;
-                D_843C4DC8 = D_843C5238->unk_38;
+                D_843C4DCA = gTargetBattleActorState->unk_3A;
+                D_843C4DC8 = gActiveBattleActorState->unk_38;
             } else {
-                D_843C4DC8 = D_843C5238->unk_2A;
+                D_843C4DC8 = gActiveBattleActorState->unk_2A;
             }
         } else {
-            D_843C4DCA = D_843C523C->unk_30;
-            if (D_843C523C->unk_4E & 2) {
+            D_843C4DCA = gTargetBattleActorState->unk_30;
+            if (gTargetBattleActorState->unk_4E & 2) {
                 D_843C4DCA *= 2;
             }
 
             if (D_843C4DA5 != 0) {
-                D_843C4DCA = D_843C523C->unk_3E;
-                D_843C4DC8 = D_843C5238->unk_3E;
+                D_843C4DCA = gTargetBattleActorState->unk_3E;
+                D_843C4DC8 = gActiveBattleActorState->unk_3E;
             } else {
-                D_843C4DC8 = D_843C5238->unk_30;
+                D_843C4DC8 = gActiveBattleActorState->unk_30;
             }
         }
 
@@ -485,7 +510,7 @@ void func_843700F0(void) {
             }
         }
 
-        D_843C4DCC = D_843C5238->unk_26;
+        D_843C4DCC = gActiveBattleActorState->unk_26;
         if (D_843C4DA5 != 0) {
             D_843C4DCC *= 2;
         }
@@ -493,7 +518,7 @@ void func_843700F0(void) {
 }
 
 s32 func_84370260(void) {
-    s32 temp_v0 = D_843C5238->unk_44.unk_01;
+    s32 temp_v0 = gActiveBattleActorState->unk_44.unk_01;
 
     if (temp_v0 == 7) {
         D_843C4DCA >>= 1;
@@ -522,56 +547,56 @@ s32 func_84370260(void) {
 }
 
 void func_843703BC(void) {
-    if (D_843C523C->unk_4D & 0x10) {
+    if (gTargetBattleActorState->flags2 & 0x10) {
         if (D_84390240.unk_00->unk_48 == 0x14) {
             func_8002D5D4(0x19, func_8430862C(D_84390010[D_84390240.unk_00->unk_2C]));
-            func_843179F4(D_843901A0->unk_208, 0x2B);
-            if (D_843C523C->unk_59 < D_843C4DC4) {
-                D_843C523C->unk_4D &= 0xFFEF;
+            Battle_QueueTurnMessage(D_843901A0->unk_208, 0x2B);
+            if (gTargetBattleActorState->unk_59 < D_843C4DC4) {
+                gTargetBattleActorState->flags2 &= 0xFFEF;
                 func_8002D5D4(0x19, func_8430862C(D_84390010[D_84390240.unk_00->unk_2C]));
-                func_843179F4(D_843901A0->unk_208, 0x2C);
+                Battle_QueueTurnMessage(D_843901A0->unk_208, 0x2C);
 
-                if ((D_8438AC60[0] == 1) && (D_843C5238->unk_44.unk_01 == 0x1D)) {
+                if ((D_8438AC60[0] == 1) && (gActiveBattleActorState->unk_44.unk_01 == 0x1D)) {
                     func_84376768();
-                    D_843C5238->unk_4F = 1;
+                    gActiveBattleActorState->unk_4F = 1;
                 }
 
-                if ((D_8438AC60[0] != 1) || (D_843C5238->unk_44.unk_01 != 7)) {
-                    D_843C5238->unk_44.unk_01 = 0;
+                if ((D_8438AC60[0] != 1) || (gActiveBattleActorState->unk_44.unk_01 != 7)) {
+                    gActiveBattleActorState->unk_44.unk_01 = 0;
                 }
 
                 func_843061EC(D_84390010[D_84390240.unk_00->unk_2C], 0x1000);
             } else {
-                D_843C523C->unk_59 -= D_843C4DC4;
+                gTargetBattleActorState->unk_59 -= D_843C4DC4;
             }
         } else {
             func_8002D5D4(0x19, func_8430862C(D_84390010[!D_84390240.unk_00->unk_2C]));
-            func_843179F4(D_843901A0->unk_208, 0x2B);
-            if (D_843C523C->unk_59 < D_843C4DC4) {
-                D_843C523C->unk_4D &= 0xFFEF;
+            Battle_QueueTurnMessage(D_843901A0->unk_208, 0x2B);
+            if (gTargetBattleActorState->unk_59 < D_843C4DC4) {
+                gTargetBattleActorState->flags2 &= 0xFFEF;
                 func_8002D5D4(0x19, func_8430862C(D_84390010[!D_84390240.unk_00->unk_2C]));
-                func_843179F4(D_843901A0->unk_208, 0x2C);
+                Battle_QueueTurnMessage(D_843901A0->unk_208, 0x2C);
 
-                if ((D_8438AC60[0] == 1) && (D_843C5238->unk_44.unk_01 == 0x1D)) {
+                if ((D_8438AC60[0] == 1) && (gActiveBattleActorState->unk_44.unk_01 == 0x1D)) {
                     func_84376768();
-                    D_843C5238->unk_4F = 1;
+                    gActiveBattleActorState->unk_4F = 1;
                 }
 
-                if ((D_8438AC60[0] != 1) || (D_843C5238->unk_44.unk_01 != 7)) {
-                    D_843C5238->unk_44.unk_01 = 0;
+                if ((D_8438AC60[0] != 1) || (gActiveBattleActorState->unk_44.unk_01 != 7)) {
+                    gActiveBattleActorState->unk_44.unk_01 = 0;
                 }
 
                 func_843061EC(D_84390010[!D_84390240.unk_00->unk_2C], 0x1000);
             } else {
-                D_843C523C->unk_59 -= D_843C4DC4;
+                gTargetBattleActorState->unk_59 -= D_843C4DC4;
             }
         }
     } else if (D_84390288 == 0) {
-        if (D_843C4DC4 < D_843C523C->unk_0C) {
-            D_843C523C->unk_0C -= D_843C4DC4;
+        if (D_843C4DC4 < gTargetBattleActorState->unk_0C) {
+            gTargetBattleActorState->unk_0C -= D_843C4DC4;
         } else {
-            D_843C4DC4 = D_843C523C->unk_0C;
-            D_843C523C->unk_0C = 0;
+            D_843C4DC4 = gTargetBattleActorState->unk_0C;
+            gTargetBattleActorState->unk_0C = 0;
         }
     }
 }
@@ -605,11 +630,11 @@ void func_84370790(void) {
         var_v0 = D_8438ACB8;
     }
 
-    idx = D_843C5238->unk_5C[4];
-    idx2 = D_843C523C->unk_5C[5];
+    idx = gActiveBattleActorState->unk_5C[4];
+    idx2 = gTargetBattleActorState->unk_5C[5];
     idx2 = 0xE - idx2;
 
-    var_a2 = (D_843C5238->unk_44.unk_04 * var_v0[idx - 1].unk_00) / var_v0[idx - 1].unk_01;
+    var_a2 = (gActiveBattleActorState->unk_44.unk_04 * var_v0[idx - 1].unk_00) / var_v0[idx - 1].unk_01;
     if (var_a2 == 0) {
         var_a2 = 1;
     }
@@ -622,53 +647,60 @@ void func_84370790(void) {
     if (var_a2 >= 0x100) {
         var_a2 = 0xFF;
     }
-    D_843C5238->unk_44.unk_04 = var_a2;
+    gActiveBattleActorState->unk_44.unk_04 = var_a2;
 }
 
-void func_843708A0(void) {
-    D_843C4DC4 = 0;
-    D_843C4DA4 = 1;
-    D_843C5238->unk_4C &= ~0x20;
+/*
+ * Battle_FailMove
+ * Original symbol: func_843708A0
+ * 
+ * Summary:
+ *     Central failure point for moves. Sets damage to 0 and flags failure.
+ */
+void Battle_FailMove(void) {
+    gBattleDamage = 0;
+    gBattleMoveFailed = 1;
+    gActiveBattleActorState->flags &= ~0x20;
 }
 
 void func_843708CC(void) {
-    if (D_843C5238->unk_44.unk_01 == 0x50) {
-        if (!(D_843C5238->unk_4D & 0x20) && (D_8438AC60[0] == 1)) {
-            D_843C5238->unk_4D |= 0x20;
+    if (gActiveBattleActorState->unk_44.unk_01 == 0x50) {
+        if (!(gActiveBattleActorState->unk_4D & 0x20) && (D_8438AC60[0] == 1)) {
+            gActiveBattleActorState->unk_4D |= 0x20;
         }
     }
 
-    if ((D_843C5238->unk_44.unk_01 == 8) && !(D_843C523C->unk_15 & 7)) {
-        func_843708A0();
+    if ((gActiveBattleActorState->unk_44.unk_01 == 8) && !(gTargetBattleActorState->status & 7)) {
+        Battle_FailMove();
         return;
     }
 
-    if (D_843C523C->unk_4D & 0x10) {
-        if (D_843C5238->unk_44.unk_01 == 17) {
+    if (gTargetBattleActorState->flags2 & 0x10) {
+        if (gActiveBattleActorState->unk_44.unk_01 == 17) {
             return;
         }
 
-        if (D_843C5238->unk_44.unk_01 == 3 || D_843C5238->unk_44.unk_01 == 8 ||
-            ((D_8438AC60[0] == 1) && (func_8436FD54(D_843C5238->unk_44.unk_01, D_8438ACB0, 5) != 0))) {
-            func_843708A0();
+        if (gActiveBattleActorState->unk_44.unk_01 == 3 || gActiveBattleActorState->unk_44.unk_01 == 8 ||
+            ((D_8438AC60[0] == 1) && (func_8436FD54(gActiveBattleActorState->unk_44.unk_01, D_8438ACB0, 5) != 0))) {
+            Battle_FailMove();
             return;
         }
     }
 
-    if (D_843C523C->unk_4C & 0x40) {
-        if (D_843C5238->unk_44.unk_01 != 0x11) {
-            func_843708A0();
+    if (gTargetBattleActorState->flags & 0x40) {
+        if (gActiveBattleActorState->unk_44.unk_01 != 0x11) {
+            Battle_FailMove();
         }
     } else {
-        if ((((D_843C5238->unk_44.unk_01 >= 0x12) && (D_843C5238->unk_44.unk_01 < 0x1A)) ||
-             ((D_843C5238->unk_44.unk_01 >= 0x3A) && (D_843C5238->unk_44.unk_01 < 0x42))) &&
-            (D_843C523C->unk_4D & 2)) {
-            func_843708A0();
+        if ((((gActiveBattleActorState->unk_44.unk_01 >= 0x12) && (gActiveBattleActorState->unk_44.unk_01 < 0x1A)) ||
+             ((gActiveBattleActorState->unk_44.unk_01 >= 0x3A) && (gActiveBattleActorState->unk_44.unk_01 < 0x42))) &&
+            (gTargetBattleActorState->flags2 & 2)) {
+            Battle_FailMove();
             return;
         }
 
-        if (!(D_843C5238->unk_4D & 1)) {
-            if ((D_8438AC60[0] != 1) || (D_843C5238->unk_44.unk_01 != 0x11)) {
+        if (!(gActiveBattleActorState->unk_4D & 1)) {
+            if ((D_8438AC60[0] != 1) || (gActiveBattleActorState->unk_44.unk_01 != 0x11)) {
                 func_84370790();
             }
 
@@ -677,8 +709,8 @@ void func_843708CC(void) {
                 D_843C4DA2 = func_8436F788();
             }
 
-            if (D_843C4DA2 >= D_843C5238->unk_44.unk_04) {
-                func_843708A0();
+            if (D_843C4DA2 >= gActiveBattleActorState->unk_44.unk_04) {
+                Battle_FailMove();
             }
         }
     }
@@ -807,41 +839,49 @@ void func_84370E78(void) {
 }
 
 void func_84370E80(void) {
-    D_843C5238->unk_44.unk_00 = D_80072B00[D_843C5238->unk_5A - 1].unk_00;
-    D_843C5238->unk_44.unk_01 = D_80072B00[D_843C5238->unk_5A - 1].unk_01;
-    D_843C5238->unk_44.unk_02 = D_80072B00[D_843C5238->unk_5A - 1].unk_02;
-    D_843C5238->unk_44.unk_03 = D_80072B00[D_843C5238->unk_5A - 1].unk_03;
-    D_843C5238->unk_44.unk_04 = D_80072B00[D_843C5238->unk_5A - 1].unk_04;
-    D_843C5238->unk_44.unk_05 = D_80072B00[D_843C5238->unk_5A - 1].unk_05;
+    gActiveBattleActorState->unk_44.unk_00 = D_80072B00[gActiveBattleActorState->unk_5A - 1].unk_00;
+    gActiveBattleActorState->unk_44.unk_01 = D_80072B00[gActiveBattleActorState->unk_5A - 1].unk_01;
+    gActiveBattleActorState->unk_44.unk_02 = D_80072B00[gActiveBattleActorState->unk_5A - 1].unk_02;
+    gActiveBattleActorState->unk_44.unk_03 = D_80072B00[gActiveBattleActorState->unk_5A - 1].unk_03;
+    gActiveBattleActorState->unk_44.unk_04 = D_80072B00[gActiveBattleActorState->unk_5A - 1].unk_04;
+    gActiveBattleActorState->unk_44.unk_05 = D_80072B00[gActiveBattleActorState->unk_5A - 1].unk_05;
 }
 
+/*
+ * func_84370F40
+ *
+ * Summary:
+ *     After a damaging hit, if the defender has Reflect (flags2 0x40) and Attack
+ *     stage is not +6, temporarily treats the defender as the active actor and
+ *     runs BattleEffect_IncreaseStatReflectTarget to raise Attack with opponent-side copy.
+ */
 void func_84370F40(void) {
     unk_D_800FCB18* sp24;
 
-    if ((D_843C523C->unk_4D & 0x40) && ((D_843C523C->unk_5C[0]) != 0xD)) {
-        sp24 = D_843C5238;
+    if ((gTargetBattleActorState->flags2 & 0x40) && ((gTargetBattleActorState->unk_5C[0]) != 0xD)) {
+        sp24 = gActiveBattleActorState;
 
-        D_843C5238 = D_843C523C;
-        D_843C5238->unk_44.unk_00 = 0;
-        D_843C5238->unk_44.unk_01 = 10;
+        gActiveBattleActorState = gTargetBattleActorState;
+        gActiveBattleActorState->unk_44.unk_00 = 0;
+        gActiveBattleActorState->unk_44.unk_01 = 10;
 
         func_8002D5D4(0x19, func_8430862C(D_84390010[!D_84390240.unk_00->unk_2C]));
-        func_843179F4(D_843901A0->unk_348, 0x1F);
-        func_843741C4();
+        Battle_QueueTurnMessage(D_843901A0->unk_348, 0x1F);
+        BattleEffect_IncreaseStatReflectTarget();
 
-        D_843C5238->unk_44.unk_00 = 0x63;
-        D_843C5238->unk_44.unk_01 = 0;
+        gActiveBattleActorState->unk_44.unk_00 = 0x63;
+        gActiveBattleActorState->unk_44.unk_01 = 0;
 
-        D_843C5238 = sp24;
+        gActiveBattleActorState = sp24;
     }
 }
 
 void func_84371010(void) {
     D_843C4DEC = D_843C4DB3 & 0x7F;
     if (D_843C4DEC >= 0xB) {
-        func_843179F4(D_843901A0->unk_088, 0x29);
+        Battle_QueueTurnMessage(D_843901A0->unk_088, 0x29);
     } else if (D_843C4DEC < 0xA) {
-        func_843179F4(D_843901A0->unk_088, 0x2A);
+        Battle_QueueTurnMessage(D_843901A0->unk_088, 0x2A);
     }
 }
 
@@ -850,11 +890,11 @@ void func_84371080(void) {
 
     switch (D_843C4DA5) {
         case 1:
-            func_843179F4(D_843901A0->unk_148, 0x1D);
+            Battle_QueueTurnMessage(D_843901A0->unk_148, 0x1D);
             D_84390240.unk_00->unk_1A = 2;
             break;
         case 2:
-            func_843179F4(D_843901A0->unk_148, 0x1E);
+            Battle_QueueTurnMessage(D_843901A0->unk_148, 0x1E);
             D_84390240.unk_00->unk_1A = 2;
             break;
     }
@@ -866,22 +906,22 @@ void func_8437114C(void) {
     s32 var_s0;
     s32 temp_v0;
 
-    switch (D_843C5238->unk_44.unk_01) {
+    switch (gActiveBattleActorState->unk_44.unk_01) {
         case 38:
             break;
 
         case 40:
-            D_843C4DC4 = D_843C523C->unk_0C / 2;
+            D_843C4DC4 = gTargetBattleActorState->unk_0C / 2;
             if (D_843C4DC4 == 0) {
                 D_843C4DC4 = 1;
             }
             break;
 
         case 41:
-            switch (D_843C5238->unk_44.unk_00) {
+            switch (gActiveBattleActorState->unk_44.unk_00) {
                 case 0x45:
                 case 0x65:
-                    var_s0 = D_843C5238->unk_26;
+                    var_s0 = gActiveBattleActorState->unk_26;
                     break;
 
                 case 0x31:
@@ -893,7 +933,7 @@ void func_8437114C(void) {
                     break;
 
                 default:
-                    var_s0 = D_843C5238->unk_26;
+                    var_s0 = gActiveBattleActorState->unk_26;
                     var_s0 = (var_s0 >> 1) + var_s0;
                     do {
                         do {
@@ -906,8 +946,8 @@ void func_8437114C(void) {
             break;
 
         default:
-            if (D_843C5238->unk_44.unk_02 != 0) {
-                if (D_843C5238->unk_4C & 4) {
+            if (gActiveBattleActorState->unk_44.unk_02 != 0) {
+                if (gActiveBattleActorState->unk_4C & 4) {
                     D_843C4DA0 += D_843C4DC4;
                 } else {
                     D_843C4DA0 = D_843C4DC4;
@@ -928,19 +968,19 @@ void func_843712CC(void) {
     if (D_843C4DB3 & 0x7F) {
         if (D_843C4DA5 == 0xFF) {
             func_8002D5D4(0x19, func_8430862C(D_84390010[!D_84390240.unk_00->unk_2C]));
-            func_843179F4(D_843901A0->unk_088, 0x19);
+            Battle_QueueTurnMessage(D_843901A0->unk_088, 0x19);
         } else {
             func_8002D5D4(0x19, func_8430862C(D_84390010[D_84390240.unk_00->unk_2C]));
-            func_843179F4(D_843901A0->unk_088, 0x1A);
+            Battle_QueueTurnMessage(D_843901A0->unk_088, 0x1A);
         }
     } else {
         func_8002D5D4(0x19, func_8430862C(D_84390010[!D_84390240.unk_00->unk_2C]));
-        func_843179F4(D_843901A0->unk_088, 0x1B);
+        Battle_QueueTurnMessage(D_843901A0->unk_088, 0x1B);
     }
 
     D_843C4DA5 = 0;
 
-    if (D_843C5238->unk_44.unk_01 == 0x2D) {
+    if (gActiveBattleActorState->unk_44.unk_01 == 0x2D) {
         D_84390240.unk_00->unk_48 = 0x10;
         D_843C4DC4 >>= 3;
         if (D_843C4DC4 == 0) {
@@ -948,16 +988,16 @@ void func_843712CC(void) {
         }
 
         func_8002D5D4(0x19, func_8430862C(D_84390010[D_84390240.unk_00->unk_2C]));
-        func_843179F4(D_843901A0->unk_088, 0x1C);
+        Battle_QueueTurnMessage(D_843901A0->unk_088, 0x1C);
 
-        sp1C = D_843C5238;
-        D_843C5238 = D_843C523C;
-        D_843C523C = sp1C;
+        sp1C = gActiveBattleActorState;
+        gActiveBattleActorState = gTargetBattleActorState;
+        gTargetBattleActorState = sp1C;
         D_84390240.unk_00->unk_2C = !D_84390240.unk_00->unk_2C;
         func_843703BC();
         D_84390240.unk_00->unk_2C = !D_84390240.unk_00->unk_2C;
-        D_843C523C = D_843C5238;
-        D_843C5238 = sp1C;
+        gTargetBattleActorState = gActiveBattleActorState;
+        gActiveBattleActorState = sp1C;
     }
 }
 
@@ -971,7 +1011,7 @@ void func_843714D8(void) {
         &D_84390010[D_84390240.unk_00->unk_2C]->unk_724->unk_01C[D_84390010[D_84390240.unk_00->unk_2C]->unk_654.unk_08];
     temp_a1 = &D_84390010[D_84390240.unk_00->unk_2C]->unk_654;
 
-    D_843C5238->unk_32[temp_a1->unk_0C]++;
+    gActiveBattleActorState->unk_32[temp_a1->unk_0C]++;
     if (!(ptr->unk_4E & 8)) {
         temp_a0->unk_20[temp_a1->unk_0C]++;
     }
@@ -986,7 +1026,7 @@ s32 func_84371564(void) {
             temp_v0 = func_8436F6D8();
         } while (temp_v0 == 0 || temp_v0 >= 0xA5);
     } while (temp_v0 == 0x76);
-    D_843C5238->unk_5A = temp_v0;
+    gActiveBattleActorState->unk_5A = temp_v0;
     func_84370E80();
     return 1;
 }
@@ -994,91 +1034,91 @@ s32 func_84371564(void) {
 void func_843715C0(void) {
     u16 var_a0;
 
-    if (D_843C5238->unk_12 != 0xFFFF) {
-        D_843C5238->unk_0E = D_843C5238->unk_12;
+    if (gActiveBattleActorState->unk_12 != 0xFFFF) {
+        gActiveBattleActorState->unk_0E = gActiveBattleActorState->unk_12;
     } else {
-        D_843C5238->unk_0E = D_843C5238->unk_0C;
+        gActiveBattleActorState->unk_0E = gActiveBattleActorState->unk_0C;
     }
 
-    var_a0 = (D_843C5238->unk_28 >> 4) & 0xFFFF;
+    var_a0 = (gActiveBattleActorState->unk_28 >> 4) & 0xFFFF;
     if (var_a0 == 0) {
         var_a0++;
     }
 
-    if (D_843C5238->unk_4E & 1) {
-        D_843C5238->unk_51++;
-        var_a0 *= D_843C5238->unk_51;
+    if (gActiveBattleActorState->unk_4E & 1) {
+        gActiveBattleActorState->unk_51++;
+        var_a0 *= gActiveBattleActorState->unk_51;
     }
 
-    if (D_843C5238->unk_0E < var_a0) {
-        D_843C5238->unk_0E = 0;
+    if (gActiveBattleActorState->unk_0E < var_a0) {
+        gActiveBattleActorState->unk_0E = 0;
     } else {
-        D_843C5238->unk_0E -= var_a0;
+        gActiveBattleActorState->unk_0E -= var_a0;
     }
 
-    D_843C5238->unk_10 = D_843C5238->unk_0E;
+    gActiveBattleActorState->unk_10 = gActiveBattleActorState->unk_0E;
 }
 
 void func_8437166C(void) {
     u16 var_a0;
 
-    if (!(D_843C5238->unk_15 & 0x18)) {
-        if (D_843C5238->unk_12 != 0xFFFF) {
-            D_843C5238->unk_10 = D_843C5238->unk_12;
+    if (!(gActiveBattleActorState->unk_15 & 0x18)) {
+        if (gActiveBattleActorState->unk_12 != 0xFFFF) {
+            gActiveBattleActorState->unk_10 = gActiveBattleActorState->unk_12;
         } else {
-            D_843C5238->unk_10 = D_843C5238->unk_0C;
+            gActiveBattleActorState->unk_10 = gActiveBattleActorState->unk_0C;
         }
     }
 
-    var_a0 = (D_843C5238->unk_28 >> 4) & 0xFFFF;
+    var_a0 = (gActiveBattleActorState->unk_28 >> 4) & 0xFFFF;
     if (var_a0 == 0) {
         var_a0++;
     }
 
-    if (D_843C5238->unk_4E & 1) {
-        D_843C5238->unk_51++;
-        var_a0 *= D_843C5238->unk_51;
+    if (gActiveBattleActorState->unk_4E & 1) {
+        gActiveBattleActorState->unk_51++;
+        var_a0 *= gActiveBattleActorState->unk_51;
     }
 
-    if (D_843C5238->unk_10 < var_a0) {
-        var_a0 = D_843C5238->unk_10;
-        D_843C5238->unk_10 = 0;
+    if (gActiveBattleActorState->unk_10 < var_a0) {
+        var_a0 = gActiveBattleActorState->unk_10;
+        gActiveBattleActorState->unk_10 = 0;
     } else {
-        D_843C5238->unk_10 -= var_a0;
+        gActiveBattleActorState->unk_10 -= var_a0;
     }
 
-    D_843C523C->unk_10 = D_843C523C->unk_0C;
-    D_843C523C->unk_10 += var_a0;
+    gTargetBattleActorState->unk_10 = gTargetBattleActorState->unk_0C;
+    gTargetBattleActorState->unk_10 += var_a0;
 
-    if (D_843C523C->unk_28 < D_843C523C->unk_10) {
-        D_843C523C->unk_10 = D_843C523C->unk_28;
+    if (gTargetBattleActorState->unk_28 < gTargetBattleActorState->unk_10) {
+        gTargetBattleActorState->unk_10 = gTargetBattleActorState->unk_28;
     }
 }
 
 s32 func_8437176C(void) {
-    if (D_843C523C->unk_0C == 0) {
+    if (gTargetBattleActorState->unk_0C == 0) {
         return 0;
     }
 
-    if (D_843C5238->unk_15 & 0x18) {
-        if (D_843C5238->unk_15 & 8) {
+    if (gActiveBattleActorState->unk_15 & 0x18) {
+        if (gActiveBattleActorState->unk_15 & 8) {
             func_8002D5D4(0x19, func_8430862C(D_84390010[D_84390240.unk_00->unk_2C]));
-            func_843179F4(D_843901A0->unk_248, 0);
+            Battle_QueueTurnMessage(D_843901A0->unk_248, 0);
         } else {
             func_8002D5D4(0x19, func_8430862C(D_84390010[D_84390240.unk_00->unk_2C]));
-            func_843179F4(D_843901A0->unk_248, 1);
+            Battle_QueueTurnMessage(D_843901A0->unk_248, 1);
         }
         func_843715C0();
-        D_843C523C->unk_0E = D_843C523C->unk_0C;
+        gTargetBattleActorState->unk_0E = gTargetBattleActorState->unk_0C;
     }
 
-    if (D_843C5238->unk_4D & 0x80) {
+    if (gActiveBattleActorState->unk_4D & 0x80) {
         func_8437166C();
         func_8002D5D4(0x19, func_8430862C(D_84390010[D_84390240.unk_00->unk_2C]));
-        func_843179F4(D_843901A0->unk_288, 2);
+        Battle_QueueTurnMessage(D_843901A0->unk_288, 2);
     }
 
-    if (D_843C5238->unk_0C != 0) {
+    if (gActiveBattleActorState->unk_0C != 0) {
         return 0;
     }
     return 1;
@@ -1088,15 +1128,15 @@ void func_843718DC(void) {
 }
 
 s32 func_843718E4(void) {
-    if ((D_843C523C->unk_58 == 0x77) || (D_843C523C->unk_58 == 0)) {
+    if ((gTargetBattleActorState->unk_58 == 0x77) || (gTargetBattleActorState->unk_58 == 0)) {
         D_843901A0->unk_388[0] = 0;
         D_843901A0->unk_388[1] = 0;
         D_84390240.unk_00->unk_48 = 0x1C;
-        func_843179F4(D_843901A0->unk_088, 0x20);
+        Battle_QueueTurnMessage(D_843901A0->unk_088, 0x20);
         return 0;
     }
 
-    D_843C5238->unk_5A = D_843C523C->unk_58;
+    gActiveBattleActorState->unk_5A = gTargetBattleActorState->unk_58;
     func_843714D8();
     func_84370E80();
     return 1;
@@ -1113,15 +1153,15 @@ void func_84371974(void) {
 
     var_v0 = 3;
 
-    temp_a1 = D_843C5238->unk_16[6];
-    temp_a3 = D_843C5238->unk_16[7];
+    temp_a1 = gActiveBattleActorState->unk_16[6];
+    temp_a3 = gActiveBattleActorState->unk_16[7];
 
-    var_v1 = D_843C523C->unk_16[6];
-    temp_a0 = D_843C523C->unk_16[7];
+    var_v1 = gTargetBattleActorState->unk_16[6];
+    temp_a0 = gTargetBattleActorState->unk_16[7];
 
-    temp_t1 = D_843C5238->unk_44.unk_03;
+    temp_t1 = gActiveBattleActorState->unk_44.unk_03;
 
-    if ((D_8438AC60[0] != 1) || (D_843C5238->unk_44.unk_00 != 0xA5)) {
+    if ((D_8438AC60[0] != 1) || (gActiveBattleActorState->unk_44.unk_00 != 0xA5)) {
         if ((temp_t1 == temp_a1) || (temp_t1 == temp_a3)) {
             D_843C4DC4 += D_843C4DC4 >> 1;
             D_843C4DB3 |= 0x80;
@@ -1165,21 +1205,21 @@ void func_84371974(void) {
 }
 
 s32 func_84371B3C(void) {
-    if (D_843C5238->unk_5A != 0x44) {
+    if (gActiveBattleActorState->unk_5A != 0x44) {
         return 1;
     }
 
     D_843C4DA4 = 1;
 
-    if (D_843C523C->unk_5A == 0x44) {
+    if (gTargetBattleActorState->unk_5A == 0x44) {
         return 0;
     }
 
-    if (D_843C523C->unk_44.unk_02 == 0) {
+    if (gTargetBattleActorState->unk_44.unk_02 == 0) {
         return 0;
     }
 
-    if ((D_843C523C->unk_44.unk_03 == 0) || (D_843C523C->unk_44.unk_03 == 1)) {
+    if ((gTargetBattleActorState->unk_44.unk_03 == 0) || (gTargetBattleActorState->unk_44.unk_03 == 1)) {
         if (D_843C4DC4 == 0) {
             return 0;
         }
@@ -1204,29 +1244,29 @@ s32 func_84371C18(void) {
 
     D_843C4DA5 = 0;
     if (D_8438AC60[0] == 1) {
-        sp18 = (D_80070F84[D_843C5238->unk_0B].baseDefense + 0x4C) >> 2;
+        sp18 = (D_80070F84[gActiveBattleActorState->unk_0B].baseDefense + 0x4C) >> 2;
     } else {
-        sp18 = D_80070F84[D_843C5238->unk_0B].baseDefense >> 1;
+        sp18 = D_80070F84[gActiveBattleActorState->unk_0B].baseDefense >> 1;
     }
 
-    if (D_843C5238->unk_44.unk_02 == 0) {
+    if (gActiveBattleActorState->unk_44.unk_02 == 0) {
         return 0;
     }
 
     if (D_8438AC60[0] == 1) {
-        if (D_843C5238->unk_4D & 4) {
+        if (gActiveBattleActorState->unk_4D & 4) {
             sp18 = (sp18 * 4) + 0xA0;
         } else {
             sp18 *= 2;
         }
 
-        if (func_8436FD54(D_843C5238->unk_44.unk_00, D_8438AE4C, 4) != 0) {
+        if (func_8436FD54(gActiveBattleActorState->unk_44.unk_00, D_8438AE4C, 4) != 0) {
             sp18 *= 4;
         } else {
             sp18 >>= 1;
         }
     } else {
-        if (D_843C5238->unk_4D & 4) {
+        if (gActiveBattleActorState->unk_4D & 4) {
             sp18 >>= 1;
         } else {
             sp18 *= 2;
@@ -1235,7 +1275,7 @@ s32 func_84371C18(void) {
             }
         }
 
-        if (func_8436FD54(D_843C5238->unk_44.unk_00, D_8438AE4C, 4) != 0) {
+        if (func_8436FD54(gActiveBattleActorState->unk_44.unk_00, D_8438AE4C, 4) != 0) {
             sp18 *= 4;
             if (sp18 >= 0x100) {
                 sp18 = 0xFF;
@@ -1261,7 +1301,7 @@ s32 func_84371C18(void) {
     return 1;
 }
 
-s32 func_84371DCC(void) {
+s32 BattleTurn_CheckInterrupts(void) {
     unk_D_800FCB18* sp2C;
     unk_D_84390010_654* temp_v0;
     u16 sp26;
@@ -1271,194 +1311,194 @@ s32 func_84371DCC(void) {
     temp_v0 = &D_84390010[D_84390240.unk_00->unk_2C]->unk_654;
     temp_v1 = &D_84390010[D_84390240.unk_00->unk_2C]->unk_654.unk_38;
 
-    if (D_843C5238->unk_15 & 7) {
-        D_843C5238->unk_15 = (D_843C5238->unk_15 & 7) - 1;
+    if (gActiveBattleActorState->unk_15 & 7) {
+        gActiveBattleActorState->unk_15 = (gActiveBattleActorState->unk_15 & 7) - 1;
         if (temp_v1->unk_16[temp_v0->unk_08 + temp_v0->unk_2B * 3] != 0) {
             temp_v1->unk_16[temp_v0->unk_08 + temp_v0->unk_2B * 3]--;
         }
 
-        if (D_843C5238->unk_15 != 0) {
+        if (gActiveBattleActorState->unk_15 != 0) {
             func_8002D5D4(0x19, func_8430862C(D_84390010[D_84390240.unk_00->unk_2C]));
-            func_843179F4(D_843901A0->unk_088, 5);
+            Battle_QueueTurnMessage(D_843901A0->unk_088, 5);
             D_84390240.unk_00->unk_48 = 0x11;
         } else {
             func_8002D5D4(0x19, func_8430862C(D_84390010[D_84390240.unk_00->unk_2C]));
-            func_843179F4(D_843901A0->unk_088, 6);
+            Battle_QueueTurnMessage(D_843901A0->unk_088, 6);
             D_84390240.unk_00->unk_48 = 0x11;
         }
 
-        D_843C5238->unk_58 = 0;
+        gActiveBattleActorState->unk_58 = 0;
         return 0;
     }
 
-    if (D_843C5238->unk_15 & 0x20) {
+    if (gActiveBattleActorState->unk_15 & 0x20) {
         func_8002D5D4(0x19, func_8430862C(D_84390010[D_84390240.unk_00->unk_2C]));
-        func_843179F4(D_843901A0->unk_088, 7);
-        D_843C5238->unk_58 = 0;
+        Battle_QueueTurnMessage(D_843901A0->unk_088, 7);
+        gActiveBattleActorState->unk_58 = 0;
         D_84390240.unk_00->unk_48 = 0x11;
         return 0;
     }
 
-    if (D_843C523C->unk_4C & 0x20) {
+    if (gTargetBattleActorState->flags & 0x20) {
         func_8002D5D4(0x19, func_8430862C(D_84390010[D_84390240.unk_00->unk_2C]));
-        func_843179F4(D_843901A0->unk_088, 8);
+        Battle_QueueTurnMessage(D_843901A0->unk_088, 8);
         D_84390240.unk_00->unk_48 = 0x11;
         return 0;
     }
 
-    if (D_843C5238->unk_4C & 8) {
+    if (gActiveBattleActorState->unk_4C & 8) {
         func_8002D5D4(0x19, func_8430862C(D_84390010[D_84390240.unk_00->unk_2C]));
-        func_843179F4(D_843901A0->unk_088, 9);
-        D_843C5238->unk_4D &= 0xFFDF;
-        D_843C5238->unk_4C &= 0xFFF7;
+        Battle_QueueTurnMessage(D_843901A0->unk_088, 9);
+        gActiveBattleActorState->unk_4D &= 0xFFDF;
+        gActiveBattleActorState->unk_4C &= 0xFFF7;
         D_84390240.unk_00->unk_48 = 0x1C;
         return 0;
     }
 
-    if (D_843C5238->unk_4D & 0x20) {
-        D_843C5238->unk_4D &= ~0x20;
+    if (gActiveBattleActorState->unk_4D & 0x20) {
+        gActiveBattleActorState->unk_4D &= ~0x20;
         if (D_8438AC60[0] == 1) {
             D_843C4DC4 = 0;
         }
         D_84390240.unk_00->unk_48 = 0x11;
         func_8002D5D4(0x19, func_8430862C(D_84390010[D_84390240.unk_00->unk_2C]));
-        func_843179F4(D_843901A0->unk_088, 0xA);
+        Battle_QueueTurnMessage(D_843901A0->unk_088, 0xA);
         return 0;
     }
 
-    if (D_843C5238->unk_52 != 0) {
-        D_843C5238->unk_52--;
-        if (!(D_843C5238->unk_52 & 0xF)) {
-            D_843C5238->unk_52 = 0;
-            D_843C5238->unk_57 = 0;
+    if (gActiveBattleActorState->unk_52 != 0) {
+        gActiveBattleActorState->unk_52--;
+        if (!(gActiveBattleActorState->unk_52 & 0xF)) {
+            gActiveBattleActorState->unk_52 = 0;
+            gActiveBattleActorState->unk_57 = 0;
             func_8002D5D4(0x19, func_8430862C(D_84390010[D_84390240.unk_00->unk_2C]));
-            func_843179F4(D_843901A0->unk_388, 0xB);
+            Battle_QueueTurnMessage(D_843901A0->unk_388, 0xB);
         }
     }
 
-    if (D_843C5238->unk_4C & 0x80) {
-        D_843C5238->unk_50--;
-        if (D_843C5238->unk_50 == 0) {
-            D_843C5238->unk_4C &= 0xFF7F;
+    if (gActiveBattleActorState->unk_4C & 0x80) {
+        gActiveBattleActorState->unk_50--;
+        if (gActiveBattleActorState->unk_50 == 0) {
+            gActiveBattleActorState->unk_4C &= 0xFF7F;
             func_8002D5D4(0x19, func_8430862C(D_84390010[D_84390240.unk_00->unk_2C]));
-            func_843179F4(D_843901A0->unk_188, 0xC);
+            Battle_QueueTurnMessage(D_843901A0->unk_188, 0xC);
         } else {
             func_84317EDC();
             func_8002D5D4(0x19, func_8430862C(D_84390010[D_84390240.unk_00->unk_2C]));
-            func_843179F4(D_843901A0->unk_188, 0xD);
+            Battle_QueueTurnMessage(D_843901A0->unk_188, 0xD);
             D_843C4DA2 = func_8436F6D8();
             if (D_843C4DA2 >= 0x80) {
                 func_843180AC();
                 D_84390240.unk_00->unk_48 = 0x14;
-                D_843C5238->unk_4C &= 0x80;
-                func_843179F4(D_843901A0->unk_148, 0xE);
+                gActiveBattleActorState->unk_4C &= 0x80;
+                Battle_QueueTurnMessage(D_843901A0->unk_148, 0xE);
 
-                sp26 = D_843C523C->unk_2C;
-                D_843C523C->unk_2C = D_843C5238->unk_2C;
-                sp25 = D_843C5238->unk_44.unk_01;
-                D_843C5238->unk_44.unk_01 = 0;
+                sp26 = gTargetBattleActorState->unk_2C;
+                gTargetBattleActorState->unk_2C = gActiveBattleActorState->unk_2C;
+                sp25 = gActiveBattleActorState->unk_44.unk_01;
+                gActiveBattleActorState->unk_44.unk_01 = 0;
                 D_843C4DA5 = 0;
-                D_843C5238->unk_44.unk_02 = 0x28;
-                D_843C5238->unk_44.unk_03 = 0;
+                gActiveBattleActorState->unk_44.unk_02 = 0x28;
+                gActiveBattleActorState->unk_44.unk_03 = 0;
                 func_843700F0();
                 func_84370260();
-                D_843C5238->unk_44.unk_01 = sp25;
-                D_843C523C->unk_2C = sp26;
+                gActiveBattleActorState->unk_44.unk_01 = sp25;
+                gTargetBattleActorState->unk_2C = sp26;
 
-                sp2C = D_843C5238;
-                D_843C5238 = D_843C523C;
-                D_843C523C = sp2C;
+                sp2C = gActiveBattleActorState;
+                gActiveBattleActorState = gTargetBattleActorState;
+                gTargetBattleActorState = sp2C;
                 func_843703BC();
-                D_843C523C = D_843C5238;
-                D_843C5238 = sp2C;
+                gTargetBattleActorState = gActiveBattleActorState;
+                gActiveBattleActorState = sp2C;
                 goto label1;
             }
         }
     }
 
-    if ((D_843C5238->unk_57 != 0) && (D_843C5238->unk_57 == D_843C5238->unk_5A)) {
-        D_843C5238->unk_4C &= 0xFFEF;
-        func_8002D5D4(0x1D, D_80072338[D_843C5238->unk_5A - 1].unk_04);
-        func_843179F4(D_843901A0->unk_088, 0xF);
+    if ((gActiveBattleActorState->unk_57 != 0) && (gActiveBattleActorState->unk_57 == gActiveBattleActorState->unk_5A)) {
+        gActiveBattleActorState->unk_4C &= 0xFFEF;
+        func_8002D5D4(0x1D, D_80072338[gActiveBattleActorState->unk_5A - 1].unk_04);
+        Battle_QueueTurnMessage(D_843901A0->unk_088, 0xF);
         D_84390240.unk_00->unk_48 = 0x11;
         return 0;
     }
 
-    if (D_843C5238->unk_15 & 0x40) {
+    if (gActiveBattleActorState->unk_15 & 0x40) {
         D_843C4DA2 = func_8436F6D8();
         if (D_843C4DA2 < 0x3F) {
             func_8002D5D4(0x19, func_8430862C(D_84390010[D_84390240.unk_00->unk_2C]));
-            func_843179F4(D_843901A0->unk_088, 0x10);
+            Battle_QueueTurnMessage(D_843901A0->unk_088, 0x10);
             D_84390240.unk_00->unk_48 = 0x1F;
             D_843C4DC4 = 0;
         label1:
-            D_843C5238->unk_4C &= 0xFF8C;
+            gActiveBattleActorState->unk_4C &= 0xFF8C;
             return 0;
         }
     }
 
-    if (D_843C5238->unk_4C & 1) {
-        D_843C5238->unk_44.unk_00 = 0;
-        D_843C5238->unk_54 += D_843C4DC4;
-        D_843C5238->unk_4F -= 1;
-        if (D_843C5238->unk_4F != 0) {
+    if (gActiveBattleActorState->unk_4C & 1) {
+        gActiveBattleActorState->unk_44.unk_00 = 0;
+        gActiveBattleActorState->unk_54 += D_843C4DC4;
+        gActiveBattleActorState->unk_4F -= 1;
+        if (gActiveBattleActorState->unk_4F != 0) {
             D_84390240.unk_00->unk_48 = 0x1B;
             return 0;
         }
-        D_843C5238->unk_4C &= 0xFFFE;
+        gActiveBattleActorState->unk_4C &= 0xFFFE;
         func_8002D5D4(0x19, func_8430862C(D_84390010[D_84390240.unk_00->unk_2C]));
-        func_843179F4(D_843901A0->unk_0C8, 0x11);
-        D_843C5238->unk_44.unk_02 = 1;
+        Battle_QueueTurnMessage(D_843901A0->unk_0C8, 0x11);
+        gActiveBattleActorState->unk_44.unk_02 = 1;
 
-        D_843C4DC4 = D_843C5238->unk_54 * 2;
+        D_843C4DC4 = gActiveBattleActorState->unk_54 * 2;
         if (!D_843C4DC4) {
             D_843C4DA4 = 1;
         }
 
-        if ((D_8438AC60[0] == 1) && (D_843C523C->unk_4C & 0x40)) {
+        if ((D_8438AC60[0] == 1) && (gTargetBattleActorState->flags & 0x40)) {
             D_843C4DA4 = 1;
         }
 
-        D_843C5238->unk_54 = 0;
-        D_843C5238->unk_44.unk_00 = 0x75;
+        gActiveBattleActorState->unk_54 = 0;
+        gActiveBattleActorState->unk_44.unk_00 = 0x75;
         return 5;
     }
 
-    if (D_843C5238->unk_4C & 2) {
-        D_843C5238->unk_44.unk_00 = 0x25;
+    if (gActiveBattleActorState->unk_4C & 2) {
+        gActiveBattleActorState->unk_44.unk_00 = 0x25;
         func_8002D5D4(0x19, func_8430862C(D_84390010[D_84390240.unk_00->unk_2C]));
-        func_843179F4(D_843901A0->unk_0C8, 0x12);
-        D_843C5238->unk_4F -= 1;
-        if (D_843C5238->unk_4F != 0) {
+        Battle_QueueTurnMessage(D_843901A0->unk_0C8, 0x12);
+        gActiveBattleActorState->unk_4F -= 1;
+        if (gActiveBattleActorState->unk_4F != 0) {
             return 4;
         }
 
-        func_843179F4(D_843901A0->unk_188, -0x45);
-        D_843C5238->unk_4C &= 0xFFFD;
-        D_843C5238->unk_4C |= 0x80;
-        D_843C5238->unk_50 = (func_8436F6D8() & 3) + 2;
+        Battle_QueueTurnMessage(D_843901A0->unk_188, -0x45);
+        gActiveBattleActorState->unk_4C &= 0xFFFD;
+        gActiveBattleActorState->unk_4C |= 0x80;
+        gActiveBattleActorState->unk_50 = (func_8436F6D8() & 3) + 2;
         return 4;
     }
 
-    if (D_843C5238->unk_4C & 0x20) {
+    if (gActiveBattleActorState->unk_4C & 0x20) {
         func_8002D5D4(0x19, func_8430862C(D_84390010[D_84390240.unk_00->unk_2C]));
-        func_843179F4(D_843901A0->unk_0C8, 0x13);
-        D_843C5238->unk_4F -= 1;
+        Battle_QueueTurnMessage(D_843901A0->unk_0C8, 0x13);
+        gActiveBattleActorState->unk_4F -= 1;
         return 6;
     }
 
-    if (D_843C5238->unk_4D & 0x40) {
-        D_843C5238->unk_44.unk_01 = 0;
+    if (gActiveBattleActorState->unk_4D & 0x40) {
+        gActiveBattleActorState->unk_44.unk_01 = 0;
         return 3;
     }
     return 2;
 }
 
 #ifdef NON_MATCHING
-void func_84372670(void) {
+void BattleTurn_Execute(void) {
     char sp2C[8];
 
-    if (D_843C5238->unk_5A != 0xFF) {
+    if (gActiveBattleActorState->unk_5A != 0xFF) {
         D_843C4DA4 = 0;
         D_843C4DB5 = 0;
         D_843C4DA9 = 0;
@@ -1467,19 +1507,19 @@ void func_84372670(void) {
         switch (func_84371DCC()) {
             case 2:
                 func_84370E80();
-                if (D_843C5238->unk_4C & 0x10) {
-                    D_843C5238->unk_4C &= ~0x50;
+                if (gActiveBattleActorState->unk_4C & 0x10) {
+                    gActiveBattleActorState->unk_4C &= ~0x50;
                     func_843061EC(D_84390010[D_84390240.unk_00->unk_2C], 8);
                 } else {
                 block_5:
-                    switch (D_843C5238->unk_44.unk_01) {
+                    switch (gActiveBattleActorState->unk_44.unk_01) {
                         case 0x27:
                         case 0x2B:
                             if (D_8438AC60[0] == 1) {
                                 D_843C4DC4 = 0;
                             }
                             func_84376768();
-                            D_843C5238->unk_58 = D_843C5238->unk_5A;
+                            gActiveBattleActorState->unk_58 = gActiveBattleActorState->unk_5A;
                             return;
                     }
                 }
@@ -1488,7 +1528,7 @@ void func_84372670(void) {
                 func_84317BDC();
                 func_843706E8(D_84390240.unk_00->unk_2C);
 
-                if (func_8436FD54(D_843C5238->unk_44.unk_01, D_8438ADEC, 0x10) != 0) {
+                if (func_8436FD54(gActiveBattleActorState->unk_44.unk_01, D_8438ADEC, 0x10) != 0) {
                     if (D_8438AC60[0] == 1) {
                         D_843C4DC4 = 0;
                     }
@@ -1496,12 +1536,12 @@ void func_84372670(void) {
                     return;
                 }
 
-                if (func_8436FD54(D_843C5238->unk_44.unk_01, D_8438ADFC, 1) != 0) {
+                if (func_8436FD54(gActiveBattleActorState->unk_44.unk_01, D_8438ADFC, 1) != 0) {
                     func_84376768();
                 }
 
             case 4:
-                if (func_8436FD54(D_843C5238->unk_44.unk_01, D_8438AE00, 2) == 0) {
+                if (func_8436FD54(gActiveBattleActorState->unk_44.unk_01, D_8438AE00, 2) == 0) {
                     func_84371C18();
                     if (func_84371B3C() == 0) {
                         goto case_5;
@@ -1517,14 +1557,14 @@ void func_84372670(void) {
                 }
 
                 if (D_8438AC60[0] == 1) {
-                    D_843C5238->unk_44.unk_04 = D_80072B00[D_843C5238->unk_5A - 1].unk_04;
+                    gActiveBattleActorState->unk_44.unk_04 = D_80072B00[gActiveBattleActorState->unk_5A - 1].unk_04;
                 }
                 func_843708CC();
 
             case 5:
             case_5:
                 if (D_843C4DA4 != 0) {
-                    switch (D_843C5238->unk_44.unk_01) {
+                    switch (gActiveBattleActorState->unk_44.unk_01) {
                         case 7:
                             break;
                     }
@@ -1533,7 +1573,7 @@ void func_84372670(void) {
 
             case 6:
             case_6:
-                switch (D_843C5238->unk_44.unk_01) {
+                switch (gActiveBattleActorState->unk_44.unk_01) {
                     case 9:
                         if (func_843718E4() == 0) {
                             goto end;
@@ -1546,7 +1586,7 @@ void func_84372670(void) {
                         goto block_5;
                 }
 
-                if (func_8436FD54(D_843C5238->unk_44.unk_01, D_8438AE04, 0x1B) != 0) {
+                if (func_8436FD54(gActiveBattleActorState->unk_44.unk_01, D_8438AE04, 0x1B) != 0) {
                     func_84376768();
                     return;
                 }
@@ -1554,7 +1594,7 @@ void func_84372670(void) {
                 if (D_843C4DA4 != 0) {
                     func_843712CC();
 
-                    if (D_843C5238->unk_44.unk_01 != 7) {
+                    if (gActiveBattleActorState->unk_44.unk_01 != 7) {
                         goto end;
                     }
                 } else {
@@ -1564,13 +1604,13 @@ void func_84372670(void) {
                     D_843C4DA9 = 1;
                 }
 
-                if (func_8436FD54(D_843C5238->unk_44.unk_01, D_8438AE20, 0xA) != 0) {
+                if (func_8436FD54(gActiveBattleActorState->unk_44.unk_01, D_8438AE20, 0xA) != 0) {
                     func_84376768();
                 }
 
-                if (D_843C523C->unk_0C == 0) {
+                if (gTargetBattleActorState->unk_0C == 0) {
                     if (D_8438AC60[0] == 1) {
-                        switch (D_843C5238->unk_44.unk_01) {
+                        switch (gActiveBattleActorState->unk_44.unk_01) {
                             case 0x50:
                                 D_843C4DC4 = 0;
                                 return;
@@ -1581,25 +1621,25 @@ void func_84372670(void) {
 
                 func_84370F40();
 
-                if (D_843C5238->unk_4C & 4) {
-                    D_843C5238->unk_4F -= 1;
-                    if (D_843C5238->unk_4F != 0) {
+                if (gActiveBattleActorState->unk_4C & 4) {
+                    gActiveBattleActorState->unk_4F -= 1;
+                    if (gActiveBattleActorState->unk_4F != 0) {
                         goto case_6;
                     }
-                    D_843C5238->unk_4C &= ~4;
-                    sprintf(sp2C, "%d", D_843C5238->unk_54);
-                    func_8002D600(2, D_843C5238->unk_54);
+                    gActiveBattleActorState->unk_4C &= ~4;
+                    sprintf(sp2C, "%d", gActiveBattleActorState->unk_54);
+                    func_8002D600(2, gActiveBattleActorState->unk_54);
                     func_843179F4(D_843901A0->unk_3C8, 4);
                     D_84390240.unk_00->unk_1A = 1;
-                    D_843C5238->unk_54 = 0;
+                    gActiveBattleActorState->unk_54 = 0;
                     D_843C4DC4 = D_843C4DA0;
                 }
 
-                if (D_843C5238->unk_44.unk_01 == 0) {
+                if (gActiveBattleActorState->unk_44.unk_01 == 0) {
                     goto end;
                 }
 
-                if (func_8436FD54(D_843C5238->unk_44.unk_01, D_8438AE2C, 0xF) != 0) {
+                if (func_8436FD54(gActiveBattleActorState->unk_44.unk_01, D_8438AE2C, 0xF) != 0) {
                     goto end;
                 }
 
@@ -1799,30 +1839,30 @@ s32 func_84373160(unk_D_84390010* arg0) {
     return 0;
 }
 
-s32 func_843732B8(void) {
-    if (D_843C523C->unk_0C == 0) {
+s32 BattleTurn_CheckPostAction(void) {
+    if (gTargetBattleActorState->unk_0C == 0) {
         func_84373018(D_84390010[!D_84390240.unk_00->unk_2C]);
     }
 
-    if (D_843C5238->unk_0C == 0) {
+    if (gActiveBattleActorState->unk_0C == 0) {
         func_84373018(D_84390010[D_84390240.unk_00->unk_2C]);
     }
 
-    if ((D_843C5238->unk_0C != 0) && (D_843C523C->unk_0C != 0) && (D_843C5238->unk_12 == 0)) {
+    if ((gActiveBattleActorState->unk_0C != 0) && (gTargetBattleActorState->unk_0C != 0) && (gActiveBattleActorState->unk_12 == 0)) {
         func_84372ED0(D_84390010[D_84390240.unk_00->unk_2C]);
         return 0;
-    } else if ((D_843C5238->unk_0C != 0) && (D_843C523C->unk_0C != 0) && (D_843C5238->unk_15 & 0x18) &&
-               (D_843C5238->unk_0E == 0)) {
+    } else if ((gActiveBattleActorState->unk_0C != 0) && (gTargetBattleActorState->unk_0C != 0) && (gActiveBattleActorState->unk_15 & 0x18) &&
+               (gActiveBattleActorState->unk_0E == 0)) {
         func_84372C40(D_84390010[D_84390240.unk_00->unk_2C]);
         return 0;
-    } else if ((D_843C5238->unk_0C != 0) && (D_843C523C->unk_0C != 0) && (D_843C5238->unk_4D & 0x80) &&
-               (D_843C5238->unk_10 == 0)) {
+    } else if ((gActiveBattleActorState->unk_0C != 0) && (gTargetBattleActorState->unk_0C != 0) && (gActiveBattleActorState->unk_4D & 0x80) &&
+               (gActiveBattleActorState->unk_10 == 0)) {
         func_84372D88(D_84390010[D_84390240.unk_00->unk_2C]);
         return 0;
     }
 }
 
-void func_8437345C(void) {
+void BattleScene_Main(void) {
     unk_D_800FCB18* sp1C = &D_84390010[D_84390240.unk_00->unk_2C]->unk_654.unk_38;
     unk_D_800FCB18* sp18 = &D_84390010[!D_84390240.unk_00->unk_2C]->unk_654.unk_38;
     unk_D_84390010_654* ptr1 = &D_84390010[0]->unk_654;
@@ -1844,17 +1884,17 @@ void func_8437345C(void) {
 
     D_843C4DA0 = 0;
 
-    func_84317810();
+    BattleTurn_BuildOrder();
     func_84370ADC(D_84390010[0]);
     func_84370ADC(D_84390010[1]);
 
-    D_843C5238 = sp1C;
-    D_843C523C = sp18;
+    gActiveBattleActorState = sp1C;
+    gTargetBattleActorState = sp18;
     func_84372670();
     func_8437176C();
 
     if (D_84390288 == 0) {
-        func_843732B8();
+        BattleTurn_CheckPostAction();
     }
 }
 
@@ -1882,8 +1922,8 @@ void func_84373570(unk_D_84390010* arg0) {
     D_84390240.unk_00->unk_48 = 0;
     D_84390240.unk_00->unk_4C = 0;
 
-    D_843C5238 = ptr1;
-    D_843C523C = ptr2;
+    gActiveBattleActorState = ptr1;
+    gTargetBattleActorState = ptr2;
 
     func_8436FA80(arg0);
     func_8000E88C(&arg0->unk_448.unk_00, 0.0f, 0.0f, 0.0f);

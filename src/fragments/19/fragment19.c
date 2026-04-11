@@ -106,7 +106,7 @@ void func_86D0032C(void) {
     }
 }
 
-void func_86D0037C(void) {
+void UnusedMinigame_Init(void) {
     UNUSED s32 pad[2];
     MemoryBlock* sp1C = func_80002D10(main_pool_get_available(), 0);
 
@@ -118,7 +118,7 @@ void func_86D0037C(void) {
     func_86D00020();
 }
 
-s32 func_86D003EC(s32 arg0, s32 arg1) {
+s32 UnusedMinigame_Entry(s32 arg0, s32 arg1) {
     RenderContext* sp24;
 
     main_pool_push_state('MINI');
@@ -131,7 +131,7 @@ s32 func_86D003EC(s32 arg0, s32 arg1) {
     FRAGMENT_LOAD(fragment31);
     func_80004454((((u32)D_8D000000 & 0x0FF00000) >> 0x14) - 0x10, _5C7A70_ROM_START, pokedex_area_model_ROM_START);
 
-    func_86D0037C();
+    UnusedMinigame_Init();
     Stage_SetRenderContext(sp24);
     func_86D00134();
     miniUnkControls();

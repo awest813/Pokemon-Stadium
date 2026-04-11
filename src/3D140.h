@@ -3,53 +3,68 @@
 
 #include "global.h"
 
-typedef struct unk_D_800FCB18_044 {
-    /* 0x00 */ u8 unk_00;
-    /* 0x01 */ u8 unk_01;
-    /* 0x02 */ u8 unk_02;
-    /* 0x03 */ u8 unk_03;
-    /* 0x04 */ u8 unk_04;
-    /* 0x05 */ u8 unk_05;
-} unk_D_800FCB18_044; // size = 0x6
+/*
+ * BattleMove
+ * Original symbol: unk_D_800FCB18_044
+ * 
+ * Summary:
+ *     Header data for an active move being executed or queried.
+ */
+typedef struct BattleMove {
+    /* 0x00 */ u8 moveId;
+    /* 0x01 */ u8 effectId;
+    /* 0x02 */ u8 power;
+    /* 0x03 */ u8 type;
+    /* 0x04 */ u8 accuracy;
+    /* 0x05 */ u8 pp;
+} BattleMove; // size = 0x6
 
-typedef struct unk_D_800FCB18 {
+/*
+ * BattleActorState
+ * Original symbol: unk_D_800FCB18
+ * 
+ * Summary:
+ *     The active combat state of a Pokemon during a battle session.
+ *     Maps closely to Gen 1 RAM structures.
+ */
+typedef struct BattleActorState {
     /* 0x00 */ char unk00[0x1];
     /* 0x01 */ u8 unk_01;
     /* 0x02 */ char unk02[0x3];
     /* 0x05 */ u8 unk_05;
     /* 0x06 */ char unk06[0x5];
-    /* 0x0B */ u8 unk_0B;
-    /* 0x0C */ u16 unk_0C;
-    /* 0x0E */ u16 unk_0E;
-    /* 0x10 */ u16 unk_10;
+    /* 0x0B */ u8 species;
+    /* 0x0C */ u16 hp;
+    /* 0x0E */ u16 initialHP;
+    /* 0x10 */ u16 targetHP;
     /* 0x12 */ u16 unk_12;
-    /* 0x14 */ u8 unk_14;
-    /* 0x15 */ u8 unk_15;
+    /* 0x14 */ u8 partyIndex;
+    /* 0x15 */ u8 status;
     /* 0x16 */ u8 unk_16[9];
-    /* 0x1F */ u8 unk_1F[4];
+    /* 0x1F */ u8 moves[4];
     /* 0x23 */ char unk23[0x1];
     /* 0x24 */ u16 unk_24;
-    /* 0x26 */ u8 unk_26;
-    /* 0x28 */ u16 unk_28;
-    /* 0x2A */ u16 unk_2A;
-    /* 0x2C */ u16 unk_2C;
-    /* 0x2E */ u16 unk_2E;
-    /* 0x30 */ u16 unk_30;
-    /* 0x32 */ u8 unk_32[4];
-    /* 0x36 */ u16 unk_36;
-    /* 0x38 */ u16 unk_38;
-    /* 0x3A */ u16 unk_3A;
-    /* 0x3C */ u16 unk_3C;
-    /* 0x3E */ u16 unk_3E;
+    /* 0x26 */ u8 level;
+    /* 0x28 */ u16 maxHP;
+    /* 0x2A */ u16 attack;
+    /* 0x2C */ u16 defense;
+    /* 0x2E */ u16 speed;
+    /* 0x30 */ u16 special;
+    /* 0x32 */ u8 pp[4];
+    /* 0x36 */ u16 baseMaxHP;
+    /* 0x38 */ u16 baseAttack;
+    /* 0x3A */ u16 baseDefense;
+    /* 0x3C */ u16 baseSpeed;
+    /* 0x3E */ u16 baseSpecial;
     /* 0x40 */ char unk40[0x4];
-    /* 0x44 */ unk_D_800FCB18_044 unk_44;
+    /* 0x44 */ BattleMove activeMove;
     /* 0x4A */ u8 unk_4A;
     /* 0x4B */ u8 unk_4B;
-    /* 0x4C */ u8 unk_4C;
-    /* 0x4D */ u8 unk_4D;
-    /* 0x4E */ u8 unk_4E;
-    /* 0x4F */ u8 unk_4F;
-    /* 0x50 */ u8 unk_50;
+    /* 0x4C */ u8 flags;
+    /* 0x4D */ u8 flags2;
+    /* 0x4E */ u8 flags3;
+    /* 0x4F */ u8 turns;
+    /* 0x50 */ u8 disableTurns;
     /* 0x51 */ u8 unk_51;
     /* 0x52 */ u8 unk_52;
     /* 0x53 */ u8 unk_53;
@@ -58,11 +73,10 @@ typedef struct unk_D_800FCB18 {
     /* 0x57 */ u8 unk_57;
     /* 0x58 */ u8 unk_58;
     /* 0x59 */ u8 unk_59;
-    /* 0x5A */ u8 unk_5A;
+    /* 0x5A */ u8 currentSpecies;
     /* 0x5B */ u8 unk_5B;
-    /* 0x5C */ u8 unk_5C[6];
-    /* 0x62 */ char unk62[0x2];
-} unk_D_800FCB18; // size = 0x64
+    /* 0x5C */ u8 stages[8];
+} BattleActorState; // size = 0x64
 
 typedef struct amConfig {
     /* 0x00 */ u32 outputRate;

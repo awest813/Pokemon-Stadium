@@ -869,7 +869,7 @@ typedef struct unk_D_8006FF00 {
 	/* 0x14 */ u32 unk_14;
 	/* 0x18 */ u32 unk_18;
 } unk_D_8006FF00; // size = 0x1C
-extern unk_D_8006FF00 D_8006FF00[152];
+extern unk_D_8006FF00 D_8006FF00[151];
 
 typedef struct unk_D_800AC870_sub {
 	/* 0x00 */ s16 unk_00;

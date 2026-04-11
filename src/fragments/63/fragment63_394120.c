@@ -49,7 +49,7 @@ static u32 D_84B0FB20[] = {
     0x06000000, 0x06000000,    0x06000000, 0x06000000, 0x01000000,
 };
 
-void func_84B00020(void) {
+void BattleShell_Begin(void) {
     s16 temp_s0;
     unk_D_800AE540_0874* temp_v0;
     unk_func_80026268_arg0* var_s1;
@@ -855,7 +855,7 @@ s32 func_84B02654(void) {
                 }
             }
 
-            func_84B00020();
+            BattleShell_Begin();
             func_84B000F0();
             func_84B001D8();
             func_84B00280();
@@ -944,7 +944,7 @@ s32 func_84B02984(void) {
         if ((D_800AE540.unk_0003 == 4) || (D_800AE540.unk_0002 == 9)) {
             func_84B001D8();
             func_84B00280();
-            func_84B00020();
+            BattleShell_Begin();
             func_80026684(0x14, 0);
             func_800284B4(2);
 

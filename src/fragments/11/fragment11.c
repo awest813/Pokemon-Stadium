@@ -595,7 +595,7 @@ void func_865013D4(s32 arg0) {
     }
 }
 
-void func_86501668(void) {
+void PikachuMinigame_StartScreen(void) {
     u8 i;
     u8 var_s1;
     s32 var_s2;
@@ -656,7 +656,7 @@ void func_86501668(void) {
     }
 }
 
-void func_86501828(void) {
+void PikachuMinigame_MainLoop(void) {
     static u8 D_86502E7C = 0;
 
     s32 var_s0 = 1;
@@ -695,7 +695,7 @@ void func_86501828(void) {
     }
 }
 
-void func_86501964(void) {
+void PikachuMinigame_ShowResults(void) {
     u8 i;
 
     func_8004FC60(1, 0x1E);
@@ -727,7 +727,7 @@ void func_865019E4(void) {
     func_80010354(&D_87B000EC->unk_60.at, &D_87B000EC->unk_60.eye, D_87B000F4, D_87B000F0, D_87B000F2);
 }
 
-void func_86501AAC(void) {
+void PikachuMinigame_Init(void) {
     u8 j;
     u8 i;
     MemoryBlock* temp_v0;
@@ -820,7 +820,7 @@ void func_86501AAC(void) {
     func_87801754(0, 0, NULL);
 }
 
-void func_86501E9C(UNUSED s32 arg0, UNUSED s32 arg1) {
+void PikachuMinigame_Entry(UNUSED s32 arg0, UNUSED s32 arg1) {
     RenderContext* sp24;
 
     main_pool_push_state('MINI');
@@ -832,11 +832,11 @@ void func_86501E9C(UNUSED s32 arg0, UNUSED s32 arg1) {
     ASSET_LOAD(D_1000000, common_menu1_ui, 0);
     FRAGMENT_LOAD(fragment31);
 
-    func_86501AAC();
+    PikachuMinigame_Init();
     Stage_SetRenderContext(sp24);
-    func_86501668();
-    func_86501828();
-    func_86501964();
+    PikachuMinigame_StartScreen();
+    PikachuMinigame_MainLoop();
+    PikachuMinigame_ShowResults();
     Stage_FreeRenderContext();
     func_8001E9CC();
     DLBuf_Free();

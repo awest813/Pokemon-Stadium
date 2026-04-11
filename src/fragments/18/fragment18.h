@@ -3,7 +3,7 @@
 
 #include "global.h"
 #include "src/fragments/3/fragment3.h"
-
+s32 EkansMinigame_Entry(s32 arg0, s32 arg1);
 s32 func_86C00020(MiniActor* arg0);
 void miniDiglettGoldCheck(s16 arg0, s32* arg1, s32* arg2);
 void func_86C00110(s16 arg0, s16 arg1);

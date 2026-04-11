@@ -8,10 +8,15 @@
 #endif
 
 /* MIPS Relocation Types */
-#define R_MIPS_32 2
-#define R_MIPS_26 4
-#define R_MIPS_HI16 5
-#define R_MIPS_LO16 6
+typedef enum RelocType {
+    RELOC_MIPS_32   = 2,
+    RELOC_MIPS_26   = 4,
+    RELOC_MIPS_HI16 = 5,
+    RELOC_MIPS_LO16 = 6,
+} RelocType;
+
+#define RELOC_TYPE(x)   (((x) >> 24) & 0x7F)
+#define RELOC_OFFSET(x) ((x) & 0x00FFFFFF)
 
 struct RelocTable {
     /* 0x00 */ u32 nRelocations;
@@ -36,7 +41,7 @@ uintptr_t Memmap_GetSegmentVaddr(u32 mask);
 u32 Memmap_GetSegmentVaddrMask(u32 i, uintptr_t addr);
 void Memmap_ClearSegmentMemmap(u32 id);
 void Memmap_SetSegments(Gfx** gfxDl);
-void Memmap_RelocateFragment(u32 id, struct Fragment* fragment);
+s32 Memmap_RelocateFragment(u32 id, struct Fragment* fragment);
 void Memmap_SetFragmentMap(u32 id, uintptr_t vaddr, size_t size);
 uintptr_t Memmap_GetFragmentBaseVaddr(u32 id);
 uintptr_t Memmap_GetFragmentVaddr(void* addr);

@@ -35,7 +35,7 @@ static s16 D_8007567C = 0;
 
 DeferredFragment gDeferredFragment;
 s32 pad_D_800AE534[2];
-unk_D_800AE540 D_800AE540;
+BattleContext D_800AE540;
 BinArchive* D_800AF738;
 
 s32 Game_DoCopyProtection(s32 state) {
@@ -119,7 +119,7 @@ void Game_RunIntroSequence(void) {
     FRAGMENT_LOAD(fragment2);
     FRAGMENT_LOAD(fragment3);
 
-    if (D_800AE540.unk_11F2 != 0) {
+    if (D_800AE540.battleResultFlags != 0) {
         FRAGMENT_LOAD_AND_CALL(fragment16, 0, 0);
     } else {
         FRAGMENT_LOAD_AND_CALL(fragment16, 0, 1);
@@ -152,7 +152,7 @@ void GameState_TitleScreen(void) {
 
         if (D_800AE540.unk_0000 == 0x10) {
             FRAGMENT_LOAD(fragment34);
-            FRAGMENT_LOAD_AND_CALL(fragment62, 0, &D_800AE540);
+            FRAGMENT_LOAD_AND_CALL(BattleScene_Run, 0, &D_800AE540);
         } else {
             ASSET_LOAD(D_3000000, kids_club_game_ui, 0); // borrows the Stadium logo from it
             FRAGMENT_LOAD(fragment2);
@@ -297,19 +297,19 @@ void GameState_Stadium(void) {
 
         if (sp4E == 5) {
             D_800AE540.unk_11F6 = 0;
-            FRAGMENT_LOAD_AND_CALL(fragment63, 1, 0);
+            FRAGMENT_LOAD_AND_CALL(BattleShell_Begin, 1, 0);
 
             while (!(D_800AE540.unk_11F6 & 1)) {
-                FRAGMENT_LOAD_AND_CALL(fragment64, 0, 0);
+                FRAGMENT_LOAD_AND_CALL(BattleShell_Tick, 0, 0);
 
                 main_pool_push_state('STAD');
 
                 FRAGMENT_LOAD(fragment34);
-                FRAGMENT_LOAD_AND_CALL(fragment62, 0, &D_800AE540);
+                FRAGMENT_LOAD_AND_CALL(BattleScene_Run, 0, &D_800AE540);
 
                 main_pool_pop_state('STAD');
 
-                FRAGMENT_LOAD_AND_CALL(fragment63, 2, 0);
+                FRAGMENT_LOAD_AND_CALL(BattleShell_Begin, 2, 0);
             }
 
             if (D_800AE540.unk_11F6 & 0x20) {
@@ -395,19 +395,19 @@ void GameState_FreeBattle(void) {
         switch (sp4E) {
             case 4:
                 D_800AE540.unk_11F6 = 0;
-                FRAGMENT_LOAD_AND_CALL(fragment63, 0, 0);
+                FRAGMENT_LOAD_AND_CALL(BattleShell_Begin, 0, 0);
 
                 while (!(D_800AE540.unk_11F6 & 1)) {
-                    FRAGMENT_LOAD_AND_CALL(fragment64, 0, 0);
+                    FRAGMENT_LOAD_AND_CALL(BattleShell_Tick, 0, 0);
 
                     main_pool_push_state('FREE');
 
                     FRAGMENT_LOAD(fragment34);
-                    FRAGMENT_LOAD_AND_CALL(fragment62, 0, &D_800AE540);
+                    FRAGMENT_LOAD_AND_CALL(BattleScene_Run, 0, &D_800AE540);
 
                     main_pool_pop_state('FREE');
 
-                    FRAGMENT_LOAD_AND_CALL(fragment63, 2, 0);
+                    FRAGMENT_LOAD_AND_CALL(BattleShell_Begin, 2, 0);
                 }
 
                 if (D_800AE540.unk_11F6 & 0x20) {
@@ -471,19 +471,19 @@ void GameState_VsMewtwo(void) {
         switch (sp4E) {
             case 3:
                 D_800AE540.unk_11F6 = 0;
-                FRAGMENT_LOAD_AND_CALL(fragment63, 0, 0);
+                FRAGMENT_LOAD_AND_CALL(BattleShell_Begin, 0, 0);
 
                 while (!(D_800AE540.unk_11F6 & 1)) {
-                    FRAGMENT_LOAD_AND_CALL(fragment64, 0, 0);
+                    FRAGMENT_LOAD_AND_CALL(BattleShell_Tick, 0, 0);
 
                     main_pool_push_state('STAD');
 
                     FRAGMENT_LOAD(fragment34);
-                    FRAGMENT_LOAD_AND_CALL(fragment62, 0, &D_800AE540);
+                    FRAGMENT_LOAD_AND_CALL(BattleScene_Run, 0, &D_800AE540);
 
                     main_pool_pop_state('STAD');
 
-                    FRAGMENT_LOAD_AND_CALL(fragment63, 2, 0);
+                    FRAGMENT_LOAD_AND_CALL(BattleShell_Begin, 2, 0);
                 }
 
                 if (D_800AE540.unk_11F6 & 0x20) {
@@ -503,7 +503,7 @@ void GameState_VsMewtwo(void) {
 }
 
 void GameState_KidsClub(void) {
-    func_8002F2A0();
+    KidsClub_Dispatch();
     gCurrentGameState = STATE_AREA_SELECT;
 }
 
@@ -628,19 +628,19 @@ void GameState_GymLeaderCastle(void) {
             sp4C = 0;
             D_800AE540.unk_11F6 = 0;
 
-            FRAGMENT_LOAD_AND_CALL(fragment63, 1, 0);
+            FRAGMENT_LOAD_AND_CALL(BattleShell_Begin, 1, 0);
 
             while (!(D_800AE540.unk_11F6 & 1)) {
-                FRAGMENT_LOAD_AND_CALL(fragment64, 0, 0);
+                FRAGMENT_LOAD_AND_CALL(BattleShell_Tick, 0, 0);
 
                 main_pool_push_state('STAD');
 
                 FRAGMENT_LOAD(fragment34);
-                FRAGMENT_LOAD_AND_CALL(fragment62, 0, &D_800AE540);
+                FRAGMENT_LOAD_AND_CALL(BattleScene_Run, 0, &D_800AE540);
 
                 main_pool_pop_state('STAD');
 
-                FRAGMENT_LOAD_AND_CALL(fragment63, 2, 0);
+                FRAGMENT_LOAD_AND_CALL(BattleShell_Begin, 2, 0);
             }
 
             if (D_800AE540.unk_11F6 & 0x200) {
@@ -678,17 +678,17 @@ void GameState_BattleNow(s32 arg0) {
     main_pool_push_state('QUIK');
     func_8002C394(arg0);
 
-    FRAGMENT_LOAD_AND_CALL(fragment63, 0, 0);
-    FRAGMENT_LOAD_AND_CALL(fragment64, 0, 0);
+    FRAGMENT_LOAD_AND_CALL(BattleShell_Begin, 0, 0);
+    FRAGMENT_LOAD_AND_CALL(BattleShell_Tick, 0, 0);
 
     main_pool_push_state('FIGT');
 
     FRAGMENT_LOAD(fragment34);
-    FRAGMENT_LOAD_AND_CALL(fragment62, 0, &D_800AE540);
+    FRAGMENT_LOAD_AND_CALL(BattleScene_Run, 0, &D_800AE540);
 
     main_pool_pop_state('FIGT');
 
-    FRAGMENT_LOAD_AND_CALL(fragment63, 2, 0);
+    FRAGMENT_LOAD_AND_CALL(BattleShell_Begin, 2, 0);
 
     main_pool_pop_state('QUIK');
 
@@ -698,17 +698,17 @@ void GameState_BattleNow(s32 arg0) {
 void GameState_BattleFromEvent(void) {
     main_pool_push_state('EVNT');
 
-    FRAGMENT_LOAD_AND_CALL(fragment63, 0, 0);
-    FRAGMENT_LOAD_AND_CALL(fragment64, 0, 0);
+    FRAGMENT_LOAD_AND_CALL(BattleShell_Begin, 0, 0);
+    FRAGMENT_LOAD_AND_CALL(BattleShell_Tick, 0, 0);
 
     main_pool_push_state('FIGT');
 
     FRAGMENT_LOAD(fragment34);
-    FRAGMENT_LOAD_AND_CALL(fragment62, 0, &D_800AE540);
+    FRAGMENT_LOAD_AND_CALL(BattleScene_Run, 0, &D_800AE540);
 
     main_pool_pop_state('FIGT');
 
-    FRAGMENT_LOAD_AND_CALL(fragment63, 2, 0);
+    FRAGMENT_LOAD_AND_CALL(BattleShell_Begin, 2, 0);
 
     main_pool_pop_state('EVNT');
 
@@ -740,7 +740,7 @@ void GameState_FastBattle(void) {
     func_800367A0(0xA0, 0xA, 0);
 
     FRAGMENT_LOAD(fragment34);
-    FRAGMENT_LOAD_AND_CALL(fragment62, 0, &D_800AE540);
+    FRAGMENT_LOAD_AND_CALL(BattleScene_Run, 0, &D_800AE540);
 
     main_pool_pop_state('STAD');
 
@@ -751,7 +751,7 @@ void func_8002B244(void) {
 }
 
 void GameState_KidsClubTitle(void) {
-    func_8002F2A0();
+    KidsClub_Dispatch();
     gCurrentGameState = STATE_TITLE_SCREEN;
 }
 
@@ -783,7 +783,7 @@ void Game_Thread(UNUSED LEODiskID* arg) {
 
     main_pool_push_state('GAME');
 
-    D_800AE540.unk_11F2 = 0;
+    D_800AE540.battleResultFlags = 0;
 
     // is this game connected to a Sticker Station?
     if (func_8000B4C4() != 0) {

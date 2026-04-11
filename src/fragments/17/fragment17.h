@@ -3,7 +3,7 @@
 
 #include "global.h"
 
-typedef struct unk_D_86B0E5D4_04 {
+typedef struct unk_D_86B0E5D4_04 {s32 DemoCutscene_Entry(void);
     /* 0x00 */ Vec3f unk_00;
     /* 0x0C */ s16 unk_0C;
     /* 0x0E */ s16 unk_0E;

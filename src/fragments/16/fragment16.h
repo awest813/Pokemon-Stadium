@@ -3,7 +3,7 @@
 
 #include "global.h"
 
-typedef struct unk_D_86A025A0 {
+typedef struct unk_D_86A025A0 {s32 KidsClubCredits_Entry(s32 arg0, s32 arg1);
     /* 0x00 */ s8 unk_00;
     /* 0x01 */ s8 unk_01;
     /* 0x02 */ u16 unk_02;

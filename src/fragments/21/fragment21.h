@@ -3,7 +3,7 @@
 
 #include "global.h"
 #include "src/fragments/3/fragment3.h"
-
+s32 SandshrewMinigame_Entry(s32 arg0, s32 arg1);
 void func_86F00020(s16 arg0, s16 arg1);
 void func_86F00188(s16 arg0, s16 arg1);
 void initSandshrew(MiniActor* sandshrew, s32 player);

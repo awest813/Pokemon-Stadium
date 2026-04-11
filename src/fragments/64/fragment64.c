@@ -103,7 +103,7 @@ static u8* D_8480369C[][3] = {
 };
 static u8* D_848036D8 = D_30084C0;
 
-void func_84800020(void) {
+void BattleShell_Tick(void) {
     func_8001D924(D_84803784);
 
     gSPDisplayList(gDisplayListHead++, D_8006F4E0);
@@ -1092,7 +1092,7 @@ s32 func_84802C40(s32 arg0) {
     Stage_ActivateFramebuffer();
 
     if (D_84803798 != 0) {
-        func_84800020();
+        BattleShell_Tick();
     }
 
     for (i = 0; i < D_8480379C; i++) {

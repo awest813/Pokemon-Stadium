@@ -1,3 +1,26 @@
+/*
+ * File: fragment62_2EA8E0.c
+ * ROM / VRAM Range: 0x2EA8C0 / 0x84300000 fragment-backed
+ * Source Type: N64 fragment overlay
+ * Status: CONTROL_FLOW_MAPPED
+ *
+ * Purpose:
+ *     Contains the main entry point and high-level scene management logic for
+ *     the core Battle Engine (Fragment 62).
+ *
+ * Evidence:
+ *     - Entry point called by core game dispatcher (src/29BA0.c)
+ *     - Transitions into scene-local state machine (func_8432D0D8, etc.)
+ *     - Direct access to BattleContext struct (D_800AE540)
+ *
+ * Verified:
+ *     - This file contains the BattleScene_Run entry point.
+ *     - It is loaded via the fragment relocation system.
+ *
+ * Likely:
+ *     - Oversees the per-tick execution of battle command queues and animations.
+ */
+
 #include "fragment62.h"
 #include "src/11BA0.h"
 #include "src/12D80.h"
@@ -53,7 +76,7 @@ static u32 D_84384364[] = {
     0x1F00FFFF,  0x00000000,  0x00000000,    0x00000000,    0x00640064, 0x00640000,    0x08000000,  func_8430012C,
     0x00000000,  0x05000000,  0x07000000,    &D_8438E580,   0x06000000, 0x06000000,    0x0F000003,  0x05000000,
     0x0A000000,  &D_800AC840, 0x06000000,    0x0F000002,    0x05000000, 0x0A000000,    &D_800AC858, 0x06000000,
-    0x09000000,  0x08000000,  func_84300020, 0x00000000,    0x06000000, 0x06000000,    0x06000000,  0x01000000,
+    0x09000000,  0x08000000,  BattleScene_Run, 0x00000000,    0x06000000, 0x06000000,    0x06000000,  0x01000000,
 };
 static u32 D_843844C4[] = {
     0x0C00FFFF,  0x05000000, 0x07000000, &D_8438E598, 0x05000000, 0x0D000001, 0x05000000,
@@ -66,7 +89,33 @@ static u32 D_84384514[] = {
     &D_800AC840, 0x06000000, 0x06000000, 0x06000000,  0x06000000, 0x01000000,
 };
 
-s32 func_84300020(s32 arg0, GraphNode* arg1) {
+/*
+ * BattleScene_Run
+ * Original symbol: func_84300020
+ *
+ * Summary:
+ *     Main per-scene orchestrator for logic execution within the battle engine.
+ *
+ * Callers:
+ *     - GameState_Stadium (src/29BA0.c)
+ *     - GameState_FreeBattle (src/29BA0.c)
+ *     - GameState_GymLeaderCastle (src/29BA0.c)
+ *
+ * Arguments:
+ *     arg0 / a0:
+ *         Wait/Render mode? (Observed values: 0, 1, 2)
+ *     arg1 / a1:
+ *         GraphNode pointer (usually current scene root)
+ *
+ * Returns:
+ *     v0:
+ *         Always returns 1 in observed paths.
+ *
+ * Verified behavior:
+ *     - Branches on arg0 == 2 to trigger a specific substate (5) in func_8432D0D8.
+ *     - Sets unk_D_8438E798 to global battle scenes pointer.
+ */
+s32 BattleScene_Run(s32 arg0, GraphNode* arg1) {
     if (arg0 == 2) {
         func_8432D0D8(5, &D_8438E440);
     }

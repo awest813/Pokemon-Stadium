@@ -134,30 +134,30 @@ static s32 D_86002F48;
 static s16 D_86002F4C;
 static s32 D_86002F50;
 
-typedef struct unk_D_86002F58_004 {
+typedef struct MagikarpActor {
     /* 0x000 */ unk_D_86002F58_004_000 unk_000;
-    /* 0x168 */ s16 unk_168;
-    /* 0x16A */ u16 unk_16A;
+    /* 0x168 */ s16 actionState;
+    /* 0x16A */ u16 actionParam;
     /* 0x16C */ s16 unk_16C;
-} unk_D_86002F58_004; // size = 0x170
+} MagikarpActor;
 
-typedef struct unk_D_86002F58 {
-    /* 0x000 */ s16 unk_000;
+typedef struct MagikarpPlayerState {
+    /* 0x000 */ s16 controlType;
     /* 0x002 */ char pad2[2];
-    /* 0x004 */ unk_D_86002F58_004 unk_004;
-    /* 0x174 */ u16 unk_174;
-    /* 0x176 */ u16 unk_176[2];
-    /* 0x17A */ u16 unk_17A;
-    /* 0x17C */ u16 unk_17C[2];
+    /* 0x004 */ MagikarpActor actor;
+    /* 0x174 */ u16 buttonDown;
+    /* 0x176 */ u16 buttonDownHistory[2];
+    /* 0x17A */ u16 buttonPressed;
+    /* 0x17C */ u16 buttonPressedHistory[2];
     /* 0x180 */ char pad180[2];
-    /* 0x182 */ s16 unk_182;
+    /* 0x182 */ s16 currentScore;
     /* 0x184 */ s16 unk_184;
     /* 0x186 */ s16 unk_186;
     /* 0x188 */ s16 unk_188;
-    /* 0x18A */ s16 unk_18A;
+    /* 0x18A */ s16 playerIndex;
     /* 0x18C */ s16 unk_18C;
     /* 0x18E */ char pad18E[2];
-} unk_D_86002F58; // size = 0x190
+} MagikarpPlayerState;
 
 static unk_D_86002F58 D_86002F58[4];
 static unk_D_86002F58_004 D_86003598[4];
@@ -173,7 +173,7 @@ static unk_D_800AC870* D_86003B7C;
 static s32 D_86003B80;
 static unk_D_86002F58_004_000 D_86003B84[4];
 
-void func_86000020(void) {
+void MagikarpMinigame_ProcessInputs(void) {
     s32 i;
     s32 j;
 
@@ -268,7 +268,7 @@ void func_86000020(void) {
     }
 }
 
-s32 func_86000410(void) {
+s32 MagikarpMinigame_HandleInput(void) {
     if (Stage_GetFadeMode() != 0) {
         return -1;
     }
@@ -278,7 +278,7 @@ s32 func_86000410(void) {
     func_8001F730();
 
     if (D_8780FC94 != 1) {
-        func_86000020();
+        MagikarpMinigame_ProcessInputs();
     }
 
     return 0;
@@ -479,7 +479,7 @@ void func_86000C18(void) {
     gDisplayListHead = gfx;
 }
 
-void func_86000D88(s32 arg0) {
+void MagikarpMinigame_Update(s32 arg0) {
     Stage_ActivateFramebuffer();
     GFX_ClearDepth(&gDisplayListHead, 0, 0, 0x140, 0xF0);
     func_87A00DB8(D_86002F50);
@@ -538,7 +538,7 @@ void func_86000E54(void) {
     }
 }
 
-s32 func_86000FD4(void) {
+s32 MagikarpMinigame_StartScreen(void) {
     s32 var_s0_2;
     s32 i;
 
@@ -563,7 +563,7 @@ s32 func_86000FD4(void) {
 
     var_s0_2 = true;
     while (var_s0_2 == true) {
-        if (func_86000410() == 0) {
+        if (MagikarpMinigame_HandleInput() == 0) {
             if (gPlayer1Controller->buttonPressed & 0x1000) {
                 var_s0_2 = false;
             }
@@ -575,13 +575,13 @@ s32 func_86000FD4(void) {
             }
         }
 
-        func_86000D88(D_86002F48);
+        MagikarpMinigame_Update(D_86002F48);
     }
 
     return 0;
 }
 
-void func_86001204(void) {
+void MagikarpMinigame_MainLoop(void) {
     s32 i;
 
     for (i = 0; i < 4; i++) {
@@ -612,8 +612,8 @@ void func_86001204(void) {
         }
 
         func_86000E54();
-        func_86000410();
-        func_86000D88(D_86002F48);
+        MagikarpMinigame_HandleInput();
+        MagikarpMinigame_Update(D_86002F48);
     }
 }
 
@@ -860,7 +860,7 @@ void func_86001C90(void) {
     D_86002F48 = 2;
 
     while (var_s6 != 0) {
-        func_86000410();
+        MagikarpMinigame_HandleInput();
         func_86000564();
 
         if (D_86003B58 == 0xF) {
@@ -896,7 +896,7 @@ void func_86001C90(void) {
             var_s6 = 0;
         }
 
-        func_86000D88(D_86002F48);
+        MagikarpMinigame_Update(D_86002F48);
     }
 
     func_8004B9C4(0xA);
@@ -942,7 +942,7 @@ void func_86001F64(void) {
     var_s1 = 1;
 
     while (var_s1 != 0) {
-        func_86000410();
+        MagikarpMinigame_HandleInput();
         func_86000564();
 
         for (i = 0; i < 4; i++) {
@@ -953,7 +953,7 @@ void func_86001F64(void) {
             var_s1 = 0;
         }
 
-        func_86000D88(D_86002F48);
+        MagikarpMinigame_Update(D_86002F48);
 
         if (gMinigameExitFlag != 0) {
             return;
@@ -994,14 +994,14 @@ void func_86001F64(void) {
 
     j = 30;
     while (j > 0) {
-        func_86000410();
+        MagikarpMinigame_HandleInput();
         func_86000564();
 
         for (i = 0; i < 4; i++) {
             func_860017C0(i);
         }
 
-        func_86000D88(D_86002F48);
+        MagikarpMinigame_Update(D_86002F48);
 
         if (gMinigameExitFlag != 0) {
             return;
@@ -1015,7 +1015,7 @@ void func_86001F64(void) {
     func_87802EB8(1);
 
     while (var_s5 != 0) {
-        func_86000410();
+        MagikarpMinigame_HandleInput();
         func_86000564();
 
         for (i = 0; i < 4; i++) {
@@ -1029,7 +1029,7 @@ void func_86001F64(void) {
             }
         }
 
-        func_86000D88(D_86002F48);
+        MagikarpMinigame_Update(D_86002F48);
 
         if (gMinigameExitFlag != 0) {
             return;
@@ -1045,24 +1045,24 @@ void func_86002264(void) {
     Stage_FadeIn(30);
 
     for (i = 0; i < 30; i++) {
-        func_86000410();
+        MagikarpMinigame_HandleInput();
 
         for (j = 0; j < 4; j++) {
             func_860017C0(j);
         }
 
-        func_86000D88(D_86002F48);
+        MagikarpMinigame_Update(D_86002F48);
     }
 }
 
-void func_860022F8(s32 arg0) {
+void MagikarpMinigame_ReadyWait(s32 arg0) {
     s32 i;
 
     D_86002F48 = 6;
 
     for (i = 0; i < arg0; i++) {
-        func_86000410();
-        func_86000D88(D_86002F48);
+        MagikarpMinigame_HandleInput();
+        MagikarpMinigame_Update(D_86002F48);
     }
 }
 
@@ -1083,12 +1083,12 @@ void func_8600235C(void) {
             func_860017C0(i);
         }
 
-        func_86000410();
-        func_86000D88(D_86002F48);
+        MagikarpMinigame_HandleInput();
+        MagikarpMinigame_Update(D_86002F48);
     }
 }
 
-void func_86002440(void) {
+void MagikarpMinigame_Init(void) {
     s32 i;
     MemoryBlock* temp_v0;
 
@@ -1162,7 +1162,7 @@ void func_86002440(void) {
     func_87802528();
 }
 
-void func_86002778(UNUSED s32 arg0, UNUSED s32 arg1) {
+void MagikarpMinigame_Entry(UNUSED s32 arg0, UNUSED s32 arg1) {
     RenderContext* sp24;
 
     main_pool_push_state('MINI');
@@ -1176,14 +1176,14 @@ void func_86002778(UNUSED s32 arg0, UNUSED s32 arg1) {
 
     func_80004454((((u32)D_8D000000 & 0x0FF00000) >> 0x14) - 0x10, _5C7A70_ROM_START, _5C7A70_ROM_END);
 
-    func_86002440();
+    MagikarpMinigame_Init();
     func_878029C0();
     Stage_SetRenderContext(sp24);
 
-    if (func_86000FD4() != -1) {
+    if (MagikarpMinigame_StartScreen() != -1) {
         func_8004B9C4(0x3C);
-        func_860022F8(5);
-        func_86001204();
+        MagikarpMinigame_ReadyWait(5);
+        MagikarpMinigame_MainLoop();
         func_86001C90();
 
         if (gMinigameExitFlag == 0) {

@@ -24,7 +24,7 @@ static u8 D_843859A4[] = {
     0x7A, 0x80, 0x84, 0x8B, 0x8D, 0x91, 0x94, 0x96, 0x97, 0x9A, 0x9C, 0x9F, 0xA3, 0xA4,
 };
 
-void func_84317810(void) {
+void BattleTurn_BuildOrder(void) {
     D_843901A0->unk_088[0] = 0;
     D_843901A0->unk_088[1] = 0;
     D_843901A0->unk_0C8[0] = 0;
@@ -100,7 +100,7 @@ void func_84317940(s8* arg0, s8* arg1, ...) {
 #pragma GLOBAL_ASM("asm/us/nonmatchings/fragments/62/fragment62_3020D0/func_84317940.s")
 #endif
 
-void func_843179F4(s8* arg0, s8 arg1) {
+void Battle_QueueTurnMessage(s8* arg0, s8 arg1) {
     u8 tmp = arg1;
     *arg0 = arg1;
 

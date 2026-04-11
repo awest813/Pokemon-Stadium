@@ -19,7 +19,7 @@ void GraphNode_Init(GraphNode* arg0, u8 arg1) {
 
 void GraphNode_SetCallback(GraphNode* arg0, func_D_86002F34_000_010 arg1, void* arg2) {
     if (arg1 != NULL) {
-        arg1 = Util_ConvertAddrToVirtAddr(arg1);
+        arg1 = (func_D_86002F34_000_010)Util_ConvertAddrToVirtAddr((uintptr_t)arg1);
     }
 
     if (arg0 != NULL) {
@@ -56,7 +56,7 @@ unk_D_86002F34_alt2* GraphNode_CreateRoot(MainPoolState* arg0, unk_D_86002F34_al
     return arg1;
 }
 
-unk_D_86002F34_00C* GraphNode_CreateCamera(MemoryBlock* arg0, unk_D_86002F34_00C* arg1, s16 arg2, s16 arg3, s16 arg4, s16 arg5) {
+unk_D_86002F34_00C* GraphNode_CreateCamera(MainPoolState* arg0, unk_D_86002F34_00C* arg1, s16 arg2, s16 arg3, s16 arg4, s16 arg5) {
     if (arg0 != NULL) {
         arg1 = MainPoolState_AllocLinear(arg0, sizeof(unk_D_86002F34_00C), 4);
     }
@@ -71,105 +71,105 @@ unk_D_86002F34_00C* GraphNode_CreateCamera(MemoryBlock* arg0, unk_D_86002F34_00C
     return arg1;
 }
 
-unk_D_86002F34_alt13* func_800111A4(MemoryBlock* arg0, unk_D_86002F34_alt13* arg1, s16 arg2) {
+unk_D_86002F34_alt13* GraphNode_CreateOrtho(MainPoolState* arg0, unk_D_86002F34_alt13* arg1, s16 arg2) {
     if (arg0 != NULL) {
-        arg1 = func_80002DCC(arg0, sizeof(unk_D_86002F34_alt13), 4);
+        arg1 = MainPoolState_AllocLinear(arg0, sizeof(unk_D_86002F34_alt13), 4);
     }
 
     if (arg1 != NULL) {
         arg1->unk_18 = arg2;
-        func_80010FA0(arg1, 3);
+        GraphNode_Init((GraphNode*)arg1, 3);
     }
 
     return arg1;
 }
 
-unk_D_86002F34_alt1* func_800111FC(MemoryBlock* arg0, unk_D_86002F34_alt1* arg1, s16 arg2) {
+unk_D_86002F34_alt1* GraphNode_CreatePerspective(MainPoolState* arg0, unk_D_86002F34_alt1* arg1, s16 arg2) {
     if (arg0 != NULL) {
-        arg1 = func_80002DCC(arg0, sizeof(unk_D_86002F34_alt1), 4);
+        arg1 = MainPoolState_AllocLinear(arg0, sizeof(unk_D_86002F34_alt1), 4);
     }
 
     if (arg1 != NULL) {
         arg1->unk_18 = arg2;
         arg1->unk_1A = 0;
-        func_80010FA0(arg1, 4);
+        GraphNode_Init((GraphNode*)arg1, 4);
     }
 
     return arg1;
 }
 
-unk_D_86002F34_alt14* func_80011258(MainPoolState* arg0, unk_D_86002F34_alt14* arg1, s16 arg2) {
+unk_D_86002F34_alt14* GraphNode_CreateMaster(MainPoolState* arg0, unk_D_86002F34_alt14* arg1, s16 arg2) {
     if (arg0 != NULL) {
-        arg1 = func_80002DCC(arg0, sizeof(unk_D_86002F34_alt14), 4);
+        arg1 = MainPoolState_AllocLinear(arg0, sizeof(unk_D_86002F34_alt14), 4);
     }
 
     if (arg1 != NULL) {
-        func_80010FA0(arg1, 5);
+        GraphNode_Init((GraphNode*)arg1, 5);
         arg1->unk_00.unk_02 |= arg2 & 3;
     }
 
     return arg1;
 }
 
-unk_D_86002F34_alt15* func_800112BC(MainPoolState* arg0, unk_D_86002F34_alt15* arg1, s16 arg2) {
+unk_D_86002F34_alt15* GraphNode_AllocNode(MainPoolState* arg0, unk_D_86002F34_alt15* arg1, s16 arg2) {
     if (arg0 != NULL) {
-        arg1 = func_80002DCC(arg0, sizeof(unk_D_86002F34_alt15), 4);
+        arg1 = MainPoolState_AllocLinear(arg0, sizeof(unk_D_86002F34_alt15), 4);
     }
 
     if (arg1 != NULL) {
-        func_80010FA0(arg1, 6);
+        GraphNode_Init((GraphNode*)arg1, 6);
         arg1->unk_00.unk_02 |= arg2 & 3;
     }
 
     return arg1;
 }
 
-unk_D_86002F34_alt16* func_80011320(MainPoolState* arg0, unk_D_86002F34_alt16* arg1, u8 arg2, u8 arg3, u8 arg4) {
+unk_D_86002F34_alt16* GraphNode_CreateScreenColor(MainPoolState* arg0, unk_D_86002F34_alt16* arg1, u8 arg2, u8 arg3, u8 arg4) {
     u32 temp_v0;
 
     if (arg0 != NULL) {
-        arg1 = func_80002DCC(arg0, sizeof(unk_D_86002F34_alt16), 4);
+        arg1 = MainPoolState_AllocLinear(arg0, sizeof(unk_D_86002F34_alt16), 4);
     }
 
     if (arg1 != NULL) {
         temp_v0 = ((arg2 >> 3) << 0xB) | ((arg3 >> 3) << 6) | ((arg4 >> 3) << 1) | 1;
         arg1->unk_18 = (temp_v0 << 0x10) | temp_v0;
-        func_80010FA0(arg1, 7);
+        GraphNode_Init((GraphNode*)arg1, 7);
     }
     return arg1;
 }
 
-unk_D_86002F34_alt17* func_800113AC(MainPoolState* arg0, unk_D_86002F34_alt17* arg1) {
+unk_D_86002F34_alt17* GraphNode_AllocGroupNode(MainPoolState* arg0, unk_D_86002F34_alt17* arg1) {
     if (arg0 != NULL) {
-        arg1 = func_80002DCC(arg0, sizeof(unk_D_86002F34_alt17), 4);
+        arg1 = MainPoolState_AllocLinear(arg0, sizeof(unk_D_86002F34_alt17), 4);
     }
 
     if (arg1 != NULL) {
-        func_80010FA0(arg1, 8);
+        GraphNode_Init((GraphNode*)arg1, 8);
     }
 
     return arg1;
 }
 
-unk_D_8690A610* func_800113F8(s32 arg0, unk_D_8690A610* arg1, s16 arg2, s16 arg3, u8 r, u8 g, u8 b, u8 a) {
-    if (arg0 != 0) {
-        arg1 = func_80002DCC(arg0, sizeof(unk_D_8690A610), 4);
+unk_D_8690A610* GraphNode_CreateBackground(MainPoolState* arg0, unk_D_8690A610* arg1, s16 arg2, s16 arg3, u8 r, u8 g, u8 b, u8 a) {
+    if (arg0 != NULL) {
+        arg1 = MainPoolState_AllocLinear(arg0, sizeof(unk_D_8690A610), 4);
     }
 
     if (arg1 != NULL) {
         arg1->unk_18.unk_00 = arg2;
         arg1->unk_18.unk_02 = arg3;
         arg1->unk_18.unk_04.rgba = (r << 0x18) | (g << 0x10) | (b << 8) | a;
-        func_80010FA0(arg1, 0xA);
+        GraphNode_Init((GraphNode*)arg1, 0xA);
     }
 
     return arg1;
 }
 
-unk_D_86002F34_alt18* func_80011484(MainPoolState* arg0, unk_D_86002F34_alt18* arg1, s16 arg2, s16 arg3, u8 r, u8 g,
-                                    u8 b, u8 a) {
+unk_D_86002F34_alt18* GraphNode_CreateClearDepth(MainPoolState* arg0, unk_D_86002F34_alt18* arg1, s16 arg2, s16 arg3, u8 r, u8 g,
+                                     u8 b, u8 a) {
     if (arg0 != NULL) {
-        arg1 = func_80002DCC(arg0, sizeof(unk_D_86002F34_alt18), 4);
+        arg1 = MainPoolState_AllocLinear(arg0, sizeof(unk_D_86002F34_alt18), 4);
     }
 
     if (arg1 != NULL) {
@@ -179,22 +179,22 @@ unk_D_86002F34_alt18* func_80011484(MainPoolState* arg0, unk_D_86002F34_alt18* a
         arg1->a = a;
         arg1->unk_1C = arg2;
         arg1->unk_1E = arg3;
-        func_80010FA0(arg1, 0xB);
+        GraphNode_Init((GraphNode*)arg1, 0xB);
     }
 
     return arg1;
 }
 
-unk_D_86002F34_alt19* func_80011504(MainPoolState* arg0, unk_D_86002F34_alt19* arg1, u8 r, u8 g, u8 b) {
+unk_D_86002F34_alt19* GraphNode_CreateMasterChild(MainPoolState* arg0, unk_D_86002F34_alt19* arg1, u8 r, u8 g, u8 b) {
     if (arg0 != NULL) {
-        arg1 = func_80002DCC(arg0, sizeof(unk_D_86002F34_alt19), 4);
+        arg1 = MainPoolState_AllocLinear(arg0, sizeof(unk_D_86002F34_alt19), 4);
     }
 
     if (arg1 != NULL) {
         arg1->r = r;
         arg1->g = g;
         arg1->b = b;
-        func_80010FA0(arg1, 0xD);
+        GraphNode_Init((GraphNode*)arg1, 0xD);
     }
 
     return arg1;
@@ -223,7 +223,7 @@ unk_D_86002F34* GraphNode_CreateDisplayList(MainPoolState* arg0, unk_D_86002F34*
 unk_D_86002F34_alt12* func_800115F0(MainPoolState* arg0, unk_D_86002F34_alt12* arg1, s16 arg2, s16 arg3, s16 arg4,
                                     s16 arg5) {
     if (arg0 != NULL) {
-        arg1 = func_80002DCC(arg0, sizeof(unk_D_86002F34_alt12), 4);
+        arg1 = MainPoolState_AllocLinear(arg0, sizeof(unk_D_86002F34_alt12), 4);
     }
 
     if (arg1 != NULL) {
@@ -231,62 +231,62 @@ unk_D_86002F34_alt12* func_800115F0(MainPoolState* arg0, unk_D_86002F34_alt12* a
         arg1->unk_1A = arg3;
         arg1->unk_1C = arg4;
         arg1->unk_1E = arg5;
-        func_80010FA0(arg1, 0xF);
+        GraphNode_Init((GraphNode*)arg1, 0xF);
     }
 
     return arg1;
 }
 
-unk_D_86002F34_alt20* func_80011660(MainPoolState* arg0, unk_D_86002F34_alt20* arg1, s16 arg2, s16 arg3) {
+unk_D_86002F34_alt20* GraphNode_CreateScissor(MainPoolState* arg0, unk_D_86002F34_alt20* arg1, s16 arg2, s16 arg3) {
     if (arg0 != NULL) {
-        arg1 = func_80002DCC(arg0, sizeof(unk_D_86002F34_alt20), 4);
+        arg1 = MainPoolState_AllocLinear(arg0, sizeof(unk_D_86002F34_alt20), 4);
     }
 
     if (arg1 != NULL) {
         arg1->unk_18 = arg2;
         arg1->unk_1A = arg3;
-        func_80010FA0(arg1, 0x10);
+        GraphNode_Init((GraphNode*)arg1, 0x10);
     }
 
     return arg1;
 }
 
-unk_D_86002F34_alt21* func_800116C0(MainPoolState* arg0, unk_D_86002F34_alt21* arg1, s16 arg2, s16 arg3) {
+unk_D_86002F34_alt21* GraphNode_CreateSimplePerspective(MainPoolState* arg0, unk_D_86002F34_alt21* arg1, s16 arg2, s16 arg3) {
     if (arg0 != NULL) {
-        arg1 = func_80002DCC(arg0, sizeof(unk_D_86002F34_alt21), 4);
+        arg1 = MainPoolState_AllocLinear(arg0, sizeof(unk_D_86002F34_alt21), 4);
     }
 
     if (arg1 != NULL) {
         arg1->unk_18 = arg2;
         arg1->unk_1A = arg3;
-        func_80010FA0(arg1, 0x11);
+        GraphNode_Init((GraphNode*)arg1, 0x11);
     }
 
     return arg1;
 }
 
-unk_D_86002F34_alt5* func_80011720(MainPoolState* arg0, unk_D_86002F34_alt5* arg1, Vec3f* arg2, Vec3s* arg3) {
+unk_D_86002F34_alt5* GraphNode_CreateRotation(MainPoolState* arg0, unk_D_86002F34_alt5* arg1, Vec3f* arg2, Vec3s* arg3) {
     if (arg0 != NULL) {
-        arg1 = func_80002DCC(arg0, sizeof(unk_D_86002F34_alt5), 4);
+        arg1 = MainPoolState_AllocLinear(arg0, sizeof(unk_D_86002F34_alt5), 4);
     }
 
     if (arg1 != NULL) {
         arg1->unk_18 = *arg2;
         arg1->unk_24 = *arg3;
-        func_80010FA0(arg1, 0x12);
+        GraphNode_Init((GraphNode*)arg1, 0x12);
     }
 
     return arg1;
 }
 
-unk_D_86002F34_alt22* func_800117A8(MainPoolState* arg0, unk_D_86002F34_alt22* arg1, Vec3f* arg2) {
+unk_D_86002F34_alt22* GraphNode_CreateTranslation(MainPoolState* arg0, unk_D_86002F34_alt22* arg1, Vec3f* arg2) {
     if (arg0 != NULL) {
-        arg1 = func_80002DCC(arg0, sizeof(unk_D_86002F34_alt22), 4);
+        arg1 = MainPoolState_AllocLinear(arg0, sizeof(unk_D_86002F34_alt22), 4);
     }
 
     if (arg1 != NULL) {
         arg1->unk_18 = *arg2;
-        func_80010FA0(arg1, 0x13);
+        GraphNode_Init((GraphNode*)arg1, 0x13);
     }
 
     return arg1;
@@ -295,7 +295,7 @@ unk_D_86002F34_alt22* func_800117A8(MainPoolState* arg0, unk_D_86002F34_alt22* a
 unk_D_86002F34_alt6* func_80011814(MainPoolState* arg0, unk_D_86002F34_alt6* arg1, s16 arg2, s16 arg3, s16 arg4,
                                    Vec3s* arg5, Vec3s* arg6, Vec3f* arg7) {
     if (arg0 != NULL) {
-        arg1 = func_80002DCC(arg0, sizeof(unk_D_86002F34_alt6), 4);
+        arg1 = MainPoolState_AllocLinear(arg0, sizeof(unk_D_86002F34_alt6), 4);
     }
 
     if (arg1 != NULL) {
@@ -305,31 +305,31 @@ unk_D_86002F34_alt6* func_80011814(MainPoolState* arg0, unk_D_86002F34_alt6* arg
         arg1->unk_30 = arg2;
         arg1->unk_31 = arg3;
         arg1->unk_32 = arg4;
-        func_80010FA0(arg1, 0x14);
+        GraphNode_Init((GraphNode*)arg1, 0x14);
     }
 
     return arg1;
 }
 
-unk_D_86002F34_alt7* func_800118D0(MainPoolState* arg0, unk_D_86002F34_alt7* arg1, s32 arg2, Gfx* arg3, s16 arg4) {
+unk_D_86002F34_alt7* GraphNode_CreateDisplayListWithPadding(MainPoolState* arg0, unk_D_86002F34_alt7* arg1, s32 arg2, Gfx* arg3, s16 arg4) {
     if (arg0 != NULL) {
-        arg1 = func_80002DCC(arg0, sizeof(unk_D_86002F34_alt7), 4);
+        arg1 = MainPoolState_AllocLinear(arg0, sizeof(unk_D_86002F34_alt7), 4);
     }
 
     if (arg1 != NULL) {
         arg1->unk_18 = arg3;
         arg1->unk_1C = arg4;
-        func_80010FA0(arg1, 0x15);
+        GraphNode_Init((GraphNode*)arg1, 0x15);
         arg1->unk_00.unk_03 = arg2;
     }
 
     return arg1;
 }
 
-unk_D_86002F58_004_000* func_80011938(MainPoolState* arg0, unk_D_86002F58_004_000* arg1, s16 arg2, Vec3f* arg3,
+unk_D_86002F58_004_000* GraphNode_CreateViewportChild(MainPoolState* arg0, unk_D_86002F58_004_000* arg1, s16 arg2, Vec3f* arg3,
                                       Vec3s* arg4, Vec3f* arg5) {
     if (arg0 != 0) {
-        arg1 = func_80002DCC(arg0, sizeof(unk_D_86002F58_004_000), 4);
+        arg1 = MainPoolState_AllocLinear(arg0, sizeof(unk_D_86002F58_004_000), 4);
     }
 
     if (arg1 != NULL) {
@@ -352,26 +352,26 @@ unk_D_86002F58_004_000* func_80011938(MainPoolState* arg0, unk_D_86002F58_004_00
         arg1->unk_054.unk_04 = NULL;
         arg1->unk_054.unk_08 = 0;
         arg1->unk_054.unk_0A = 0;
-        func_80010FA0(&arg1->unk_000, 0x16);
+        GraphNode_Init((GraphNode*)&arg1->unk_000, 0x16);
         arg1->unk_000.unk_02 |= 0x60;
     }
 
     return arg1;
 }
 
-unk_D_86002F34_alt8* func_80011A3C(MainPoolState* arg0, unk_D_86002F34_alt8* arg1, s32 arg2, Gfx* arg3, MtxF* arg4) {
+unk_D_86002F34_alt8* GraphNode_CreateMatrixTransform(MainPoolState* arg0, unk_D_86002F34_alt8* arg1, s32 arg2, Gfx* arg3, MtxF* arg4) {
     if (arg0 != NULL) {
-        arg1 = func_80002DCC(arg0, sizeof(unk_D_86002F34_alt8), 4);
+        arg1 = MainPoolState_AllocLinear(arg0, sizeof(unk_D_86002F34_alt8), 4);
     }
 
     if (arg1 != NULL) {
         arg1->unk_18 = arg3;
         if (arg4 == NULL) {
-            func_8000ED98(&arg1->unk_1C);
+            MtxF_Identity(&arg1->unk_1C);
         } else {
-            func_8000ED4C(&arg1->unk_1C, arg4);
+            MtxF_Copy(&arg1->unk_1C, arg4);
         }
-        func_80010FA0(arg1, 0x17);
+        GraphNode_Init((GraphNode*)arg1, 0x17);
         arg1->unk_00.unk_03 = arg2;
     }
 
@@ -382,35 +382,35 @@ unk_D_86002F34_alt8* func_80011ABC(MainPoolState* arg0, unk_D_86002F34_alt8* arg
                                    Vec3s* arg5) {
     MtxF sp20;
 
-    func_8000F2C4(&sp20, arg4, arg5);
-    return func_80011A3C(arg0, arg1, arg2, arg3, &sp20);
+    MtxF_FromPosRot(&sp20, arg4, arg5);
+    return GraphNode_CreateMatrixTransform(arg0, arg1, arg2, arg3, &sp20);
 }
 
 unk_D_86002F34_alt9* func_80011B10(MainPoolState* arg0, unk_D_86002F34_alt9* arg1, s32 arg2, Gfx* arg3, Vec3f* arg4,
                                    f32 arg5) {
     if (arg0 != NULL) {
-        arg1 = func_80002DCC(arg0, sizeof(unk_D_86002F34_alt9), 4);
+        arg1 = MainPoolState_AllocLinear(arg0, sizeof(unk_D_86002F34_alt9), 4);
     }
 
     if (arg1 != NULL) {
         arg1->unk_1C = *arg4;
         arg1->unk_28 = arg5;
         arg1->unk_18 = arg3;
-        func_80010FA0(arg1, 0x18);
+        GraphNode_Init((GraphNode*)arg1, 0x18);
         arg1->unk_00.unk_03 = arg2;
     }
 
     return arg1;
 }
 
-unk_func_80011B94* func_80011B94(MainPoolState* arg0, unk_func_80011B94* arg1, s32 arg2, Gfx* arg3) {
+unk_func_80011B94* GraphNode_CreateDisplayListBranch(MainPoolState* arg0, unk_func_80011B94* arg1, s32 arg2, Gfx* arg3) {
     if (arg0 != NULL) {
-        arg1 = func_80002DCC(arg0, sizeof(unk_func_80011B94), 4);
+        arg1 = MainPoolState_AllocLinear(arg0, sizeof(unk_func_80011B94), 4);
     }
 
     if (arg1 != NULL) {
         arg1->unk_18 = arg3;
-        func_80010FA0(arg1, 0x19);
+        GraphNode_Init((GraphNode*)arg1, 0x19);
         arg1->unk_00.unk_03 = arg2;
     }
 
@@ -420,7 +420,7 @@ unk_func_80011B94* func_80011B94(MainPoolState* arg0, unk_func_80011B94* arg1, s
 unk_D_86002F34_alt10* func_80011BF4(MainPoolState* arg0, unk_D_86002F34_alt10* arg1, s16 arg2, s16 arg3, Gfx* arg4,
                                     s16 arg5, s16 arg6, u8 r, u8 g, u8 b, u8 a) {
     if (arg0 != NULL) {
-        arg1 = func_80002DCC(arg0, sizeof(unk_D_86002F34_alt10), 4);
+        arg1 = MainPoolState_AllocLinear(arg0, sizeof(unk_D_86002F34_alt10), 4);
     }
 
     if (arg1 != NULL) {
@@ -430,20 +430,20 @@ unk_D_86002F34_alt10* func_80011BF4(MainPoolState* arg0, unk_D_86002F34_alt10* a
         arg1->unk_1C = arg5;
         arg1->unk_1E = arg6;
         arg1->unk_24.rgba = (r << 0x18) | (g << 0x10) | (b << 8) | a;
-        func_80010FA0(arg1, 0x1A);
+        GraphNode_Init((GraphNode*)arg1, 0x1A);
     }
 
     return arg1;
 }
 
-unk_D_86002F34_alt23* func_80011C98(MainPoolState* arg0, unk_D_86002F34_alt23* arg1, s16 arg2) {
+unk_D_86002F34_alt23* GraphNode_CreateLayerSelect(MainPoolState* arg0, unk_D_86002F34_alt23* arg1, s16 arg2) {
     if (arg0 != NULL) {
-        arg1 = func_80002DCC(arg0, sizeof(unk_D_86002F34_alt23), 4);
+        arg1 = MainPoolState_AllocLinear(arg0, sizeof(unk_D_86002F34_alt23), 4);
     }
 
     if (arg1 != NULL) {
         arg1->unk_18 = arg2;
-        func_80010FA0(arg1, 0x1B);
+        GraphNode_Init((GraphNode*)arg1, 0x1B);
     }
 
     return arg1;
@@ -452,7 +452,7 @@ unk_D_86002F34_alt23* func_80011C98(MainPoolState* arg0, unk_D_86002F34_alt23* a
 unk_D_86002F34_alt24* func_80011CF0(MainPoolState* arg0, unk_D_86002F34_alt24* arg1, s32 arg2, s16 arg3, s16 arg4,
                                     s16 arg5, s16 arg6, s16 arg7, s16 arg8, s32 arg9, u8 r, u8 g, u8 b, u8 a) {
     if (arg0 != NULL) {
-        arg1 = func_80002DCC(arg0, sizeof(unk_D_86002F34_alt24), 4);
+        arg1 = MainPoolState_AllocLinear(arg0, sizeof(unk_D_86002F34_alt24), 4);
     }
 
     if (arg1 != NULL) {
@@ -464,7 +464,7 @@ unk_D_86002F34_alt24* func_80011CF0(MainPoolState* arg0, unk_D_86002F34_alt24* a
         arg1->unk_1A = arg8;
         arg1->unk_24 = arg9;
         arg1->unk_28.rgba = (r << 0x18) | (g << 0x10) | (b << 8) | a;
-        func_80010FA0(arg1, 0x1C);
+        GraphNode_Init((GraphNode*)arg1, 0x1C);
         arg1->unk_00.unk_03 = arg2;
     }
 
@@ -503,9 +503,9 @@ void Camera_LookAt(unk_D_86002F34_00C* arg0, f32 arg1, f32 arg2, f32 arg3, f32 a
     sp28 *= temp_fv1_2;
     sp24 *= temp_fv1_2;
 
-    func_8000E88C(&sp1C->eye, arg1, arg2, arg3);
-    func_8000E88C(&sp1C->at, arg4, arg5, arg6);
-    func_8000E88C(&sp1C->up, SINS(arg7) * sp24, COSS(arg7), -SINS(arg7) * sp28);
+    Vec3f_Set(&sp1C->eye, arg1, arg2, arg3);
+    Vec3f_Set(&sp1C->at, arg4, arg5, arg6);
+    Vec3f_Set(&sp1C->up, SINS(arg7) * sp24, COSS(arg7), -SINS(arg7) * sp28);
 }
 
 void GraphNode_SetLighting(unk_D_86002F34_00C* arg0, s16 arg1, s16 arg2, u8 arg3, u8 arg4, u8 arg5) {
@@ -527,7 +527,7 @@ void GraphNode_SetLighting(unk_D_86002F34_00C* arg0, s16 arg1, s16 arg2, u8 arg3
     }
 }
 
-void func_80012044(unk_D_86002F34_00C* arg0, s16 arg1, s16 arg2, s32 arg3, u32 arg4) {
+void GraphNode_SetupFog(unk_D_86002F34_00C* arg0, s16 arg1, s16 arg2, UNUSED s32 arg3, UNUSED u32 arg4) {
     unk_D_86002F34_00C_0CC* ptr = &arg0->unk_CC;
     ptr->unk_0C = arg1;
     ptr->unk_0E = arg2;
@@ -564,19 +564,19 @@ void GraphNode_AppendChild(GraphNode* arg0, GraphNode* arg1) {
 void GraphNode_RemoveChild(GraphNode* arg0, GraphNode* arg1) {    
     arg1->unk_04->unk_08 = arg1->unk_08;
     arg1->unk_08->unk_04 = arg1->unk_04;
-    if ((unk_D_86002F34_00C*)arg1 == arg0->unk_0C) {
+    if (arg1 == arg0->unk_0C) {
         if (arg1 == arg1->unk_08) {
             arg0->unk_0C = NULL;
             return;
         }
-        arg0->unk_0C = (unk_D_86002F34_00C*)arg1->unk_08;
+        arg0->unk_0C = arg1->unk_08;
     }
 }
 
 GraphNode* GraphNode_GetChildByIndex(GraphNode* arg0, s32 arg1) {
     GraphNode* var_v1;
     s32 i;
-    var_v1 = (GraphNode*)arg0->unk_0C;
+    var_v1 = arg0->unk_0C;
     if (var_v1 != NULL) {
         for (i = 0; i < arg1; i++) {
             var_v1 = var_v1->unk_08;

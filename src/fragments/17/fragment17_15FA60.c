@@ -470,7 +470,7 @@ s32 func_86B00C34(void) {
 void func_86B01004(void) {
 }
 
-void func_86B0100C(void) {
+void DemoCutscene_UpdateAndDraw(void) {
     Stage_ActivateFramebuffer();
     GFX_ClearScreen(&gDisplayListHead, 1);
     func_80015348();
@@ -482,7 +482,7 @@ void func_86B0100C(void) {
     Stage_AdvanceFrame();
 }
 
-void func_86B0107C(void) {
+void DemoCutscene_MainLoop(void) {
     s32 var_s1 = 1;
     s32 var_s0 = 0;
 
@@ -500,15 +500,15 @@ void func_86B0107C(void) {
         }
 
         func_86B00688();
-        func_86B0100C();
+        DemoCutscene_UpdateAndDraw();
     }
 }
 
 void func_86B010FC(void) {
-    func_86B0100C();
+    DemoCutscene_UpdateAndDraw();
 }
 
-void func_86B0111C(void) {
+void DemoCutscene_Init(void) {
     MemoryBlock* sp1C;
 
     sp1C = func_80002D10(main_pool_get_available(), 0);
@@ -523,7 +523,7 @@ void func_86B0111C(void) {
     D_86B0E5DC = 0;
 }
 
-s32 func_86B01190(void) {
+s32 DemoCutscene_Entry(void) {
     main_pool_push_state('MINI');
 
     func_8001E94C(6, 0);
@@ -544,9 +544,9 @@ s32 func_86B01190(void) {
 
     func_8002D510();
     D_86B0E5E0 = func_8002D5AC(0x14);
-    func_86B0111C();
+    DemoCutscene_Init();
     Stage_SetSegments();
-    func_86B0107C();
+    DemoCutscene_MainLoop();
     func_86B010FC();
     Stage_WaitFrame();
     func_8001E9CC();

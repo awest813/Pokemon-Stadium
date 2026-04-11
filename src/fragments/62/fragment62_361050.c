@@ -1,3 +1,28 @@
+/*
+ * File: fragment62_361050.c
+ * ROM / VRAM Range: unknown / overlay-backed
+ * Source Type: N64 fragment overlay
+ * Status: DATA_LAYOUT_PARTIAL
+ *
+ * Purpose:
+ *     Core Battle AI Decision Making and CPU Move Simulation.
+ *     Handles Scoring, Damage Simulation, and Type Effectiveness evaluation for CPU opponents.
+ *
+ * Evidence:
+ *     - Implements a specialized LCG RNG for AI decisions (BattleAI_Random)
+ *     - Contains the Damage Simulation suite (BattleAI_SimulateDamage)
+ *     - Loops through available moves to evaluate suitability for the current matchup
+ *
+ * Verified:
+ *     - Runs evaluating logic for all Gym Leader and Stadium Cup CPU tiers
+ *     - Uses OS-level clock counters for RNG entropy (osGetCount)
+ *
+ * Likely:
+ *     - Higher CPU difficulty levels enable more precise simulation passes
+ *
+ * Unknown:
+ *     - Meaning of certain heuristics stored in large D_ tables (e.g., D_8438AFEC)
+ */
 #include "fragment62.h"
 #include "include/math.h"
 #include "src/3FB0.h"
@@ -75,7 +100,7 @@ void func_84376790(s32 arg0, u32 arg1) {
 void func_843767DC(void) {
 }
 
-s32 func_843767E4(s32 arg0) {
+s32 BattleAI_Random(s32 arg0) {
     s32 var_v1_1;
     u8 var_v1_2;
     s32 var_v1;
@@ -110,7 +135,7 @@ void func_843768D8(u8 arg0) {
     D_843C6154 = ~D_843C6150;
 }
 
-u8 func_84376920(unk_D_800FCB18* arg0, unk_D_800FCB18* arg1, u8 arg2) {
+u8 BattleAI_CalcCriticalChance(unk_D_800FCB18* arg0, unk_D_800FCB18* arg1, u8 arg2) {
     s32 var_v1;
 
     if (D_8438AC60[0] == 1) {
@@ -204,7 +229,7 @@ void func_84376B38(void) {
     }
 }
 
-void func_84376B9C(unk_D_800FCB18* arg0, unk_D_800FCB18* arg1) {
+void BattleAI_ApplyTypeEffectiveness(unk_D_800FCB18* arg0, unk_D_800FCB18* arg1) {
     unk_D_8438ACF0* var_v0;
     u8 tmp1 = arg0->unk_16[6];
     u8 tmp2 = arg0->unk_16[7];
@@ -227,7 +252,7 @@ void func_84376B9C(unk_D_800FCB18* arg0, unk_D_800FCB18* arg1) {
     }
 }
 
-void func_84376C90(unk_D_800FCB18* arg0, unk_D_800FCB18* arg1, u8 arg2) {
+void BattleAI_InitDamageSimContext(unk_D_800FCB18* arg0, unk_D_800FCB18* arg1, u8 arg2) {
     unk_D_80072B00* temp_v0 = &D_80072B00[arg2 - 1];
 
     D_843C6148.unk_00 = temp_v0->unk_00;
@@ -283,7 +308,7 @@ void func_84376C90(unk_D_800FCB18* arg0, unk_D_800FCB18* arg1, u8 arg2) {
     }
 }
 
-void func_84376E40(unk_D_800FCB18* arg0, unk_D_800FCB18* arg1) {
+void BattleAI_CalcDamageValue(unk_D_800FCB18* arg0, unk_D_800FCB18* arg1) {
     u8 tmp = D_843C6148.unk_01;
 
     if (tmp == 7) {
@@ -308,18 +333,18 @@ void func_84376E40(unk_D_800FCB18* arg0, unk_D_800FCB18* arg1) {
     }
 }
 
-u16 func_84376F68(unk_D_800FCB18* arg0, unk_D_800FCB18* arg1, u8 arg2, u8 arg3) {
-    if (func_84376920(arg0, arg1, arg2) >= (0xE6 - (D_843C5564->unk_04 / 2))) {
+u16 BattleAI_SimulateDamage(unk_D_800FCB18* arg0, unk_D_800FCB18* arg1, u8 arg2, u8 arg3) {
+    if (BattleAI_CalcCriticalChance(arg0, arg1, arg2) >= (0xE6 - (D_843C5564->unk_04 / 2))) {
         D_843C6144 = 1;
     } else {
         D_843C6144 = 0;
     }
 
-    func_84376C90(arg0, arg1, arg2);
-    func_84376E40(arg0, arg1);
+    BattleAI_InitDamageSimContext(arg0, arg1, arg2);
+    BattleAI_CalcDamageValue(arg0, arg1);
 
     if (arg3 != 0) {
-        func_84376B9C(arg0, arg1);
+        BattleAI_ApplyTypeEffectiveness(arg0, arg1);
     }
 
     func_84376B38();
@@ -5888,7 +5913,7 @@ label1:
     return sp44;
 }
 
-void func_84384124(void) {
+void BattleAI_Init(void) {
     u8 i;
     u8 temp_a0;
 
@@ -5900,7 +5925,7 @@ void func_84384124(void) {
     }
 }
 
-s32 func_843841C4(s32 arg0, s32 arg1) {
+s32 BattleAI_ChooseMove(s32 arg0, s32 arg1) {
     unk_D_800FCB18* temp_s4 = &D_84390010[arg0]->unk_654.unk_38;
     unk_D_800FCB18* temp_s6 = &D_84390010[1 - arg0]->unk_654.unk_38;
     s32 var_s2 = 0;

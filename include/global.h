@@ -183,7 +183,7 @@ typedef struct GraphNode {
     /* 0x03 */ u8 unk_03;
     /* 0x04 */ struct GraphNode* unk_04;
     /* 0x08 */ struct GraphNode* unk_08;
-    /* 0x0C */ struct unk_D_86002F34_00C* unk_0C;
+    /* 0x0C */ struct GraphNode* unk_0C;
     /* 0x10 */ func_D_86002F34_000_010 unk_10;
     /* 0x14 */ void* unk_14;
 } GraphNode; // size = 0x18

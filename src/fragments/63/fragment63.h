@@ -174,7 +174,7 @@ typedef struct unk_D_84B17550 {
 extern unk_D_8006FF00 D_84B17620[];
 extern unk_D_8006FF00 D_84B186C0[];
 
-void func_84B00020(void);
+void BattleShell_Begin(void);
 void func_84B000F0(void);
 void func_84B001D8(void);
 void func_84B00280(void);

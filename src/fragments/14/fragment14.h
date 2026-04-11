@@ -3,7 +3,7 @@
 
 #include "global.h"
 #include "src/controller.h"
-
+void SushiGoRoundMinigame_Entry(s32 arg0, s32 arg1);
 typedef struct unk_D_868084D8_038 {
     /* 0x000 */ s16 unk_000;
     /* 0x002 */ s16 unk_002;

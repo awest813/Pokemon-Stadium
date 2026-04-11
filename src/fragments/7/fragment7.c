@@ -20,28 +20,27 @@
 #include "src/memory.h"
 #include "src/stage_loader.h"
 
-typedef struct unk_D_861054C0 {
-    /* 0x000 */ s16 unk_000;
-    /* 0x002 */ s16 unk_002;
+typedef struct ClefairyActor {
+    /* 0x000 */ char pad[0x168];
+    /* 0x168 */ s16 actionState;
+    /* 0x16A */ u16 actionParam;
+} ClefairyActor;
+
+typedef struct ClefairyPlayerState {
+    /* 0x000 */ s16 controlType;
+    /* 0x002 */ s16 playerIndex;
     /* 0x004 */ char pad4[4];
-    /* 0x008 */ unk_D_86002F58_004_000 unk_008;
-    /* 0x170 */ s16 unk_170;
-    /* 0x172 */ u16 unk_172;
-    /* 0x174 */ s16 unk_174[0xC];
-    /* 0x18C */ s16 unk_18C;
-    /* 0x18E */ s16 unk_18E[0xC];
-    /* 0x1A6 */ s16 unk_1A6;
-    /* 0x1A8 */ s16 unk_1A8;
-    /* 0x1AA */ s16 unk_1AA;
-    /* 0x1AC */ s16 unk_1AC;
-    /* 0x1AE */ s16 unk_1AE;
+    /* 0x008 */ unk_D_86002F58_004 actor;
+    /* 0x178 */ char pad178[0x30];
+    /* 0x1A8 */ s16 currentScore;
+    /* 0x1AA */ char pad1AA[0x6];
     /* 0x1B0 */ s16 unk_1B0;
-    /* 0x1B2 */ s16 unk_1B2;
+    /* 0x1B2 */ char pad1B2[2];
     /* 0x1B4 */ s16 unk_1B4;
     /* 0x1B6 */ char pad1B6[2];
     /* 0x1B8 */ f32 unk_1B8;
     /* 0x1BC */ f32 unk_1BC;
-} unk_D_861054C0; // size = 0x1C0
+} ClefairyPlayerState;
 
 typedef struct unk_D_86105EA0 {
     /* 0x000 */ char unk000[0x4];
@@ -722,7 +721,7 @@ void func_86101718(s32 arg0) {
     }
 }
 
-void func_861017E4(s32 arg0) {
+void ClefairyMinigame_Update(s32 arg0) {
     func_86100AEC();
 
     switch (arg0) {
@@ -786,7 +785,7 @@ void func_861017E4(s32 arg0) {
     D_86105496 += 1;
 }
 
-s32 func_8610197C(void) {
+s32 ClefairyMinigame_StartScreen(void) {
     s32 var_s0;
     u16 temp_v1;
     s32 i;
@@ -833,7 +832,7 @@ s32 func_8610197C(void) {
             return -1;
         }
 
-        func_861017E4(D_86105498);
+        ClefairyMinigame_Update(D_86105498);
     }
 
     return 0;
@@ -879,7 +878,7 @@ void func_86101BB4(void) {
                 break;
         }
 
-        func_861017E4(D_86105498);
+        ClefairyMinigame_Update(D_86105498);
     }
 }
 
@@ -1633,7 +1632,7 @@ void func_86103868(void) {
             break;
         }
 
-        func_861017E4(D_86105498);
+        ClefairyMinigame_Update(D_86105498);
     }
 }
 
@@ -1646,11 +1645,11 @@ void func_86103AB4(void) {
     while ((D_8780FC94 != 0) || (func_8004BFB0() != 1)) {
         func_8004BC84(0x1E, 1);
         func_8004BC84(0x20, 0);
-        func_861017E4(D_86105498);
+        ClefairyMinigame_Update(D_86105498);
     }
 
     for (i = 0; i < 2; i++) {
-        func_861017E4(D_86105498);
+        ClefairyMinigame_Update(D_86105498);
     }
 
     func_87802EB8(1);
@@ -1691,7 +1690,7 @@ void func_86103AB4(void) {
     }
 
     for (j = 0; j < 0x5A; j++) {
-        func_861017E4(D_86105498);
+        ClefairyMinigame_Update(D_86105498);
     }
 }
 
@@ -1702,22 +1701,22 @@ void func_86103D28(void) {
     Stage_FadeIn(0x1E);
 
     for (i = 0; i < 30; i++) {
-        func_861017E4(D_86105498);
+        ClefairyMinigame_Update(D_86105498);
     }
 }
 
-void func_86103D88(s32 arg0) {
+void ClefairyMinigame_ReadyWait(s32 arg0) {
     s32 i;
 
     D_86105498 = 0x12;
 
     for (i = 0; i < arg0; i++) {
         func_86100AEC();
-        func_861017E4(D_86105498);
+        ClefairyMinigame_Update(D_86105498);
     }
 }
 
-void func_86103DEC(void) {
+void ClefairyMinigame_ExitLoop(void) {
     D_86105498 = 0x11;
 
     while (D_8780FC96 == 0) {
@@ -1727,11 +1726,11 @@ void func_86103DEC(void) {
                 D_861054A8 = 0;
             }
         }
-        func_861017E4(D_86105498);
+        ClefairyMinigame_Update(D_86105498);
     }
 }
 
-void func_86103E9C(void) {
+void ClefairyMinigame_Init(void) {
     s32 i;
     MemoryBlock* temp_v0 = func_80002D10(main_pool_get_available(), 0);
 
@@ -1843,7 +1842,7 @@ void func_8610426C(void) {
     Stage_AdvanceFrame();
 }
 
-s32 func_86104380(void) {
+s32 ClefairyMinigame_DetermineWinner(void) {
     s32 var_s4;
     s32 var_v1;
     s32 i;
@@ -1880,7 +1879,7 @@ s32 func_86104380(void) {
     return var_s4;
 }
 
-void func_86104474(UNUSED s32 arg0, UNUSED s32 arg1) {
+void ClefairyMinigame_Entry(UNUSED s32 arg0, UNUSED s32 arg1) {
     RenderContext* sp24;
 
     main_pool_push_state('MINI');
@@ -1894,14 +1893,14 @@ void func_86104474(UNUSED s32 arg0, UNUSED s32 arg1) {
 
     func_80004454((((u32)D_8D000000 & 0x0FF00000) >> 0x14) - 0x10, _5C7A70_ROM_START, _5C7A70_ROM_END);
 
-    func_86103E9C();
+    ClefairyMinigame_Init();
     func_878029C0();
     Stage_SetRenderContext(sp24);
     func_8610426C();
 
-    if (func_8610197C() != -1) {
+    if (ClefairyMinigame_StartScreen() != -1) {
         func_8004B9C4(0x3C);
-        func_86103D88(5);
+        ClefairyMinigame_ReadyWait(5);
         D_861054A4 = 0xA;
         func_86100170();
         func_86101BB4();
@@ -1909,9 +1908,9 @@ void func_86104474(UNUSED s32 arg0, UNUSED s32 arg1) {
         func_86103868();
 
         if (D_8780FC92 == 0) {
-            D_861054A2 = func_86104380();
+            D_861054A2 = ClefairyMinigame_DetermineWinner();
             func_86103AB4();
-            func_86103DEC();
+            ClefairyMinigame_ExitLoop();
         }
     }
 
