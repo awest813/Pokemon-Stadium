@@ -6,7 +6,6 @@
 extern s32 D_81004170;
 extern s16 D_81004B60;
 
-#ifdef NON_MATCHING
 void func_81002530(Gfx* gfx, DisplayListAddresses* addresses) {
     s16 temp_t3;
     s16 temp_t4;
@@ -49,10 +48,6 @@ void func_81002530(Gfx* gfx, DisplayListAddresses* addresses) {
     }
     gSPEndDisplayList(gfx++);
 }
-#else
-void func_81002530(Gfx*, DisplayListAddresses*);
-#pragma GLOBAL_ASM("asm/us/nonmatchings/fragments/31/fragment31_2577F0/func_81002530.s")
-#endif
 
 void func_810027E0(s32 arg0, DisplayListState* state) {
     Gfx* gfx;

@@ -27,21 +27,22 @@ typedef struct unk_func_80026268_arg0_000 {
 } unk_func_80026268_arg0_000; // size = 0x2
 
 /*
- * PartyPokemon
- * Original symbol: unk_func_80026268_arg0
- * 
- * Summary:
- *     Persistent data for a Pokemon in a player's party.
+ * Party Pokemon (party slot). Original symbol: unk_func_80026268_arg0
+ * sizeof == 0x54 (see unk_D_800AE540_0004 unk_01C stride 0x1F8 / 6).
  */
-typedef struct PartyPokemon {
-    /* 0x00 */ u16 species;
-    /* 0x02 */ u16 hp;
-    /* 0x04 */ u8 unk_04;
-    /* 0x05 */ u8 status;
-    /* 0x06 */ u8 sleepCycles;
+typedef struct unk_func_80026268_arg0 {
+    /* 0x00 */ arg1_func_80010CA8 unk_00;
+    union {
+        s16 unk_02;
+        struct {
+            u8 unk_04;
+            u8 unk_05;
+        };
+    };
+    /* 0x06 */ u8 unk_06;
     /* 0x07 */ u8 unk_07;
     /* 0x08 */ u8 unk_08;
-    /* 0x09 */ u8 moves[4];
+    /* 0x09 */ u8 unk_09[4];
     /* 0x0D */ u8 pad0D;
     /* 0x0E */ u16 unk_0E;
     /* 0x10 */ u32 unk_10;
@@ -51,21 +52,26 @@ typedef struct PartyPokemon {
     /* 0x1A */ u16 unk_1A;
     /* 0x1C */ u16 unk_1C;
     /* 0x1E */ u16 unk_1E;
-    /* 0x20 */ u8 pp[4];
-    /* 0x24 */ u8 level;
-    /* 0x25 */ u8 unk_25;
-    /* 0x26 */ u16 maxHP;
-    /* 0x28 */ u16 attack;
-    /* 0x2A */ u16 defense;
-    /* 0x2C */ u16 speed;
-    /* 0x2E */ u16 special;
+    /* 0x20 */ u8 unk_20[4];
+    union {
+        u16 unk_24;
+        struct {
+            u8 unk_24_lo;
+            u8 unk_25;
+        };
+    };
+    /* 0x26 */ u16 unk_26;
+    /* 0x28 */ u16 unk_28;
+    /* 0x2A */ u16 unk_2A;
+    /* 0x2C */ u16 unk_2C;
+    /* 0x2E */ u16 unk_2E;
     /* 0x30 */ u8 unk_30[11];
     /* 0x3B */ u8 unk_3B[11];
     /* 0x46 */ u8 unk_46[11];
     /* 0x51 */ u8 pad51;
     /* 0x52 */ u8 unk_52;
     /* 0x53 */ u8 unk_53;
-} PartyPokemon; // size = 0x54
+} unk_func_80026268_arg0;
 
 typedef struct unk_D_800AE540_0874 {
     /* 0x000 */ u16 unk_000;

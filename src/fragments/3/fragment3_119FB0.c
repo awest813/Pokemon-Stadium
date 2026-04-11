@@ -14,7 +14,6 @@ void func_87901620(void) {
     D_8140E734 = 0;
 }
 
-#ifdef NON_MATCHING
 s32 func_8790168C(void) {
     s32 i;
     s32 var_v0 = D_8140E734;
@@ -47,9 +46,6 @@ s32 func_8790168C(void) {
 
     return (s32)var_v1;
 }
-#else
-#pragma GLOBAL_ASM("asm/us/nonmatchings/fragments/3/fragment3_119FB0/func_8790168C.s")
-#endif
 
 void func_87901720(unk_D_8140E728* arg0) {
     arg0->unk_28 = 0;

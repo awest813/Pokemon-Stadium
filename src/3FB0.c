@@ -432,7 +432,7 @@ unk_func_800041C0* LBALoader_Init(unk_func_800041C0* arg0, s32 arg1, s32 arg2) {
     return arg0;
 }
 
-unk_func_800041C0* LBALoader_InitFromOffset(unk_func_800041C0* arg0, u32 arg1, u32 offset, u32 size) {
+unk_func_800041C0* func_800040EC(unk_func_800041C0* arg0, u32 arg1, u32 offset, u32 size) {
     s32 sp2C;
     s32 sp28;
     s32 sp24;
@@ -655,7 +655,7 @@ Fragment* Archive_ROM_LoadFile(BinArchive* arg0, BinArchiveFile* arg1) {
 void* Archive_LBA_LoadFile(BinArchive* arg0, BinArchiveFile* arg1) {
     unk_func_800041C0 sp1C;
 
-    LBALoader_InitFromOffset(&sp1C, arg0->unk_04, arg1->offset, arg1->size);
+    func_800040EC(&sp1C, arg0->unk_04, arg1->offset, arg1->size);
     return LBA_LoadAndDecompress(&sp1C, 0);
 }
 

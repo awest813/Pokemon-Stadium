@@ -21,7 +21,6 @@ typedef struct TextureState {
     /* 0x18 */ Gfx* gfx;
 } TextureState; // size = 0x1C
 
-#ifdef NON_MATCHING
 void func_81002830(Gfx* gfx, unk_arg1_func_81002830* arg1) {
     s16 temp_v0;
     s32 var_a3;
@@ -35,10 +34,6 @@ void func_81002830(Gfx* gfx, unk_arg1_func_81002830* arg1) {
     }
     gSPEndDisplayList(gfx++);
 }
-#else
-void func_81002830(s32, s32);
-#pragma GLOBAL_ASM("asm/us/nonmatchings/fragments/31/fragment31_257AF0/func_81002830.s")
-#endif
 
 void func_81002968(s32 arg0, unk_arg1_func_81002968* arg1) {
     s32 temp_v0;

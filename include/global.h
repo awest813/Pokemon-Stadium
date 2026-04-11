@@ -24,6 +24,12 @@ typedef union arg1_func_80010CA8 {
         /* 0x02 */ s8 unk_02;
         /* 0x03 */ s8 unk_03;
     };
+    struct {
+        /* 0x00 */ u8 unk_00_u8;
+        /* 0x01 */ u8 unk_01;
+        /* 0x02 */ u8 unk_02_u8;
+        /* 0x03 */ u8 unk_03_u8;
+    };
     u32 raw;
 } arg1_func_80010CA8; // size = 0x4
 

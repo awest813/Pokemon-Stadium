@@ -365,6 +365,7 @@ extract:
 	$(V)$(RM) -r asm/$(VERSION) assets/$(VERSION)
 	$(V)$(CAT) yamls/$(VERSION)/header.yaml yamls/$(VERSION)/rom.yaml > $(SPLAT_YAML)
 	$(V)$(SPLAT) $(SPLAT_FLAGS) $(SPLAT_YAML)
+	$(V)$(PYTHON) tools/patch_ld_20470_split.py
 	$(V)$(EXTRACT_ASSETS)
 
 lib: $(ULTRALIB_LIB)

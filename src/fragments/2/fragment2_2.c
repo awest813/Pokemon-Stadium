@@ -1339,10 +1339,9 @@ void func_87802E1C(void) {
     }
 }
 
-#ifdef NON_MATCHING
-void func_87802E58(void) {
-    static u32 D_8780FE38;
+static u32 D_8780FE38;
 
+void func_87802E58(void) {
     u32 v0 = D_800A6CF4.unk_20;
 
     if (D_8780FCA1 == 0) {
@@ -1355,10 +1354,6 @@ void func_87802E58(void) {
 
     D_8780FE38 = v0;
 }
-#else
-static u32 D_8780FE38;
-#pragma GLOBAL_ASM("asm/us/nonmatchings/fragments/2/fragment2_2/func_87802E58.s")
-#endif
 
 void func_87802EB8(s16 arg0) {
     switch (arg0) {

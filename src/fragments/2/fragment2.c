@@ -190,8 +190,8 @@ s16 D_87806338 = -1;
 u32* D_8780633C[] = { D_878067F0, D_87807690, D_87808530, D_878093D0 };
 u32* D_8780634C[] = { D_8780B110, D_8780BFB0, D_8780CE50, D_8780DCF0, D_8780A270 };
 
-#ifdef NON_MATCHING
-// Matches when D_8780FA30, D_8780FA40, D_8780FA68 are static
+// Original build used bss placement for D_8780FA30 / D_8780FA40 / D_8780FA68 that can differ from this TU-local
+// layout; kept as common globals (fragment2.h) for other Kids Club fragments.
 void func_878010C8(s16 arg0) {
     s32 i;
 
@@ -222,9 +222,6 @@ void func_878010C8(s16 arg0) {
 
     func_87800020();
 }
-#else
-#pragma GLOBAL_ASM("asm/us/nonmatchings/fragments/2/fragment2/func_878010C8.s")
-#endif
 
 void func_8780118C(s16 arg0, s16 arg1, s16 arg2, s16 arg3) {
     gDPPipeSync(gDisplayListHead++);

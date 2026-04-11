@@ -23,7 +23,6 @@ extern s32 D_81004BA0;
 extern s32 D_81004BB0;
 extern char D_81004BB8[0x28];
 
-#ifdef NON_MATCHING
 void func_81002DC0(Gfx* gfx, s32 arg1, s32 arg2) {
     {    Gfx *_gfx = (Gfx *)(gfx++);    _gfx->words.w0 = 0xE7000000;    _gfx->words.w1 = 0;    }
     {    Gfx *_gfx = (Gfx *)(gfx++);    _gfx->words.w0 = 0xD7000002;    _gfx->words.w1 = -1;    }
@@ -43,10 +42,6 @@ void func_81002DC0(Gfx* gfx, s32 arg1, s32 arg2) {
     {    Gfx *_gfx = (Gfx *)(gfx++);    _gfx->words.w0 = 0xF2000000;    _gfx->words.w1 = 0x7C0FC;    }
     gSPEndDisplayList(gfx++);
 }
-#else
-void func_81002DC0(Gfx*, s32, s32);
-#pragma GLOBAL_ASM("asm/us/nonmatchings/fragments/31/fragment31_258080/func_81002DC0.s")
-#endif
 
 void func_81002F38(s32 arg0, DisplayListState* state) {
     Gfx* gfx;
@@ -66,7 +61,6 @@ void func_81002F38(s32 arg0, DisplayListState* state) {
     }
 }
 
-#ifdef NON_MATCHING
 void func_81002FC0(Gfx* gfx, s32 arg1, s32 arg2) {
     {    Gfx *_gfx = (Gfx *)(gfx++);    _gfx->words.w0 = 0xE7000000;    _gfx->words.w1 = 0;    }
     {    Gfx *_gfx = (Gfx *)(gfx++);    _gfx->words.w0 = 0xD7000002;    _gfx->words.w1 = -1;    }
@@ -86,10 +80,6 @@ void func_81002FC0(Gfx* gfx, s32 arg1, s32 arg2) {
     {    Gfx *_gfx = (Gfx *)(gfx++);    _gfx->words.w0 = 0xF2000000;    _gfx->words.w1 = 0x7C0FC;    }
     gSPEndDisplayList(gfx++);
 }
-#else
-void func_81002FC0(Gfx*, s32, s32);
-#pragma GLOBAL_ASM("asm/us/nonmatchings/fragments/31/fragment31_258080/func_81002FC0.s")
-#endif
 
 void func_81003138(s32 arg0, DisplayListState* state) {
     Gfx* gfx;
@@ -109,7 +99,6 @@ void func_81003138(s32 arg0, DisplayListState* state) {
     }
 }
 
-#ifdef NON_MATCHING
 void func_810031C0(Gfx* gfx, s32 arg1, s32 arg2) {
     {    Gfx *_gfx = (Gfx *)(gfx++);    _gfx->words.w0 = 0xE7000000;    _gfx->words.w1 = 0;    }
     {    Gfx *_gfx = (Gfx *)(gfx++);    _gfx->words.w0 = 0xD7000002;    _gfx->words.w1 = -1;    }
@@ -129,10 +118,6 @@ void func_810031C0(Gfx* gfx, s32 arg1, s32 arg2) {
     {    Gfx *_gfx = (Gfx *)(gfx++);    _gfx->words.w0 = 0xF2000000;    _gfx->words.w1 = 0x7C0FC;    }
     gSPEndDisplayList(gfx++);
 }
-#else
-void func_810031C0(Gfx*, s32, s32);
-#pragma GLOBAL_ASM("asm/us/nonmatchings/fragments/31/fragment31_258080/func_810031C0.s")
-#endif
 
 void func_81003338(s32 arg0, DisplayListState* state) {
     Gfx* gfx;
@@ -152,7 +137,6 @@ void func_81003338(s32 arg0, DisplayListState* state) {
     }
 }
 
-#ifdef NON_MATCHING
 void func_810033C0(Gfx* gfx, s32 arg1, s32 arg2) {
     {    Gfx *_gfx = (Gfx *)(gfx++);    _gfx->words.w0 = 0xE7000000;    _gfx->words.w1 = 0;    }
     {    Gfx *_gfx = (Gfx *)(gfx++);    _gfx->words.w0 = 0xD7000002;    _gfx->words.w1 = -1;    }
@@ -172,10 +156,6 @@ void func_810033C0(Gfx* gfx, s32 arg1, s32 arg2) {
     {    Gfx *_gfx = (Gfx *)(gfx++);    _gfx->words.w0 = 0xF2000000;    _gfx->words.w1 = 0x7C0FC;    }
     gSPEndDisplayList(gfx++);
 }
-#else
-void func_810033C0(Gfx*, s32, s32);
-#pragma GLOBAL_ASM("asm/us/nonmatchings/fragments/31/fragment31_258080/func_810033C0.s")
-#endif
 
 void func_81003538(s32 arg0, DisplayListState* state) {
     Gfx* gfx;
@@ -195,8 +175,6 @@ void func_81003538(s32 arg0, DisplayListState* state) {
     }
 }
 
-#ifdef NON_MATCHING
-// Matching, needs more data
 void func_810035C0(s32 arg0, DisplayListState* state) {
     static u8 D_81004190 = 0;
     s32 temp_a1;
@@ -214,12 +192,7 @@ void func_810035C0(s32 arg0, DisplayListState* state) {
         D_81004190 &= 0x7F;
     }
 }
-#else
-void func_810035C0(s32, DisplayListState*);
-#pragma GLOBAL_ASM("asm/us/nonmatchings/fragments/31/fragment31_258080/func_810035C0.s")
-#endif
 
-#ifdef NON_MATCHING
 void func_81003678(s32 arg0, DisplayListState* state) {
     static u8 D_81004194 = 0;
     static u8 D_81004198 = 0;
@@ -274,10 +247,6 @@ void func_81003678(s32 arg0, DisplayListState* state) {
         }
     }
 }
-#else
-void func_81003678(s32, DisplayListState*);
-#pragma GLOBAL_ASM("asm/us/nonmatchings/fragments/31/fragment31_258080/func_81003678.s")
-#endif
 
 void func_810038D0(Gfx* gfx) {
     s32 temp_a3;
@@ -313,7 +282,6 @@ s32 func_81003A24(s8* arg0) {
     return var_v1;
 }
 
-#ifdef NON_MATCHING
 void func_81003A54(Gfx* gfx) {
     u8 sp4D;
     char* sp34;
@@ -354,9 +322,6 @@ void func_81003A54(Gfx* gfx) {
     {    Gfx *_gfx = (Gfx *)(gfx++);    _gfx->words.w0 = 0xDF000000;    _gfx->words.w1 = 0;    }
     D_81004BB0 += 1;
 }
-#else
-#pragma GLOBAL_ASM("asm/us/nonmatchings/fragments/31/fragment31_258080/func_81003A54.s")
-#endif
 
 void func_81003CF0(s32 arg0, DisplayListState* state) {
     Gfx* gfx;

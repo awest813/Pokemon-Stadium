@@ -103,8 +103,9 @@ u32* ROM_AllocAndCopy(u8* arg0, s32 arg1, u32 arg2, s32 arg3);
 void* ROM_LoadAndDecompress(u8* romStart, u8* romEnd, s32 arg2, s32 arg3);
 void* LBA_LoadAndDecompress(unk_func_800041C0* arg0, s32 arg1);
 unk_func_800041C0* LBALoader_Init(unk_func_800041C0* arg0, s32 arg1, s32 arg2);
-unk_func_800041C0* LBALoader_InitFromOffset(unk_func_800041C0* arg0, u32 arg1, u32 offset, u32 size);
 void func_800041C0(s32 arg0, s32 arg1, s32 arg2);
+unk_func_800041C0* func_800040EC(unk_func_800041C0* arg0, u32 arg1, u32 offset, u32 size);
+#define LBALoader_InitFromOffset func_800040EC
 void func_80004200(u32 block_addr, u32 addr);
 u8* Memmap_LoadAndMapSegment(s32 id, u8* rom_start, u8* rom_end, s32 arg3);
 MainPoolBlock* func_800042E0(s32 arg0, s32 arg1, s32 arg2, s32 arg3);

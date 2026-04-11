@@ -685,7 +685,7 @@ void func_8001B834(unk_func_8001B1FC* arg0) {
         if (var_v0 >= 9) {
             var_v0 = 8;
         }
-        func_8001C6AC(0, i, arg0->unk_08, var_v0, var_s2, arg0->unk_04, 0x200000);
+        func_8001C6AC(0, i, arg0->unk_08, var_v0, arg0->unk_28->img_p + var_s2, arg0->unk_04, 0x200000);
         var_s2 += arg0->unk_04 * 0x10;
     }
 

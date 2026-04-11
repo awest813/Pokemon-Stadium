@@ -13,10 +13,10 @@ typedef struct ret_func_unk_gFragmentLoader {
     /* 0x04 */ char unk04[0x4];
     /* 0x08 */ unk_D_86002F34** unk_08;
     /* 0x0C */ char unk0C[0x8];
-    /* 0x14 */ func_unk_gFragmentLoader unk_14;
+    /* 0x14 */ func_unk_D_800ABE10 unk_14;
 } ret_func_unk_gFragmentLoader;
 
-unk_gFragmentLoader gFragmentLoader;
+unk_D_800ABE10 gFragmentLoader;
 
 void func_80018C40(unk_D_86002F34* arg0, arg1_func_80010CA8 arg1) {
     s32 i;
@@ -108,9 +108,9 @@ Fragment* Archive_LoadFile_Internal(MainPoolState* arg0, s32 start, s32 end, PER
         if (((u32*)arg3->magic)[0] == 'PERS' && (((u32*)arg3->magic)[1] == '-SZP')) {
             var_v1 = LoadSZP(arg0, arg3, arg3);
         } else if (((u32*)arg3->magic)[0] == 'PRES' && (((u32*)arg3->magic)[1] == 'JPEG')) {
-            var_v1 = func_80018DE8(arg0, (PRESJPEG*)arg3, (PRESJPEG*)arg3);
+            var_v1 = LoadJPEG(arg0, (PRESJPEG*)arg3, (PRESJPEG*)arg3);
         } else {
-            var_v1 = func_80018EC4(arg0, arg3, 0, size);
+            var_v1 = LoadRaw(arg0, arg3, 0, size);
         }
     }
 
@@ -134,9 +134,9 @@ Fragment* func_80018FF4(MainPoolState* arg0, unk_func_800041C0* arg1, PERSSZP* a
         if (((u32*)temp_s1->magic)[0] == 'PERS' && (((u32*)temp_s1->magic)[1] == '-SZP')) {
             sp38 = LoadSZP(arg0, arg2, temp_s1);
         } else if (((u32*)temp_s1->magic)[0] == 'PRES' && (((u32*)temp_s1->magic)[1] == 'JPEG')) {
-            sp38 = func_80018DE8(arg0, (PRESJPEG*)arg2, (PRESJPEG*)temp_s1);
+            sp38 = LoadJPEG(arg0, (PRESJPEG*)arg2, (PRESJPEG*)temp_s1);
         } else {
-            sp38 = func_80018EC4(arg0, arg2, arg1->unk_04, arg1->unk_08);
+            sp38 = LoadRaw(arg0, arg2, arg1->unk_04, arg1->unk_08);
         }
     }
 
@@ -197,13 +197,13 @@ unk_D_86002F30* func_80019328(MainPoolState* arg0, Fragment* arg1, arg1_func_800
     ret_func_unk_gFragmentLoader* (*func)(s32, s32) = (ret_func_unk_gFragmentLoader * (*)(s32, s32))arg1;
 
     temp_v0 = func(0, 0);
-    temp_v0->unk_14 = (func_unk_gFragmentLoader)arg1;
+    temp_v0->unk_14 = (func_unk_D_800ABE10)arg1;
 
     for (i = 0; i < temp_v0->unk_03; i++) {
         temp_v0_2 = (unk_D_86002F34*)process_geo_layout((MemoryBlock*)arg0, temp_v0->unk_08[i]);
 
         if (temp_v0_2->unk_00.unk_00 == 0xE) {
-            temp_v0_2->unk_28 = (func_unk_gFragmentLoader)arg1;
+            temp_v0_2->unk_28 = (func_unk_D_800ABE10)arg1;
             if (arg2.raw != 0) {
                 func_80018C40(temp_v0_2, arg2);
             }
@@ -269,10 +269,11 @@ void func_80019514(unk_func_80019600* arg0) {
     arg0->size = (s32)temp_s3->listHeadL + 1;
 }
 
-void FragmentLoader_ThreadMsgLoop(UNUSED void* arg0) {
+void func_80019600(void* arg0) {
     OSMesg sp38;
     unk_func_80019600* sp34;
 
+    (void)arg0;
     __osSetFpcCsr(0x01000C01);
 
     while (true) {

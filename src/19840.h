@@ -49,6 +49,7 @@ typedef struct unk_D_800ABE10 {
 } unk_D_800ABE10; // size >= 0xA18
 
 extern unk_D_800ABE10 gFragmentLoader;
+#define D_800ABE10 gFragmentLoader
 
 void func_80018C40(unk_D_86002F34* arg0, arg1_func_80010CA8 arg1);
 Fragment* LoadJPEG(MainPoolState* arg0, PRESJPEG* arg1, PRESJPEG* arg2);
@@ -64,7 +65,7 @@ unk_D_86002F30* func_80019328(MainPoolState* arg0, Fragment* arg1, arg1_func_800
 void func_80019420(MainPoolState* arg0, arg1_func_80019420* arg1);
 void func_80019484(unk_func_80019600* arg0);
 void func_80019514(unk_func_80019600* arg0);
-void FragmentLoader_ThreadMsgLoop(UNUSED void* arg0);
+void func_80019600(void* arg0);
 void FragmentLoader_InitThread(void);
 unk_D_86002F58_004_000_010* func_80019760(u32 arg0);
 void func_8001987C(void);

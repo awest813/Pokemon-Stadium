@@ -13,12 +13,6 @@ typedef struct unk_D_810047E0 {
     /* 0x2A */ char unk2A[0x2];
 } unk_D_810047E0; // size = 0x2C
 
-typedef struct unk_arg2_func_81001D80 {
-    /* 0x00 */ s32 unk_00;
-    /* 0x04 */ char unk04[0x4];
-    /* 0x08 */ s32 unk_08;
-} unk_arg2_func_81001D80; // size = 0xC
-
 typedef struct unk_D_81003FE0 {
     /* 0x00 */ s32 unk_00;
     /* 0x04 */ s32 unk_04;
@@ -38,8 +32,6 @@ extern f32 D_810040DC[12];
 extern Vec3f D_81004160;
 extern s32 D_81004170;
 
-// Matching, just needs data to be done
-#ifdef NON_MATCHING
 void func_810005F0(unk_D_86002F58_004_000* arg0, s32 arg1) {
     u8 var_v0 = arg0->unk_0A6;
     s32 pad[2];
@@ -63,9 +55,6 @@ void func_810005F0(unk_D_86002F58_004_000* arg0, s32 arg1) {
     D_810047E0[var_v0 & 1][arg1].velocity = sp44;
     D_810047E0[var_v0 & 1][arg1].scale = sp38;
 }
-#else
-#pragma GLOBAL_ASM("asm/us/nonmatchings/fragments/31/fragment31_2558B0/func_810005F0.s")
-#endif
 
 void func_810007A8(unk_D_86002F58_004_000* arg0) {
     s32 i;
@@ -80,7 +69,6 @@ void func_810007F8(void) {
     D_81004B54 = 0;
 }
 
-#ifdef NON_MATCHING
 void func_8100080C(unk_D_810047E0* arg0) {
     s32 var_s1;
     Vec3f sp90;
@@ -222,11 +210,7 @@ loop_11:
         }
     }
 }
-#else
-#pragma GLOBAL_ASM("asm/us/nonmatchings/fragments/31/fragment31_2558B0/func_8100080C.s")
-#endif
 
-#ifdef NON_MATCHING
 void func_81000E78(unk_D_810047E0* arg0) {
     s16 temp_a0;
     unk_D_81003FE0* var_v1;
@@ -268,10 +252,9 @@ void func_81000E78(unk_D_810047E0* arg0) {
                 func_8100080C(arg0);
                 return;
             }
-        default:
-            return;
         }
-        break;
+        return;
+
     case 0x92:
         if ((guRandom() % 60) == 0) {
             func_8100080C(arg0);
@@ -301,14 +284,11 @@ void func_81000E78(unk_D_810047E0* arg0) {
         break;
     }
 }
-#else
-#pragma GLOBAL_ASM("asm/us/nonmatchings/fragments/31/fragment31_2558B0/func_81000E78.s")
-#endif
 
-Gfx* func_810010BC(Gfx*, unk_D_810047E0*, unk_arg2_func_81001D80*, s16);
+Gfx* func_810010BC(Gfx*, unk_D_810047E0*, DisplayListAddresses*, s16);
 #pragma GLOBAL_ASM("asm/us/nonmatchings/fragments/31/fragment31_2558B0/func_810010BC.s")
 
-Gfx* func_81001D80(Gfx* gfx, unk_D_810047E0* arg1, unk_arg2_func_81001D80* arg2, s16 arg3) {
+Gfx* func_81001D80(Gfx* gfx, unk_D_810047E0* arg1, DisplayListAddresses* arg2, s16 arg3) {
     s32 i;
 
     for (i = 0; i < 10; i++, arg1++) {
@@ -319,9 +299,92 @@ Gfx* func_81001D80(Gfx* gfx, unk_D_810047E0* arg1, unk_arg2_func_81001D80* arg2,
     return gfx;
 }
 
-#pragma GLOBAL_ASM("asm/us/nonmatchings/fragments/31/fragment31_2558B0/func_81001E24.s")
+s32* func_81001E24(s32 arg0, DisplayListState* arg1) {
+    DisplayListAddresses* addresses;
+    Gfx* tail;
+    s32 hit;
+    s16 temp_a2;
+    s32 var_a1;
+    s16 mode;
+    s16 row;
+    s32 iter;
+    u8* vp;
+    unk_D_810047E0* bank;
+    unk_D_810047E0* slot;
 
-#ifdef NON_MATCHING
+    addresses = arg1->addresses;
+    if (arg0 != 2) {
+        D_81004B54 += 1;
+        return &D_81004B54;
+    }
+
+    tail = (Gfx*)func_80005F5C(D_81004B54 == 0 ? 0x500 : 0x80);
+    arg1->gfx = tail;
+
+    if (D_8006F09C->unk_0A6 == 0xFF) {
+        if (D_8006F09C->unk_01A == 0x5C) {
+            func_81000E78(D_810047E0[0]);
+            if (D_81004B54 == 0) {
+                tail = func_81001D80(tail, D_810047E0[0], addresses, 0);
+            }
+        } else if (D_8006F09C->unk_01A == 0x6D || D_8006F09C->unk_01A == 0x6E) {
+            hit = 0;
+            var_a1 = (s32)(D_8006F09C->unk_040.unk_08 >> 0x10);
+            temp_a2 = D_810040B8[D_81004B54 % 18];
+            mode = (s16)D_8006F09C->unk_040.unk_00;
+            if (mode != 2) {
+                if (mode != 3) {
+                    if (mode == 4) {
+                        row = *(s16*)((u8*)&D_81003FE2[temp_a2]);
+                        if (((u32)var_a1 >= (u32)row) && ((u32)var_a1 < (u32)(row + 0xF))) {
+                            hit = 1;
+                        }
+                    } else {
+                        row = *(s16*)((u8*)&D_81003FE0[temp_a2]);
+                        if (((u32)var_a1 >= (u32)row) && ((u32)var_a1 < (u32)(row + 0xF))) {
+                            hit = 1;
+                        }
+                    }
+                } else {
+                    vp = (u8*)&D_81003FE0[temp_a2];
+                    for (iter = 0; iter != 6; iter += 2, vp += 2) {
+                        row = *(s16*)(vp + 4);
+                        if (((u32)var_a1 >= (u32)row) && ((u32)var_a1 < (u32)(row + 0xF))) {
+                            hit = 1;
+                        }
+                    }
+                }
+            } else {
+                row = *(s16*)((u8*)&D_81003FEA[temp_a2]);
+                if (((u32)var_a1 >= (u32)row) && ((u32)var_a1 < (u32)(row + 0xF))) {
+                    hit = 1;
+                }
+            }
+            if (hit == 1) {
+                slot = &D_810047E0[0][D_81004B50];
+                if (slot->active == 1) {
+                    tail = func_810010BC(tail, slot, addresses, 0);
+                }
+            }
+        }
+    } else if (D_8006F09C->unk_0A6 == 0xFE) {
+        if (D_81004B54 == 0) {
+            tail = func_81001D80(tail, D_810047E0[0], addresses, 0);
+        }
+    } else if (((s32)D_8006F09C->unk_0A6 < 2) && (D_81004B50 >= 0) && (D_81004B50 < 0xB)) {
+        bank = &D_810047E0[D_8006F09C->unk_0A6 & 1][0];
+        func_81000E78(bank);
+        if (D_81004B54 == 0) {
+            tail = func_81001D80(tail, bank, addresses, (s16)D_8006F09C->unk_0A6);
+        }
+    }
+
+    tail->words.w0 = 0xDF000000;
+    tail->words.w1 = 0;
+    D_81004B54 += 1;
+    return &D_81004B54;
+}
+
 void func_81002174(unk_D_83402EE0_00A* arg0) {
     s32 i;
     s16 var_a1;
@@ -359,11 +422,7 @@ void func_81002174(unk_D_83402EE0_00A* arg0) {
     // FAKE - Stops unroll
     i = 0;
 }
-#else
-#pragma GLOBAL_ASM("asm/us/nonmatchings/fragments/31/fragment31_2558B0/func_81002174.s")
-#endif
 
-#ifdef NON_MATCHING
 void func_81002260(unk_arg0_func_81002260* arg0, unk_arg0_func_81002174* arg1) {
     unk_D_810047E0* temp_v0;
     f32 var_fv0;
@@ -393,6 +452,7 @@ void func_81002260(unk_arg0_func_81002260* arg0, unk_arg0_func_81002174* arg1) {
             var_t0 = (temp_a1->unk_04 | (temp_a1->unk_05 << 8)) & 0xFFFF;
         }
         D_810047E0[0][i].misc = (s16) (temp_a3);
+        temp_v0 = &D_810047E0[0][i];
         switch (arg0->unk_1A) {
         case 0x92:
             var_fv0 = ((f32) D_810047E0[0][i].misc * 0.005f) + 0.1f;
@@ -423,8 +483,5 @@ void func_81002260(unk_arg0_func_81002260* arg0, unk_arg0_func_81002174* arg1) {
         temp_v0->position.x = (f32) ((f32) var_a0 / 10.0f);
         temp_v0->position.y = (f32) ((f32) var_a2 / 10.0f);
         temp_v0->position.z = (f32) ((f32) var_t0 / 10.0f);
-    };
+    }
 }
-#else
-#pragma GLOBAL_ASM("asm/us/nonmatchings/fragments/31/fragment31_2558B0/func_81002260.s")
-#endif

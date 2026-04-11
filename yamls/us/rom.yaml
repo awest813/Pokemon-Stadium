@@ -65,6 +65,7 @@
     - [0x1C720, c] #
     - [0x1CF30, c] # dp list code
     - [0x20330, c] # some cache cleaner
+    # Gfx tables are in src/20470_data.c (IDO heap); splat still emits one TU here tools/patch_ld_20470_split.py fixes ld.
     - [0x20470, c] # dp list for UI and icons
     - [0x225A0, c] #
     - [0x22630, c] # registered pkm stats
