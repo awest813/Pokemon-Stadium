@@ -154,7 +154,7 @@ void func_80017B60(void) {
 }
 
 void func_80017BBC(void) {
-    func_80017AC4(func_8001103C(gGraphNodePool, NULL));
+    func_80017AC4(GraphNode_Create(gGraphNodePool, NULL));
 
     gGeoLayoutCommand += sizeof(unk_D_800ABE00_cmd9);
 }

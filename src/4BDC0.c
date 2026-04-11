@@ -25,7 +25,7 @@ void func_8004B1C0(s32 arg0) {
     D_80078EC8 = arg0;
 }
 
-s32 func_8004B1CC(s32 arg0) {
+s32 Audio_Play(s32 arg0) {
     u32 sp2C;
     s32 var_a2;
     UNUSED s32 pad;
@@ -447,8 +447,8 @@ s32 func_8004B1CC(s32 arg0) {
         return 0;
     }
 
-    func_8004ADB0(D_800FC6E4->files[sp2C], D_800FC6DC, var_a2);
-    func_80050B40(D_800FC6DC, D_800FC680, 0x98D8);
+    Dma_ROMRead(D_800FC6E4->files[sp2C], D_800FC6DC, var_a2);
+    Yay0_Decompress(D_800FC6DC, D_800FC680, 0x98D8);
 
     if (D_80078EC8 <= 0) {
         D_80078E70 = func_80038F30(D_800FC684, D_800FC680);
@@ -470,7 +470,7 @@ s32 func_8004B1CC(s32 arg0) {
     return D_80078E70;
 }
 
-void func_8004B9C4(s32 arg0) {
+void Audio_Stop(s32 arg0) {
     s32 i;
 
     if (arg0 == 0) {
@@ -499,7 +499,7 @@ s32 func_8004BA88(s32 arg0, s32 arg1) {
     if ((arg0 == 0) || (arg0 == 0xFF)) {
         arg0 = 1;
         if ((arg1 == 0xE)) {    
-            return func_8004B1CC(2U);
+            return Audio_Play(2U);
         }
     }
     switch (arg1) {
@@ -508,7 +508,7 @@ s32 func_8004BA88(s32 arg0, s32 arg1) {
         if (arg0 >= 9U) {
             return 0;
         }
-        ret = func_8004B1CC(*(&D_80078E83 + arg0));
+        ret = Audio_Play(*(&D_80078E83 + arg0));
         break;
     case 6:
     case 7:
@@ -516,25 +516,25 @@ s32 func_8004BA88(s32 arg0, s32 arg1) {
         if (arg0 >= 9U) {
             return 0;
         }
-        ret = func_8004B1CC(*(&D_80078E8B + arg0));
+        ret = Audio_Play(*(&D_80078E8B + arg0));
         break;
     case 9:
         if (arg0 >= 9U) {
             return 0;
         }
-        ret = func_8004B1CC(*(&D_80078E93 + arg0));
+        ret = Audio_Play(*(&D_80078E93 + arg0));
         break;
     case 5:
         if (arg0 >= 9U) {
             return 0;
         }
-        ret = func_8004B1CC(*(&D_80078E9B + arg0));
+        ret = Audio_Play(*(&D_80078E9B + arg0));
         break;
     case 4:
         if (arg0 >= 9U) {
             return 0;
         }
-        ret = func_8004B1CC(*(&D_80078EA3 + arg0));
+        ret = Audio_Play(*(&D_80078EA3 + arg0));
         break;
     case 0:
     case 1:
@@ -542,31 +542,31 @@ s32 func_8004BA88(s32 arg0, s32 arg1) {
         if (arg0 >= 9U) {
             return 0;
         }
-        ret = func_8004B1CC(*(&D_80078EAB + arg0));
+        ret = Audio_Play(*(&D_80078EAB + arg0));
         break;
     case 3:
         if (arg0 >= 9U) {
             return 0;
         }
-        ret = func_8004B1CC(*(&D_80078EB3 + arg0));
+        ret = Audio_Play(*(&D_80078EB3 + arg0));
         break;
     case 12:
         if (arg0 >= 0x21U) {
             return 0;
         }
-        ret = func_8004B1CC(*(&D_80078EBC + ((arg0 - 1) & 3)));
+        ret = Audio_Play(*(&D_80078EBC + ((arg0 - 1) & 3)));
         break;
     case 13:
         if (arg0 >= 6U) {
             return 0;
         }
-        ret = func_8004B1CC(*(&D_80078EBF + arg0));
+        ret = Audio_Play(*(&D_80078EBF + arg0));
         break;
     case 15:
-        ret = func_8004B1CC(0x14U);
+        ret = Audio_Play(0x14U);
         break;
     default:
-        ret = func_8004B1CC(2U);
+        ret = Audio_Play(2U);
     }
     return ret;
 }
@@ -579,7 +579,7 @@ s32 func_8004BC84(s32 arg0, u32 arg1) {
             switch (D_80078ED4) {
                 case 0:
                     D_80078ED4 = 1;
-                    return func_8004B1CC(0x1E);
+                    return Audio_Play(0x1E);
 
                 case 1:
                     return 0;
@@ -591,7 +591,7 @@ s32 func_8004BC84(s32 arg0, u32 arg1) {
                     if (func_80039354(D_80078EDC) == 0) {
                         D_80078ED4 = 1;
                         if (arg1 == 0) {
-                            return func_8004B1CC(0x1E);
+                            return Audio_Play(0x1E);
                         }
                         return 0;
                     }
@@ -650,7 +650,7 @@ s32 func_8004BC84(s32 arg0, u32 arg1) {
             }
 
             func_8004B1C0(var_a3);
-            D_80078ED8 = func_8004B1CC(0x1F);
+            D_80078ED8 = Audio_Play(0x1F);
             return D_80078ED8;
 
         case 32:
@@ -669,7 +669,7 @@ s32 func_8004BC84(s32 arg0, u32 arg1) {
                         } else {
                             func_8004B1C0(0x46);
                             D_80078ED4 = 3;
-                            D_80078EDC = func_8004B1CC(0x20);
+                            D_80078EDC = Audio_Play(0x20);
                             return D_80078EDC;
                         }
                     }

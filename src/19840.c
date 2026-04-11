@@ -7,16 +7,16 @@
 #include <PR/os_internal_reg.h>
 #include <PR/leo.h>
 
-typedef struct ret_func_unk_D_800ABE10 {
+typedef struct ret_func_unk_gFragmentLoader {
     /* 0x00 */ char unk00[0x3];
     /* 0x03 */ u8 unk_03;
     /* 0x04 */ char unk04[0x4];
     /* 0x08 */ unk_D_86002F34** unk_08;
     /* 0x0C */ char unk0C[0x8];
-    /* 0x14 */ func_unk_D_800ABE10 unk_14;
-} ret_func_unk_D_800ABE10;
+    /* 0x14 */ func_unk_gFragmentLoader unk_14;
+} ret_func_unk_gFragmentLoader;
 
-unk_D_800ABE10 D_800ABE10;
+unk_gFragmentLoader gFragmentLoader;
 
 void func_80018C40(unk_D_86002F34* arg0, arg1_func_80010CA8 arg1) {
     s32 i;
@@ -58,55 +58,55 @@ void func_80018C40(unk_D_86002F34* arg0, arg1_func_80010CA8 arg1) {
     }
 }
 
-Fragment* func_80018DE8(MainPoolState* arg0, UNUSED PRESJPEG* arg1, PRESJPEG* arg2) {
+Fragment* LoadJPEG(MainPoolState* arg0, UNUSED PRESJPEG* arg1, PRESJPEG* arg2) {
     Fragment* sp1C;
     s32 sp18;
     s32 temp_v0_2;
 
     sp18 = ((MemoryBlock*)arg0)->size;
-    sp1C = (Fragment*)func_80002DCC(arg0, arg2->unk_0C + 0x100, 0x10);
+    sp1C = (Fragment*)MainPoolState_AllocLinear(arg0, arg2->unk_0C + 0x100, 0x10);
 
     if (sp1C != NULL) {
-        temp_v0_2 = func_80003680((u32)sp1C, arg2->unk_0C + 0x100, (u8*)arg2 + arg2->unk_08);
+        temp_v0_2 = JPEG_Decompress((u32)sp1C, arg2->unk_0C + 0x100, (u8*)arg2 + arg2->unk_08);
         if (temp_v0_2 == 0) {
-            func_80002E3C(arg0, sp18);
+            MainPoolState_SetUsedSize(arg0, sp18);
             sp1C = NULL;
         } else {
-            func_80002E3C(arg0, sp18 + temp_v0_2);
+            MainPoolState_SetUsedSize(arg0, sp18 + temp_v0_2);
         }
     }
     return sp1C;
 }
 
-Fragment* func_80018E7C(MainPoolState* arg0, UNUSED PERSSZP* arg1, PERSSZP* arg2) {
-    Fragment* sp1C = (Fragment*)func_80002DCC(arg0, arg2->decompressed_size2, 0x10);
+Fragment* LoadSZP(MainPoolState* arg0, UNUSED PERSSZP* arg1, PERSSZP* arg2) {
+    Fragment* sp1C = (Fragment*)MainPoolState_AllocLinear(arg0, arg2->decompressed_size2, 0x10);
 
     if (sp1C != NULL) {
-        func_80003890((u8*)arg2, (u8*)sp1C);
+        SZP_Decompress((u8*)arg2, (u8*)sp1C);
     }
     return sp1C;
 }
 
-Fragment* func_80018EC4(MainPoolState* arg0, PERSSZP* arg1, s32 arg2, u32 arg3) {
+Fragment* LoadRaw(MainPoolState* arg0, PERSSZP* arg1, s32 arg2, u32 arg3) {
     u32* sp1C;
 
-    sp1C = (u32*)func_80002DCC(arg0, arg3, 0x10);
+    sp1C = (u32*)MainPoolState_AllocLinear(arg0, arg3, 0x10);
     if (sp1C != NULL) {
         Util_Memcpy(sp1C, (u32*)((u8*)arg1 + arg2), arg3 >> 2);
     }
     return (Fragment*)sp1C;
 }
 
-Fragment* func_80018F20(MainPoolState* arg0, s32 start, s32 end, PERSSZP* arg3, s32 arg4) {
+Fragment* Archive_LoadFile_Internal(MainPoolState* arg0, s32 start, s32 end, PERSSZP* arg3, s32 arg4) {
     UNUSED s32 pad;
     u32 size = ALIGN16(end - start);
     Fragment* var_v1 = NULL;
 
     if (arg4 >= size) {
-        func_80003B30((u32)arg3, start, end, 0);
+        ROM_LoadDirect((u32)arg3, start, end, 0);
 
         if (((u32*)arg3->magic)[0] == 'PERS' && (((u32*)arg3->magic)[1] == '-SZP')) {
-            var_v1 = func_80018E7C(arg0, arg3, arg3);
+            var_v1 = LoadSZP(arg0, arg3, arg3);
         } else if (((u32*)arg3->magic)[0] == 'PRES' && (((u32*)arg3->magic)[1] == 'JPEG')) {
             var_v1 = func_80018DE8(arg0, (PRESJPEG*)arg3, (PRESJPEG*)arg3);
         } else {
@@ -128,11 +128,11 @@ Fragment* func_80018FF4(MainPoolState* arg0, unk_func_800041C0* arg1, PERSSZP* a
     if (arg3 >= sp3C) {
         temp_s1 = (PERSSZP*)((u8*)arg2 + arg1->unk_04);
 
-        func_80001098(0, arg2, arg1->unk_00, arg1->unk_02, (s32)&D_800ABE10.unk_9EC, 0);
-        osRecvMesg(&D_800ABE10.unk_9EC, NULL, 1);
+        func_80001098(0, arg2, arg1->unk_00, arg1->unk_02, (s32)&gFragmentLoader.unk_9EC, 0);
+        osRecvMesg(&gFragmentLoader.unk_9EC, NULL, 1);
 
         if (((u32*)temp_s1->magic)[0] == 'PERS' && (((u32*)temp_s1->magic)[1] == '-SZP')) {
-            sp38 = func_80018E7C(arg0, arg2, temp_s1);
+            sp38 = LoadSZP(arg0, arg2, temp_s1);
         } else if (((u32*)temp_s1->magic)[0] == 'PRES' && (((u32*)temp_s1->magic)[1] == 'JPEG')) {
             sp38 = func_80018DE8(arg0, (PRESJPEG*)arg2, (PRESJPEG*)temp_s1);
         } else {
@@ -143,15 +143,15 @@ Fragment* func_80018FF4(MainPoolState* arg0, unk_func_800041C0* arg1, PERSSZP* a
     return sp38;
 }
 
-void func_80019128(MainPoolState* arg0, u32 arg1, Fragment* arg2) {
+void Fragment_RelocateForPool(MainPoolState* arg0, u32 arg1, Fragment* arg2) {
     Memmap_RelocateFragment(arg1, arg2);
-    func_80002E3C(arg0, ((u32)arg2 + arg2->sizeInRam) - (u32)arg0->listHeadR);
+    MainPoolState_SetUsedSize(arg0, ((u32)arg2 + arg2->sizeInRam) - (u32)arg0->listHeadR);
 }
 
 Fragment* func_80019170(MainPoolState* arg0, BinArchive* arg1, BinArchiveFile* arg2, PERSSZP* arg3, s32 arg4) {
     s32 temp_a1 = arg1->unk_04 + arg2->offset;
 
-    return func_80018F20(arg0, temp_a1, arg2->size + temp_a1, arg3, arg4);
+    return Archive_LoadFile_Internal(arg0, temp_a1, arg2->size + temp_a1, arg3, arg4);
 }
 
 Fragment* func_800191B0(MainPoolState* arg0, BinArchive* arg1, BinArchiveFile* arg2, PERSSZP* arg3, s32 arg4) {
@@ -161,7 +161,7 @@ Fragment* func_800191B0(MainPoolState* arg0, BinArchive* arg1, BinArchiveFile* a
     return func_80018FF4(arg0, &sp1C, arg3, arg4);
 }
 
-Fragment* func_80019204(MainPoolState* arg0, BinArchive* arg1, s32 arg2, PERSSZP* arg3, s32 arg4) {
+Fragment* Archive_GetFragment(MainPoolState* arg0, BinArchive* arg1, s32 arg2, PERSSZP* arg3, s32 arg4) {
     UNUSED s32 pad[4];
     Fragment* var_s0 = NULL;
     BinArchiveFile* sp2C = (BinArchiveFile*)((u8*)arg1 + sizeof(BinArchive) + (arg2 * sizeof(BinArchiveFile)));
@@ -193,17 +193,17 @@ Fragment* func_80019204(MainPoolState* arg0, BinArchive* arg1, s32 arg2, PERSSZP
 unk_D_86002F30* func_80019328(MainPoolState* arg0, Fragment* arg1, arg1_func_80010CA8 arg2) {
     s32 i;
     unk_D_86002F34* temp_v0_2;
-    ret_func_unk_D_800ABE10* temp_v0;
-    ret_func_unk_D_800ABE10* (*func)(s32, s32) = (ret_func_unk_D_800ABE10 * (*)(s32, s32))arg1;
+    ret_func_unk_gFragmentLoader* temp_v0;
+    ret_func_unk_gFragmentLoader* (*func)(s32, s32) = (ret_func_unk_gFragmentLoader * (*)(s32, s32))arg1;
 
     temp_v0 = func(0, 0);
-    temp_v0->unk_14 = (func_unk_D_800ABE10)arg1;
+    temp_v0->unk_14 = (func_unk_gFragmentLoader)arg1;
 
     for (i = 0; i < temp_v0->unk_03; i++) {
         temp_v0_2 = (unk_D_86002F34*)process_geo_layout((MemoryBlock*)arg0, temp_v0->unk_08[i]);
 
         if (temp_v0_2->unk_00.unk_00 == 0xE) {
-            temp_v0_2->unk_28 = (func_unk_D_800ABE10)arg1;
+            temp_v0_2->unk_28 = (func_unk_gFragmentLoader)arg1;
             if (arg2.raw != 0) {
                 func_80018C40(temp_v0_2, arg2);
             }
@@ -229,8 +229,8 @@ void func_80019484(unk_func_80019600* arg0) {
     MainPoolState* sp28;
     Fragment* sp24;
 
-    sp28 = (MainPoolState*)func_80002DA4(arg0->pool, arg0->size);
-    sp24 = func_80019204(sp28, D_800ABE10.unk_A04.unk_00, arg0->unk_02, D_800ABE10.unk_A04.unk_08, 0x28000);
+    sp28 = (MainPoolState*)MainPoolState_Init(arg0->pool, arg0->size);
+    sp24 = Archive_GetFragment(sp28, gFragmentLoader.unk_A04.unk_00, arg0->unk_02, gFragmentLoader.unk_A04.unk_08, 0x28000);
 
     if (sp24 != NULL) {
         arg0->unk_08 = func_80019328(sp28, sp24, arg0->unk_18);
@@ -250,11 +250,11 @@ void func_80019514(unk_func_80019600* arg0) {
 
     temp_s6 = (arg1_func_80019420**)arg0->unk_08;
     var_s2 = 0;
-    temp_s3 = (MainPoolState*)func_80002DA4(arg0->pool, arg0->size);
+    temp_s3 = (MainPoolState*)MainPoolState_Init(arg0->pool, arg0->size);
     var_s0 = arg0->unk_0C;
 
     while (*var_s0 != -1) {
-        temp_v0 = func_80019204(temp_s3, D_800ABE10.unk_A04.unk_04, *var_s0, D_800ABE10.unk_A04.unk_08, 0x28000);
+        temp_v0 = Archive_GetFragment(temp_s3, gFragmentLoader.unk_A04.unk_04, *var_s0, gFragmentLoader.unk_A04.unk_08, 0x28000);
         if (temp_v0 == NULL) {
             break;
         }
@@ -269,14 +269,14 @@ void func_80019514(unk_func_80019600* arg0) {
     arg0->size = (s32)temp_s3->listHeadL + 1;
 }
 
-void func_80019600(UNUSED void* arg0) {
+void FragmentLoader_ThreadMsgLoop(UNUSED void* arg0) {
     OSMesg sp38;
     unk_func_80019600* sp34;
 
     __osSetFpcCsr(0x01000C01);
 
     while (true) {
-        osRecvMesg(&D_800ABE10.unk_9D0, &sp38, 1);
+        osRecvMesg(&gFragmentLoader.unk_9D0, &sp38, 1);
         sp34 = sp38;
 
         switch (sp34->unk_00) {
@@ -295,11 +295,11 @@ void func_80019600(UNUSED void* arg0) {
     }
 }
 
-void func_800196DC(void) {
-    osCreateMesgQueue(&D_800ABE10.unk_9D0, &D_800ABE10.unk_9B0, 8);
-    osCreateMesgQueue(&D_800ABE10.unk_9EC, &D_800ABE10.unk_9E8, 1);
-    osCreateThread(&D_800ABE10.unk_000, 7, func_80019600, NULL, &D_800ABE10.unk_9B0, 0xA);
-    osStartThread(&D_800ABE10.unk_000);
+void FragmentLoader_InitThread(void) {
+    osCreateMesgQueue(&gFragmentLoader.unk_9D0, &gFragmentLoader.unk_9B0, 8);
+    osCreateMesgQueue(&gFragmentLoader.unk_9EC, &gFragmentLoader.unk_9E8, 1);
+    osCreateThread(&gFragmentLoader.unk_000, 7, func_80019600, NULL, &gFragmentLoader.unk_9B0, 0xA);
+    osStartThread(&gFragmentLoader.unk_000);
 }
 
 unk_D_86002F58_004_000_010* func_80019760(u32 arg0) {
@@ -336,9 +336,9 @@ unk_D_86002F58_004_000_010* func_80019760(u32 arg0) {
 }
 
 void func_8001987C(void) {
-    D_800ABE10.unk_A04.unk_00 = func_800044F4((u8*)0x920000, NULL, 1, 1);
-    D_800ABE10.unk_A04.unk_04 = func_800044F4((u8*)0x8CC000, NULL, 1, 1);
-    D_800ABE10.unk_A04.unk_08 = main_pool_alloc(0x28000, 1);
+    gFragmentLoader.unk_A04.unk_00 = Archive_ROM_Load((u8*)0x920000, NULL, 1, 1);
+    gFragmentLoader.unk_A04.unk_04 = Archive_ROM_Load((u8*)0x8CC000, NULL, 1, 1);
+    gFragmentLoader.unk_A04.unk_08 = main_pool_alloc(0x28000, 1);
 }
 
 s32 func_800198E4(unk_D_86002F58_004_000_010* arg0, u16 arg1, arg1_func_80010CA8 arg2) {
@@ -367,7 +367,7 @@ s32 func_800198E4(unk_D_86002F58_004_000_010* arg0, u16 arg1, arg1_func_80010CA8
             if ((arg0->unk_24 != NULL) && (arg0->unk_24->unk_00 == arg1) && (arg0->unk_2C.raw == sp18->unk_18.raw)) {
                 osSendMesg(sp18->unk_04, sp18, 1);
             } else {
-                osSendMesg(&D_800ABE10.unk_9D0, sp18, 1);
+                osSendMesg(&gFragmentLoader.unk_9D0, sp18, 1);
             }
 
             arg0->unk_01 |= 1;
@@ -401,7 +401,7 @@ s32 func_80019A7C(unk_D_86002F58_004_000_010* arg0, s32 arg1, s32 arg2) {
             temp_v0->unk_10 = arg0->unk_18;
             temp_v0->unk_14 = 0x18000;
 
-            osSendMesg(&D_800ABE10.unk_9D0, temp_v0, 1);
+            osSendMesg(&gFragmentLoader.unk_9D0, temp_v0, 1);
 
             sp1C = 1;
             arg0->unk_01 |= 2;
@@ -482,12 +482,12 @@ unk_D_86002F30* func_80019D18(s32 arg0) {
     unk_D_86002F30* sp24 = NULL;
     MainPoolState* sp20;
 
-    sp2C = func_8000484C(D_800ABE10.unk_A04.unk_00, arg0 - 1);
+    sp2C = Archive_GetFile(gFragmentLoader.unk_A04.unk_00, arg0 - 1);
     if (sp2C != NULL) {
-        sp20 = (MainPoolState*)func_80002D10(main_pool_get_available(), 0);
+        sp20 = (MainPoolState*)MainPool_AllocWithInit(main_pool_get_available(), 0);
         sp28.raw = 0;
         sp24 = func_80019328(sp20, sp2C, sp28);
-        func_80002D60((MemoryBlock*)sp20);
+        MainPool_FreeWithResize((MemoryBlock*)sp20);
     }
 
     return sp24;
@@ -499,12 +499,12 @@ unk_D_86002F30* func_80019D90(unk_func_80026268_arg0* arg0) {
     unk_D_86002F30* sp24 = NULL;
     MainPoolState* sp20;
 
-    sp2C = func_8000484C(D_800ABE10.unk_A04.unk_00, arg0->unk_00.unk_00 - 1);
+    sp2C = Archive_GetFile(gFragmentLoader.unk_A04.unk_00, arg0->unk_00.unk_00 - 1);
     if (sp2C != NULL) {
-        sp20 = (MainPoolState*)func_80002D10(main_pool_get_available(), 0);
+        sp20 = (MainPoolState*)MainPool_AllocWithInit(main_pool_get_available(), 0);
         func_8001BEE8(&sp28, arg0);
         sp24 = func_80019328(sp20, sp2C, sp28);
-        func_80002D60((MemoryBlock*)sp20);
+        MainPool_FreeWithResize((MemoryBlock*)sp20);
     }
     return sp24;
 }
@@ -515,13 +515,13 @@ unk_D_86002F30* func_80019E18(s32 arg0, s32 arg1) {
     unk_D_86002F30* sp24 = NULL;
     MainPoolState* sp20;
 
-    sp2C = func_8000484C(D_800ABE10.unk_A04.unk_00, arg0 - 1);
+    sp2C = Archive_GetFile(gFragmentLoader.unk_A04.unk_00, arg0 - 1);
     if (sp2C != NULL) {
-        sp20 = (MainPoolState*)func_80002D10(main_pool_get_available(), 0);
+        sp20 = (MainPoolState*)MainPool_AllocWithInit(main_pool_get_available(), 0);
         sp28.raw = 0;
         sp28.unk_00 = arg1 * 64;
         sp24 = func_80019328(sp20, sp2C, sp28);
-        func_80002D60((MemoryBlock*)sp20);
+        MainPool_FreeWithResize((MemoryBlock*)sp20);
     }
     return sp24;
 }
@@ -532,18 +532,18 @@ arg1_func_80019420* func_80019EA0(s32 arg0) {
     MainPoolState* sp1C;
 
     sp20 = NULL;
-    sp24 = func_8000484C(D_800ABE10.unk_A04.unk_04, arg0);
+    sp24 = Archive_GetFile(gFragmentLoader.unk_A04.unk_04, arg0);
     if (sp24 != NULL) {
-        sp1C = (MainPoolState*)func_80002D10(main_pool_get_available(), 0);
+        sp1C = (MainPoolState*)MainPool_AllocWithInit(main_pool_get_available(), 0);
         sp20 = (arg1_func_80019420*)sp24->data;
         func_80019420(sp1C, sp20);
-        func_80002D60((MemoryBlock*)sp1C);
+        MainPool_FreeWithResize((MemoryBlock*)sp1C);
     }
     return sp20;
 }
 
 Fragment* func_80019F0C(MainPoolState* arg0, u32 arg1, s32 arg2, s32 arg3, PERSSZP* arg4, s32 arg5) {
-    Fragment* sp24 = func_80018F20(arg0, arg2, arg3, arg4, arg5);
+    Fragment* sp24 = Archive_LoadFile_Internal(arg0, arg2, arg3, arg4, arg5);
 
     if (sp24 != NULL) {
         func_80019128(arg0, arg1, sp24);

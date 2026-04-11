@@ -73,11 +73,11 @@ MainPool* mem_pool_init(MainPool* pool, s32 size);
 void *mem_pool_alloc(MemoryPool* node, s32 size);
 
 void mem_pool_free(MemoryPool* pool, void* addr);
-void *func_80002D10(u32 size, s32 side);
-void func_80002D60(struct MemoryBlock* block);
-void* func_80002DA4(struct MainPoolState* block, s32 size);
-void* func_80002DCC(struct MainPoolState* state, s32 arg1, s32 arg2);
-void func_80002E3C(struct MainPoolState* state, s32 size);
-void func_80002E64(struct MainPoolState* state);
+void *MainPool_AllocWithInit(u32 size, s32 side);
+void MainPool_FreeWithResize(struct MemoryBlock* block);
+void* MainPoolState_Init(struct MainPoolState* block, s32 size);
+void* MainPoolState_AllocLinear(struct MainPoolState* state, s32 arg1, s32 arg2);
+void MainPoolState_SetUsedSize(struct MainPoolState* state, s32 size);
+void MainPoolState_Reset(struct MainPoolState* state);
 
 #endif /* _MEMORY_H_ */

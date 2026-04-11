@@ -33,7 +33,7 @@ Vec3f* func_8000E868(Vec3f* arg0, f32 arg1, f32 arg2, f32 arg3) {
     return arg0;
 }
 
-Vec3f* func_8000E88C(Vec3f* arg0, f32 arg1, f32 arg2, f32 arg3) {
+Vec3f* Vec3f_Set(Vec3f* arg0, f32 arg1, f32 arg2, f32 arg3) {
     arg0->x = arg1;
     arg0->y = arg2;
     arg0->z = arg3;
@@ -73,7 +73,7 @@ Vec3f* func_8000E958(Vec3f* arg0, Vec3f* arg1, Vec3f* arg2) {
     return arg0;
 }
 
-Vec3f* func_8000E990(Vec3f* arg0, Vec3s* arg1) {
+Vec3f* Vec3f_CopyFromVec3s(Vec3f* arg0, Vec3s* arg1) {
     arg0->x = arg1->x;
     arg0->y = arg1->y;
     arg0->z = arg1->z;
@@ -107,7 +107,7 @@ Vec3f* func_8000EAF4(Vec3f* arg0) {
     return arg0;
 }
 
-Vec3s* func_8000EB70(Vec3s* arg0, s16 arg1, s16 arg2, s16 arg3) {
+Vec3s* Vec3s_Set(Vec3s* arg0, s16 arg1, s16 arg2, s16 arg3) {
     arg0->x = arg1;
     arg0->y = arg2;
     arg0->z = arg3;
@@ -155,7 +155,7 @@ Vec3s* func_8000EC88(Vec3s* arg0, Vec3f* arg1) {
     return arg0;
 }
 
-void func_8000ED4C(MtxF* dest, MtxF* src) {
+void MtxF_Copy(MtxF* dest, MtxF* src) {
     if (dest != src) {
         s32 i;
         u32* d = (u32*)dest;
@@ -167,7 +167,7 @@ void func_8000ED4C(MtxF* dest, MtxF* src) {
     }
 }
 
-void func_8000ED98(MtxF* arg0) {
+void MtxF_Identity(MtxF* arg0) {
     s32 i;
     f32* dest;
     // These loops must be one line to match on -O2
@@ -182,7 +182,7 @@ void func_8000ED98(MtxF* arg0) {
 }
 
 void func_8000EDD8(MtxF* arg0, Vec3f* arg1) {
-    func_8000ED98(arg0);
+    MtxF_Identity(arg0);
 
     arg0->mf[3][0] = arg1->x;
     arg0->mf[3][1] = arg1->y;
@@ -238,6 +238,7 @@ void func_8000EE1C(MtxF* mtx, Vec3f* from, Vec3f* to, u16 roll) {
     zColY = xColZ * yColX - yColZ * xColX;
 
     invLength = 1.0 / sqrtf(xColY * xColY + yColY * yColY + zColY * zColY);
+
     xColY *= invLength;
     yColY *= invLength;
     zColY *= invLength;
@@ -294,7 +295,7 @@ void func_8000F174(MtxF* dest, Vec3s* translate, Vec3s* rotate) {
     dest->mf[3][3] = 1.0f;
 }
 
-void func_8000F2C4(MtxF* arg0, Vec3f* arg1, Vec3s* arg2) {
+void MtxF_FromPosRot(MtxF* arg0, Vec3f* arg1, Vec3s* arg2) {
     f32 temp_fa0;
     f32 temp_fa1;
     f32 temp_ft4;
@@ -335,7 +336,7 @@ void func_8000F2C4(MtxF* arg0, Vec3f* arg1, Vec3s* arg2) {
     arg0->mf[3][3] = 1.0f;
 }
 
-void func_8000F3FC(MtxF* arg0, Vec3f* arg1, Vec3s* arg2) {
+void MtxF_FromPosRotInverted(MtxF* arg0, Vec3f* arg1, Vec3s* arg2) {
     f32 sx = SINS(arg2->x);
     f32 cx = COSS(arg2->x);
     f32 sy = SINS(arg2->y);
@@ -425,7 +426,7 @@ void func_8000F730(MtxF* dest, Vec3f* b, Vec3s* c, Vec3f* arg3) {
     dest->mf[3][3] = 1.0f;
 }
 
-void func_8000F88C(MtxF* arg0, MtxF* arg1, MtxF* arg2, Vec3f* arg3, f32 arg4) {
+void MtxF_Combine(MtxF* arg0, MtxF* arg1, MtxF* arg2, Vec3f* arg3, f32 arg4) {
     f32 sp24;
     f32 sp20;
     f32 sp1C;
@@ -493,7 +494,7 @@ void func_8000FA94(MtxF* dest, Vec3f* upDir, Vec3f* pos, s16 yaw) {
     dest->mf[3][3] = 1.0f;
 }
 
-void func_8000FBB0(MtxF* arg0, MtxF* arg1, MtxF* arg2) {
+void MtxF_Mul(MtxF* arg0, MtxF* arg1, MtxF* arg2) {
     f32 entry0;
     f32 entry1;
     f32 entry2;
@@ -534,7 +535,7 @@ void func_8000FBB0(MtxF* arg0, MtxF* arg1, MtxF* arg2) {
     arg0->mf[3][3] = 1.0f;
 }
 
-void func_8000FDE4(MtxF* dest, MtxF* mtx, Vec3f* s) {
+void MtxF_MulVec3f(MtxF* dest, MtxF* mtx, Vec3f* s) {
     s32 i;
 
     for (i = 0; i < 4; i++) {
@@ -564,7 +565,7 @@ void func_8000FFB8(MtxF* arg0, Vec3s* arg1) {
 #define GET_HIGH_S16_OF_32(var) (((s16*)&(var))[0])
 #define GET_LOW_S16_OF_32(var) (((s16*)&(var))[1])
 
-void func_80010090(MtxF* dest, MtxF* src) {
+void MtxF_ToMtx(MtxF* dest, MtxF* src) {
     s32 asFixedPoint;
     s32 i;
     s16* a3 = (s16*)dest;      // all integer parts stored in first 16 bytes

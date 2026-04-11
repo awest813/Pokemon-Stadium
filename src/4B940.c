@@ -4,7 +4,7 @@ static OSMesgQueue D_800FF990;
 static OSPiHandle* D_800FF9A8;
 static OSMesg D_800FF9AC;
 
-void func_8004AD40(s32 arg0) {
+void Dma_Init(s32 arg0) {
     switch (arg0) {
         case 1:
             D_800FF9A8 = osDriveRomInit();
@@ -19,7 +19,7 @@ void func_8004AD40(s32 arg0) {
     osCreateMesgQueue(&D_800FF990, &D_800FF9AC, 1);
 }
 
-void func_8004ADB0(u32 dev_addr, u32 dram_addr, u32 size) {
+void Dma_ROMRead(u32 dev_addr, u32 dram_addr, u32 size) {
     OSIoMesg msg;
     u32 dev = dev_addr;
     u32 dram = dram_addr;

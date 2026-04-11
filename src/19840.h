@@ -48,24 +48,24 @@ typedef struct unk_D_800ABE10 {
     /* 0xA04 */ unk_D_800ABE10_A04 unk_A04;
 } unk_D_800ABE10; // size >= 0xA18
 
-extern unk_D_800ABE10 D_800ABE10;
+extern unk_D_800ABE10 gFragmentLoader;
 
 void func_80018C40(unk_D_86002F34* arg0, arg1_func_80010CA8 arg1);
-Fragment* func_80018DE8(MainPoolState* arg0, PRESJPEG* arg1, PRESJPEG* arg2);
-Fragment* func_80018E7C(MainPoolState* arg0, PERSSZP* arg1, PERSSZP* arg2);
-Fragment* func_80018EC4(MainPoolState* arg0, PERSSZP* arg1, s32 arg2, u32 arg3);
-Fragment* func_80018F20(MainPoolState* arg0, s32 start, s32 end, PERSSZP* arg3, s32 arg4);
+Fragment* LoadJPEG(MainPoolState* arg0, PRESJPEG* arg1, PRESJPEG* arg2);
+Fragment* LoadSZP(MainPoolState* arg0, PERSSZP* arg1, PERSSZP* arg2);
+Fragment* LoadRaw(MainPoolState* arg0, PERSSZP* arg1, s32 arg2, u32 arg3);
+Fragment* Archive_LoadFile_Internal(MainPoolState* arg0, s32 start, s32 end, PERSSZP* arg3, s32 arg4);
 Fragment* func_80018FF4(MainPoolState* arg0, unk_func_800041C0* arg1, PERSSZP* arg2, u32 arg3);
 void func_80019128(MainPoolState* arg0, u32 arg1, Fragment* arg2);
 Fragment* func_80019170(MainPoolState* arg0, BinArchive* arg1, BinArchiveFile* arg2, PERSSZP* arg3, s32 arg4);
 Fragment* func_800191B0(MainPoolState* arg0, BinArchive* arg1, BinArchiveFile* arg2, PERSSZP* arg3, s32 arg4);
-Fragment* func_80019204(MainPoolState* arg0, BinArchive* arg1, s32 arg2, PERSSZP* arg3, s32 arg4);
+Fragment* Archive_GetFragment(MainPoolState* arg0, BinArchive* arg1, s32 arg2, PERSSZP* arg3, s32 arg4);
 unk_D_86002F30* func_80019328(MainPoolState* arg0, Fragment* arg1, arg1_func_80010CA8 arg2);
 void func_80019420(MainPoolState* arg0, arg1_func_80019420* arg1);
 void func_80019484(unk_func_80019600* arg0);
 void func_80019514(unk_func_80019600* arg0);
-void func_80019600(UNUSED void* arg0);
-void func_800196DC(void);
+void FragmentLoader_ThreadMsgLoop(UNUSED void* arg0);
+void FragmentLoader_InitThread(void);
 unk_D_86002F58_004_000_010* func_80019760(u32 arg0);
 void func_8001987C(void);
 s32 func_800198E4(unk_D_86002F58_004_000_010* arg0, u16 arg1, arg1_func_80010CA8 arg2);

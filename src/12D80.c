@@ -122,22 +122,22 @@ static s32 D_800ABCBC;
 void func_80012180(void) {
     D_800AA8C8.unk_10A0 = 0;
     D_800AA8C8.unk_1080[0] = 0;
-    func_8000ED98(&D_800AA8C8.unk_0000[0]);
+    MtxF_Identity(&D_800AA8C8.unk_0000[0]);
     D_800AA8C8.unk_1000[0] = DLBuf_AllocTemp(sizeof(Mtx) * 1);
-    func_80010090(D_800AA8C8.unk_1000[0], D_800AA8C8.unk_0000);
+    MtxF_ToMtx(D_800AA8C8.unk_1000[0], D_800AA8C8.unk_0000);
 }
 
 void func_800121C8(void) {
     D_800AA8C8.unk_1080[D_800AA8C8.unk_10A0] = 0;
     D_800AA8C8.unk_1000[D_800AA8C8.unk_10A0] = DLBuf_AllocTemp(sizeof(MtxF) * 1);
-    func_80010090(D_800AA8C8.unk_1000[D_800AA8C8.unk_10A0], &D_800AA8C8.unk_0000[D_800AA8C8.unk_10A0]);
+    MtxF_ToMtx(D_800AA8C8.unk_1000[D_800AA8C8.unk_10A0], &D_800AA8C8.unk_0000[D_800AA8C8.unk_10A0]);
 }
 
 void func_80012230(MtxF* arg0) {
-    func_8000ED4C(&D_800AA8C8.unk_0000[D_800AA8C8.unk_10A0], arg0);
+    MtxF_Copy(&D_800AA8C8.unk_0000[D_800AA8C8.unk_10A0], arg0);
     D_800AA8C8.unk_1080[D_800AA8C8.unk_10A0] = 0;
     D_800AA8C8.unk_1000[D_800AA8C8.unk_10A0] = DLBuf_AllocTemp(sizeof(MtxF) * 1);
-    func_80010090(D_800AA8C8.unk_1000[D_800AA8C8.unk_10A0], &D_800AA8C8.unk_0000[D_800AA8C8.unk_10A0]);
+    MtxF_ToMtx(D_800AA8C8.unk_1000[D_800AA8C8.unk_10A0], &D_800AA8C8.unk_0000[D_800AA8C8.unk_10A0]);
 }
 
 void func_800122B4(MtxF* arg0) {
@@ -146,10 +146,10 @@ void func_800122B4(MtxF* arg0) {
     D_800AA8C8.unk_10A0++;
     temp_a0 = &D_800AA8C8.unk_0000[D_800AA8C8.unk_10A0];
 
-    func_8000FBB0(&temp_a0[0], arg0, &temp_a0[-1]);
+    MtxF_Mul(&temp_a0[0], arg0, &temp_a0[-1]);
     D_800AA8C8.unk_1080[D_800AA8C8.unk_10A0] = 0;
     D_800AA8C8.unk_1000[D_800AA8C8.unk_10A0] = DLBuf_AllocTemp(sizeof(MtxF) * 1);
-    func_80010090(D_800AA8C8.unk_1000[D_800AA8C8.unk_10A0], &D_800AA8C8.unk_0000[D_800AA8C8.unk_10A0]);
+    MtxF_ToMtx(D_800AA8C8.unk_1000[D_800AA8C8.unk_10A0], &D_800AA8C8.unk_0000[D_800AA8C8.unk_10A0]);
 }
 
 void func_80012344(Vec3f* arg0) {
@@ -158,12 +158,12 @@ void func_80012344(Vec3f* arg0) {
     D_800AA8C8.unk_10A0++;
     temp_a0 = &D_800AA8C8.unk_0000[D_800AA8C8.unk_10A0];
 
-    func_8000FDE4(&temp_a0[0], &temp_a0[-1], arg0);
+    MtxF_MulVec3f(&temp_a0[0], &temp_a0[-1], arg0);
 
     D_800AA8C8.unk_1080[D_800AA8C8.unk_10A0] = 0;
     D_800AA8C8.unk_1000[D_800AA8C8.unk_10A0] = DLBuf_AllocTemp(sizeof(MtxF) * 1);
 
-    func_80010090(D_800AA8C8.unk_1000[D_800AA8C8.unk_10A0], &D_800AA8C8.unk_0000[D_800AA8C8.unk_10A0]);
+    MtxF_ToMtx(D_800AA8C8.unk_1000[D_800AA8C8.unk_10A0], &D_800AA8C8.unk_0000[D_800AA8C8.unk_10A0]);
 }
 
 MtxF* func_800123D4(s32 arg0) {
@@ -443,7 +443,7 @@ void func_80013464(GraphNode* arg0) {
     guPerspective(sp48->mtx, &sp48->perspNorm, sp48->fovy, sp48->aspect, sp48->near, sp48->far, sp48->scale);
     guLookAtReflectF(&temp_s1->mtxf, temp_s1->lookat, temp_s1->eye.x, temp_s1->eye.y, temp_s1->eye.z, temp_s1->at.x,
                      temp_s1->at.y, temp_s1->at.z, temp_s1->up.x, temp_s1->up.y, temp_s1->up.z);
-    func_80010090(temp_s1->p_mtxf, &temp_s1->mtxf);
+    MtxF_ToMtx(temp_s1->p_mtxf, &temp_s1->mtxf);
 
     D_8006F088 = arg;
     if ((arg->unk_CC.unk_00 != 1) && (arg->unk_00.unk_0C != NULL)) {
@@ -647,9 +647,9 @@ void func_80014124(GraphNode* arg0) {
     Vec3s sp24;
 
     if (D_8006F09C->unk_000.unk_02 & 2) {
-        func_8000E88C(&sp2C, temp_v0->xw, 0.0f, temp_v0->zw);
-        func_8000EB70(&sp24, 0, D_8006F09C->unk_01E.y, 0);
-        func_8000F2C4(&D_800AA8C8.unk_0000[D_800AA8C8.unk_10A0 + 1], &sp2C, &sp24);
+        Vec3f_Set(&sp2C, temp_v0->xw, 0.0f, temp_v0->zw);
+        Vec3s_Set(&sp24, 0, D_8006F09C->unk_01E.y, 0);
+        MtxF_FromPosRot(&D_800AA8C8.unk_0000[D_800AA8C8.unk_10A0 + 1], &sp2C, &sp24);
 
         D_800AA8C8.unk_10A0++;
 
@@ -698,7 +698,7 @@ void func_80014334(GraphNode* arg0) {
     MtxF sp20;
     unk_D_86002F34_alt5* arg = (unk_D_86002F34_alt5*)arg0;
 
-    func_8000F2C4(&sp20, &arg->unk_18, &arg->unk_24);
+    MtxF_FromPosRot(&sp20, &arg->unk_18, &arg->unk_24);
     func_800122B4(&sp20);
     func_80013330(arg0);
 
@@ -743,13 +743,13 @@ void func_800143C0(GraphNode* arg0) {
 
         func_80012458(&sp78);
         if (D_800AA8C8.unk_1080[D_800AA8C8.unk_10A0 - 1] == 1) {
-            func_8000FBB0(&D_800AA8C8.unk_0000[D_800AA8C8.unk_10A0 + 32], &sp38,
+            MtxF_Mul(&D_800AA8C8.unk_0000[D_800AA8C8.unk_10A0 + 32], &sp38,
                           &D_800AA8C8.unk_0000[D_800AA8C8.unk_10A0 + 31]);
         } else {
-            func_8000FBB0(&D_800AA8C8.unk_0000[D_800AA8C8.unk_10A0 + 32], &sp38,
+            MtxF_Mul(&D_800AA8C8.unk_0000[D_800AA8C8.unk_10A0 + 32], &sp38,
                           &D_800AA8C8.unk_0000[D_800AA8C8.unk_10A0 - 1]);
         }
-        func_8000FDE4(&D_800AA8C8.unk_0000[D_800AA8C8.unk_10A0], &D_800AA8C8.unk_0000[D_800AA8C8.unk_10A0 + 32],
+        MtxF_MulVec3f(&D_800AA8C8.unk_0000[D_800AA8C8.unk_10A0], &D_800AA8C8.unk_0000[D_800AA8C8.unk_10A0 + 32],
                       &D_800AB970.unk_000[D_800AB970.unk_180]);
         func_800121C8();
         D_800AA8C8.unk_1080[D_800AA8C8.unk_10A0] = 1;
@@ -788,19 +788,19 @@ void func_80014690(GraphNode* arg0) {
         func_800175E8(&arg->unk_054, D_8006F084, (arg->unk_000.unk_02 & 0x20) != 0);
 
         if (arg->unk_000.unk_02 & 0x10) {
-            func_8000FBB0(&sp38, &arg->unk_060, &D_800AA8C8.unk_0000[D_800AA8C8.unk_10A0]);
+            MtxF_Mul(&sp38, &arg->unk_060, &D_800AA8C8.unk_0000[D_800AA8C8.unk_10A0]);
         } else if (arg->unk_000.unk_02 & 8) {
-            func_8000F88C(&sp38, &D_8006F088->unk_60.mtxf, &D_800AA8C8.unk_0000[D_800AA8C8.unk_10A0], &arg->unk_024,
+            MtxF_Combine(&sp38, &D_8006F088->unk_60.mtxf, &D_800AA8C8.unk_0000[D_800AA8C8.unk_10A0], &arg->unk_024,
                           1.0f);
         } else if (arg->unk_000.unk_02 & 0x80) {
-            func_8000F3FC(&sp38, &arg->unk_024, &arg->unk_01E);
-            func_8000FBB0(&sp38, &sp38, &D_800AA8C8.unk_0000[D_800AA8C8.unk_10A0]);
+            MtxF_FromPosRotInverted(&sp38, &arg->unk_024, &arg->unk_01E);
+            MtxF_Mul(&sp38, &sp38, &D_800AA8C8.unk_0000[D_800AA8C8.unk_10A0]);
         } else {
-            func_8000F2C4(&sp38, &arg->unk_024, &arg->unk_01E);
-            func_8000FBB0(&sp38, &sp38, &D_800AA8C8.unk_0000[D_800AA8C8.unk_10A0]);
+            MtxF_FromPosRot(&sp38, &arg->unk_024, &arg->unk_01E);
+            MtxF_Mul(&sp38, &sp38, &D_800AA8C8.unk_0000[D_800AA8C8.unk_10A0]);
         }
 
-        func_8000FDE4(&D_800AA8C8.unk_0000[D_800AA8C8.unk_10A0 + 1], &sp38, &arg->unk_030);
+        MtxF_MulVec3f(&D_800AA8C8.unk_0000[D_800AA8C8.unk_10A0 + 1], &sp38, &arg->unk_030);
 
         if (!(arg->unk_000.unk_02 & 4)) {
             D_800AA8C8.unk_10A0++;
@@ -849,7 +849,7 @@ void func_80014980(GraphNode* arg0) {
     MtxF sp30;
     unk_D_86002F34_alt9* arg = (unk_D_86002F34_alt9*)arg0;
 
-    func_8000F88C(&sp30, &D_8006F088->unk_60.mtxf, &D_800AA8C8.unk_0000[D_800AA8C8.unk_10A0], &arg->unk_1C,
+    MtxF_Combine(&sp30, &D_8006F088->unk_60.mtxf, &D_800AA8C8.unk_0000[D_800AA8C8.unk_10A0], &arg->unk_1C,
                   arg->unk_28);
     D_800AA8C8.unk_10A0++;
     func_80012230(&sp30);
@@ -960,11 +960,11 @@ void func_80014D70(GraphNode* arg0) {
         func_80014CB8(0x64);
     }
 
-    func_8000E88C(&sp9C, sp3C->mf[3][0], sp3C->mf[3][1] + arg->unk_1E, sp3C->mf[3][2]);
+    Vec3f_Set(&sp9C, sp3C->mf[3][0], sp3C->mf[3][1] + arg->unk_1E, sp3C->mf[3][2]);
     sp9C.y = 0.0f;
 
     if (D_8006F09C->unk_000.unk_02 & 0x40) {
-        func_8000E88C(&sp90, 0.0f, 1.0f, 0.0f);
+        Vec3f_Set(&sp90, 0.0f, 1.0f, 0.0f);
         func_8000FF04(sp3C, &sp84);
 
         sp80 = 1.0f - ((sp3C->mf[3][1] - sp9C.y) / 1000.0f);
@@ -979,7 +979,7 @@ void func_80014D70(GraphNode* arg0) {
         sp84.x *= (arg->unk_1A / 100.0f) * sp80;
         sp84.z *= (arg->unk_1C / 100.0f) * sp80;
         func_8000FA94(&sp40, &sp90, &sp9C, D_8006F09C->unk_01E.y);
-        func_8000FDE4(&D_800AA8C8.unk_0000[D_800AA8C8.unk_10A0 + 1], &sp40, &sp84);
+        MtxF_MulVec3f(&D_800AA8C8.unk_0000[D_800AA8C8.unk_10A0 + 1], &sp40, &sp84);
 
         D_800AA8C8.unk_10A0++;
         func_800121C8();

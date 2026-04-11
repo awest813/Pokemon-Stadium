@@ -3,7 +3,7 @@
 #include "src/DDC0.h"
 #include "src/profiler.h"
 
-Scheduler D_800A62E0;
+Scheduler gScheduler;
 
 void RSPTask_Reset(RSPTask* arg0) {
     osWritebackDCacheAll();
@@ -145,14 +145,14 @@ s32 SchedClient_PollMsg(DisplayCtx* arg0) {
 }
 
 void Sched_PromoteTasks(void) {
-    if ((D_800A62E0.cur_audio == NULL) && (D_800A62E0.next_audio != NULL)) {
-        D_800A62E0.cur_audio = D_800A62E0.next_audio;
-        D_800A62E0.next_audio = NULL;
+    if ((gScheduler.cur_audio == NULL) && (gScheduler.next_audio != NULL)) {
+        gScheduler.cur_audio = gScheduler.next_audio;
+        gScheduler.next_audio = NULL;
     }
 
-    if ((D_800A62E0.cur_gfx == NULL) && (D_800A62E0.next_gfx != NULL)) {
-        D_800A62E0.cur_gfx = D_800A62E0.next_gfx;
-        D_800A62E0.next_gfx = NULL;
+    if ((gScheduler.cur_gfx == NULL) && (gScheduler.next_gfx != NULL)) {
+        gScheduler.cur_gfx = gScheduler.next_gfx;
+        gScheduler.next_gfx = NULL;
     }
 }
 
@@ -160,10 +160,10 @@ void Sched_Noop(void) {
 }
 
 void Sched_BroadcastVBlank(u32 arg0) {
-    GBMainCtx* var_s0 = D_800A62E0.clients;
+    GBMainCtx* var_s0 = gScheduler.clients;
 
     while (var_s0 != NULL) {
-        if (D_800A62E0.pre_nmi == 0) {
+        if (gScheduler.pre_nmi == 0) {
             if (var_s0->unk_01DC != 2) {
                 osSendMesg(&var_s0->queue1, arg0, 0);
             }
@@ -184,23 +184,23 @@ RSPTask* Sched_TryRunTask(RSPTask* arg0) {
 }
 
 void Sched_StartGFX(void) {
-    if (D_800A62E0.cur_task == NULL) {
-        D_800A62E0.cur_task = Sched_TryRunTask(D_800A62E0.cur_gfx);
+    if (gScheduler.cur_task == NULL) {
+        gScheduler.cur_task = Sched_TryRunTask(gScheduler.cur_gfx);
     }
 }
 
 s32 Sched_YieldGFX(void) {
     s32 ret = 0;
 
-    if (D_800A62E0.cur_task != NULL) {
-        ret = RSPTask_TryYield(D_800A62E0.cur_task);
+    if (gScheduler.cur_task != NULL) {
+        ret = RSPTask_TryYield(gScheduler.cur_task);
     }
 
     return ret;
 }
 
 void Sched_HandlePreNMI(void) {
-    GBMainCtx* var_s0 = D_800A62E0.clients;
+    GBMainCtx* var_s0 = gScheduler.clients;
 
     while (var_s0 != NULL) {
         if (var_s0->unk_01DC == 0) {
@@ -208,7 +208,7 @@ void Sched_HandlePreNMI(void) {
         }
         var_s0 = var_s0->unk_01D8;
     }
-    D_800A62E0.pre_nmi = 1;
+    gScheduler.pre_nmi = 1;
     Audio_StopAll();
     Game_OnPreNMI();
 }
@@ -216,12 +216,12 @@ void Sched_HandlePreNMI(void) {
 void Sched_HandleVBlank(void) {
     RSPTask* var_v0;
 
-    D_800A62E0.time = osGetTime();
-    D_800A62E0.vblank_count++;
+    gScheduler.time = osGetTime();
+    gScheduler.vblank_count++;
 
-    if ((D_800A62E0.pre_nmi > 0) && (D_800A62E0.pre_nmi < 0x1E)) {
-        D_800A62E0.pre_nmi++;
-        if (D_800A62E0.pre_nmi == 0x1A) {
+    if ((gScheduler.pre_nmi > 0) && (gScheduler.pre_nmi < 0x1E)) {
+        gScheduler.pre_nmi++;
+        if (gScheduler.pre_nmi == 0x1A) {
             while (osAfterPreNMI() != 0) {
                 IO_WRITE(SP_STATUS_REG, 0x8000);
             }
@@ -231,57 +231,57 @@ void Sched_HandleVBlank(void) {
     Sched_PromoteTasks();
     Sched_Noop();
 
-    if (D_800A62E0.cur_audio != NULL) {
-        if (D_800A62E0.cur_task == NULL) {
-            D_800A62E0.cur_task = Sched_TryRunTask(D_800A62E0.cur_audio);
+    if (gScheduler.cur_audio != NULL) {
+        if (gScheduler.cur_task == NULL) {
+            gScheduler.cur_task = Sched_TryRunTask(gScheduler.cur_audio);
         } else {
             Sched_YieldGFX();
         }
-    } else if ((D_800A62E0.cur_gfx != NULL) && (D_800A62E0.cur_task == NULL)) {
-        D_800A62E0.cur_task = Sched_TryRunTask(D_800A62E0.cur_gfx);
+    } else if ((gScheduler.cur_gfx != NULL) && (gScheduler.cur_task == NULL)) {
+        gScheduler.cur_task = Sched_TryRunTask(gScheduler.cur_gfx);
     }
 
     Sched_BroadcastVBlank('VTRE');
 }
 
 void Sched_HandleSPDone(void) {
-    RSPTask* sp24 = D_800A62E0.cur_task;
-    s32 tmp = RSPTask_OnSPDone(D_800A62E0.cur_task);
+    RSPTask* sp24 = gScheduler.cur_task;
+    s32 tmp = RSPTask_OnSPDone(gScheduler.cur_task);
 
-    D_800A62E0.cur_task = NULL;
+    gScheduler.cur_task = NULL;
 
     if (tmp) {
-        D_800A62E0.cur_task = Sched_TryRunTask(D_800A62E0.cur_audio);
+        gScheduler.cur_task = Sched_TryRunTask(gScheduler.cur_audio);
     }
 
     if (sp24->state == 3) {
         switch (sp24->task.t.type) {
             case M_AUDTASK:
-                D_800A62E0.cur_audio = 0;
-                D_800A62E0.audio_pending = 0;
-                D_800A62E0.cur_task = Sched_TryRunTask(D_800A62E0.cur_gfx);
+                gScheduler.cur_audio = 0;
+                gScheduler.audio_pending = 0;
+                gScheduler.cur_task = Sched_TryRunTask(gScheduler.cur_gfx);
                 break;
 
             case M_GFXTASK:
-                if (D_800A62E0.cur_gfx->rdp_state == 2) {
-                    D_800A62E0.cur_gfx = NULL;
-                    D_800A62E0.gfx_pending = 0;
+                if (gScheduler.cur_gfx->rdp_state == 2) {
+                    gScheduler.cur_gfx = NULL;
+                    gScheduler.gfx_pending = 0;
                 }
                 break;
 
             case 4:
-                D_800A62E0.cur_gfx = NULL;
-                D_800A62E0.task4_pending = 0;
+                gScheduler.cur_gfx = NULL;
+                gScheduler.task4_pending = 0;
                 break;
         }
     }
 }
 
 void Sched_HandleDPDone(void) {
-    RSPTask_OnDPDone(D_800A62E0.cur_gfx);
-    if (D_800A62E0.cur_gfx->state == 3) {
-        D_800A62E0.cur_gfx = NULL;
-        D_800A62E0.gfx_pending = 0;
+    RSPTask_OnDPDone(gScheduler.cur_gfx);
+    if (gScheduler.cur_gfx->state == 3) {
+        gScheduler.cur_gfx = NULL;
+        gScheduler.gfx_pending = 0;
     }
 }
 
@@ -289,33 +289,33 @@ void SchedThread_Main(void* arg0) {
     s32 sp24;
 
     __osSetFpcCsr(0x01000C01);
-    osCreateMesgQueue(&D_800A62E0.queue, D_800A62E0.stack, 0x10);
-    osViSetEvent(&D_800A62E0.queue, 0x66, 1);
-    osSetEventMesg(4, &D_800A62E0.queue, 0x64);
-    osSetEventMesg(9, &D_800A62E0.queue, 0x65);
-    osSetEventMesg(0xE, &D_800A62E0.queue, 0x68);
+    osCreateMesgQueue(&gScheduler.queue, gScheduler.stack, 0x10);
+    osViSetEvent(&gScheduler.queue, SCHED_MSG_VBLANK, 1);
+    osSetEventMesg(4, &gScheduler.queue, SCHED_MSG_SP_DONE);
+    osSetEventMesg(9, &gScheduler.queue, SCHED_MSG_DP_DONE);
+    osSetEventMesg(0xE, &gScheduler.queue, SCHED_MSG_PRE_NMI);
 
     while (true) {
-        osRecvMesg(&D_800A62E0.queue, &sp24, 1);
+        osRecvMesg(&gScheduler.queue, &sp24, 1);
 
         switch (sp24) {
-            case 0x66:
+            case SCHED_MSG_VBLANK:
                 Sched_HandleVBlank();
                 break;
 
-            case 0x64:
+            case SCHED_MSG_SP_DONE:
                 Sched_HandleSPDone();
                 break;
 
-            case 0x65:
+            case SCHED_MSG_DP_DONE:
                 Sched_HandleDPDone();
                 break;
 
-            case 0x67:
+            case SCHED_MSG_START_GFX:
                 Sched_StartGFX();
                 break;
 
-            case 0x68:
+            case SCHED_MSG_PRE_NMI:
                 Sched_HandlePreNMI();
                 break;
         }
@@ -323,26 +323,26 @@ void SchedThread_Main(void* arg0) {
 }
 
 void Sched_Init(void) {
-    D_800A62E0.clients = NULL;
-    D_800A62E0.cur_task = NULL;
-    D_800A62E0.cur_audio = 0;
-    D_800A62E0.cur_gfx = NULL;
-    D_800A62E0.next_audio = NULL;
-    D_800A62E0.next_gfx = NULL;
-    D_800A62E0.audio_pending = 0;
-    D_800A62E0.gfx_pending = 0;
-    osCreateThread(&D_800A62E0.thread, 3, SchedThread_Main, NULL, D_800A62E0.stack, 0x64);
-    osStartThread(&D_800A62E0.thread);
+    gScheduler.clients = NULL;
+    gScheduler.cur_task = NULL;
+    gScheduler.cur_audio = 0;
+    gScheduler.cur_gfx = NULL;
+    gScheduler.next_audio = NULL;
+    gScheduler.next_gfx = NULL;
+    gScheduler.audio_pending = 0;
+    gScheduler.gfx_pending = 0;
+    osCreateThread(&gScheduler.thread, 3, SchedThread_Main, NULL, gScheduler.stack, 0x64);
+    osStartThread(&gScheduler.thread);
 }
 
 void Sched_RegisterClient(GBMainCtx* arg0) {
     GBMainCtx* var_v1;
     GBMainCtx* var_a1;
 
-    if (D_800A62E0.clients == NULL) {
-        D_800A62E0.clients = arg0;
+    if (gScheduler.clients == NULL) {
+        gScheduler.clients = arg0;
     } else {
-        var_v1 = D_800A62E0.clients;
+        var_v1 = gScheduler.clients;
         var_a1 = var_v1->unk_01D8;
 
         while (var_a1 != NULL) {
@@ -355,8 +355,8 @@ void Sched_RegisterClient(GBMainCtx* arg0) {
 }
 
 void Sched_UnregisterClient(GBMainCtx* arg0) {
-    GBMainCtx** var_v0 = &D_800A62E0.clients;
-    GBMainCtx* var_v1 = D_800A62E0.clients;
+    GBMainCtx** var_v0 = &gScheduler.clients;
+    GBMainCtx* var_v1 = gScheduler.clients;
 
     while (var_v1 != NULL) {
         if (var_v1 == arg0) {
@@ -374,24 +374,24 @@ void Sched_QueueTask(RSPTask* arg0, s32 arg1) {
 
         switch (arg0->task.t.type) {
             case 2:
-                D_800A62E0.next_audio = arg0;
+                gScheduler.next_audio = arg0;
                 break;
 
             case 1:
-                if ((arg1 != 0) && (D_800A62E0.cur_gfx == NULL)) {
-                    D_800A62E0.cur_gfx = arg0;
-                    D_800A62E0.next_gfx = NULL;
-                    osSendMesg(&D_800A62E0.queue, 0x67, 0);
+                if ((arg1 != 0) && (gScheduler.cur_gfx == NULL)) {
+                    gScheduler.cur_gfx = arg0;
+                    gScheduler.next_gfx = NULL;
+                    osSendMesg(&gScheduler.queue, SCHED_MSG_START_GFX, 0);
                 } else {
-                    D_800A62E0.next_gfx = arg0;
+                    gScheduler.next_gfx = arg0;
                 }
                 break;
 
             case 4:
-                if (D_800A62E0.cur_gfx == NULL) {
-                    D_800A62E0.cur_gfx = arg0;
-                    D_800A62E0.next_gfx = NULL;
-                    osSendMesg(&D_800A62E0.queue, 0x67, 0);
+                if (gScheduler.cur_gfx == NULL) {
+                    gScheduler.cur_gfx = arg0;
+                    gScheduler.next_gfx = NULL;
+                    osSendMesg(&gScheduler.queue, SCHED_MSG_START_GFX, 0);
                 }
                 break;
         }

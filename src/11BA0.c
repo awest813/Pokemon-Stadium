@@ -3,7 +3,7 @@
 #include "F420.h"
 #include "util.h"
 
-void func_80010FA0(GraphNode* arg0, u8 arg1) {
+void GraphNode_Init(GraphNode* arg0, u8 arg1) {
     if (arg0 != NULL) {
         arg0->unk_00 = arg1;
         arg0->unk_01 = 0x11;
@@ -17,7 +17,7 @@ void func_80010FA0(GraphNode* arg0, u8 arg1) {
     }
 }
 
-void func_80010FDC(GraphNode* arg0, func_D_86002F34_000_010 arg1, void* arg2) {
+void GraphNode_SetCallback(GraphNode* arg0, func_D_86002F34_000_010 arg1, void* arg2) {
     if (arg1 != NULL) {
         arg1 = Util_ConvertAddrToVirtAddr(arg1);
     }
@@ -31,42 +31,42 @@ void func_80010FDC(GraphNode* arg0, func_D_86002F34_000_010 arg1, void* arg2) {
     }
 }
 
-GraphNode* func_8001103C(MainPoolState* arg0, GraphNode* arg1) {
+GraphNode* GraphNode_Create(MainPoolState* arg0, GraphNode* arg1) {
     if (arg0 != NULL) {
-        arg1 = func_80002DCC(arg0, sizeof(struct GraphNode), 4);
+        arg1 = MainPoolState_AllocLinear(arg0, sizeof(struct GraphNode), 4);
     }
 
     if (arg1 != NULL) {
-        func_80010FA0(arg1, 0);
+        GraphNode_Init(arg1, 0);
     }
 
     return arg1;
 }
 
-unk_D_86002F34_alt2* func_80011088(MainPoolState* arg0, unk_D_86002F34_alt2* arg1, GraphNode* arg2) {
+unk_D_86002F34_alt2* GraphNode_CreateRoot(MainPoolState* arg0, unk_D_86002F34_alt2* arg1, GraphNode* arg2) {
     if (arg0 != NULL) {
-        arg1 = func_80002DCC(arg0, sizeof(unk_D_86002F34_alt2), 4);
+        arg1 = MainPoolState_AllocLinear(arg0, sizeof(unk_D_86002F34_alt2), 4);
     }
 
     if (arg1 != NULL) {
         arg1->unk_18 = arg2;
-        func_80010FA0(arg1, 1);
+        GraphNode_Init(arg1, 1);
     }
 
     return arg1;
 }
 
-unk_D_86002F34_00C* func_800110E0(MemoryBlock* arg0, unk_D_86002F34_00C* arg1, s16 arg2, s16 arg3, s16 arg4, s16 arg5) {
+unk_D_86002F34_00C* GraphNode_CreateCamera(MemoryBlock* arg0, unk_D_86002F34_00C* arg1, s16 arg2, s16 arg3, s16 arg4, s16 arg5) {
     if (arg0 != NULL) {
-        arg1 = func_80002DCC(arg0, sizeof(unk_D_86002F34_00C), 4);
+        arg1 = MainPoolState_AllocLinear(arg0, sizeof(unk_D_86002F34_00C), 4);
     }
 
     if (arg1 != NULL) {
-        func_80011DAC(arg1, arg2, arg3, arg4, arg5);
-        func_80011E68(arg1, 30.0f, 100.0f, 12800.0f);
-        func_80011EB4(arg1, 0.0f, 512.0f, 4096.0f, 0.0f, 0.0f, 0.0f, 0);
-        func_80011FC8(arg1, 2, 0, 0, 0, 0);
-        func_80010FA0(arg1, 2);
+        Camera_SetViewport(arg1, arg2, arg3, arg4, arg5);
+        Camera_SetPerspective(arg1, 30.0f, 100.0f, 12800.0f);
+        Camera_LookAt(arg1, 0.0f, 512.0f, 4096.0f, 0.0f, 0.0f, 0.0f, 0);
+        GraphNode_SetLighting(arg1, 2, 0, 0, 0, 0);
+        GraphNode_Init(arg1, 2);
     }
     return arg1;
 }
@@ -200,10 +200,10 @@ unk_D_86002F34_alt19* func_80011504(MainPoolState* arg0, unk_D_86002F34_alt19* a
     return arg1;
 }
 
-unk_D_86002F34* func_8001156C(MainPoolState* arg0, unk_D_86002F34* arg1, s32 arg2, unk_D_86002F34_018* arg3, s32 arg4,
+unk_D_86002F34* GraphNode_CreateDisplayList(MainPoolState* arg0, unk_D_86002F34* arg1, s32 arg2, unk_D_86002F34_018* arg3, s32 arg4,
                               unk_D_86002F34_01C* arg5, s32 arg6, Vtx* arg7) {
     if (arg0 != NULL) {
-        arg1 = func_80002DCC(arg0, sizeof(unk_D_86002F34), 4);
+        arg1 = MainPoolState_AllocLinear(arg0, sizeof(unk_D_86002F34), 4);
     }
 
     if (arg1 != NULL) {
@@ -214,7 +214,7 @@ unk_D_86002F34* func_8001156C(MainPoolState* arg0, unk_D_86002F34* arg1, s32 arg
         arg1->unk_25 = arg4;
         arg1->unk_26 = arg6;
         arg1->unk_28 = NULL;
-        func_80010FA0(arg1, 0xE);
+        GraphNode_Init(arg1, 0xE);
     }
 
     return arg1;
@@ -471,7 +471,7 @@ unk_D_86002F34_alt24* func_80011CF0(MainPoolState* arg0, unk_D_86002F34_alt24* a
     return arg1;
 }
 
-void func_80011DAC(unk_D_86002F34_00C* arg0, s16 arg1, s16 arg2, s16 arg3, s16 arg4) {
+void Camera_SetViewport(unk_D_86002F34_00C* arg0, s16 arg1, s16 arg2, s16 arg3, s16 arg4) {
     arg0->unk_18.x = arg1;
     arg0->unk_18.y = arg2;
     arg0->unk_18.width = arg3;
@@ -486,7 +486,7 @@ void func_80011DAC(unk_D_86002F34_00C* arg0, s16 arg1, s16 arg2, s16 arg3, s16 a
     arg0->unk_40.scale = 1.0f;
 }
 
-void func_80011E68(unk_D_86002F34_00C* arg0, f32 arg1, f32 arg2, f32 arg3) {
+void Camera_SetPerspective(unk_D_86002F34_00C* arg0, f32 arg1, f32 arg2, f32 arg3) {
     arg0->unk_24.aspect = (f32)arg0->unk_18.width / arg0->unk_18.height;
     arg0->unk_24.fovy = arg1;
     arg0->unk_24.near = arg2;
@@ -494,7 +494,7 @@ void func_80011E68(unk_D_86002F34_00C* arg0, f32 arg1, f32 arg2, f32 arg3) {
     arg0->unk_24.scale = 1.0f;
 }
 
-void func_80011EB4(unk_D_86002F34_00C* arg0, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg5, f32 arg6, s32 arg7) {
+void Camera_LookAt(unk_D_86002F34_00C* arg0, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg5, f32 arg6, s32 arg7) {
     unk_D_86002F34_00C_060* sp1C = &arg0->unk_60;
     f32 sp28 = arg4 - arg1;
     f32 sp24 = arg6 - arg3;
@@ -508,7 +508,7 @@ void func_80011EB4(unk_D_86002F34_00C* arg0, f32 arg1, f32 arg2, f32 arg3, f32 a
     func_8000E88C(&sp1C->up, SINS(arg7) * sp24, COSS(arg7), -SINS(arg7) * sp28);
 }
 
-void func_80011FC8(unk_D_86002F34_00C* arg0, s16 arg1, s16 arg2, u8 arg3, u8 arg4, u8 arg5) {
+void GraphNode_SetLighting(unk_D_86002F34_00C* arg0, s16 arg1, s16 arg2, u8 arg3, u8 arg4, u8 arg5) {
     unk_D_86002F34_00C_0CC* ptr = &arg0->unk_CC;
 
     if (arg2 < 2) {
@@ -541,7 +541,7 @@ void func_80012044(unk_D_86002F34_00C* arg0, s16 arg1, s16 arg2, s32 arg3, u32 a
     ptr->texture = D_1000800;
 }
 
-void func_80012094(GraphNode* arg0, GraphNode* arg1) {
+void GraphNode_AppendChild(GraphNode* arg0, GraphNode* arg1) {
     GraphNode* temp_v0;
     GraphNode* temp_v1;
 
@@ -561,7 +561,7 @@ void func_80012094(GraphNode* arg0, GraphNode* arg1) {
     }
 }
 
-void func_800120DC(GraphNode* arg0, GraphNode* arg1) {    
+void GraphNode_RemoveChild(GraphNode* arg0, GraphNode* arg1) {    
     arg1->unk_04->unk_08 = arg1->unk_08;
     arg1->unk_08->unk_04 = arg1->unk_04;
     if ((unk_D_86002F34_00C*)arg1 == arg0->unk_0C) {
@@ -573,7 +573,7 @@ void func_800120DC(GraphNode* arg0, GraphNode* arg1) {
     }
 }
 
-GraphNode* func_80012120(GraphNode* arg0, s32 arg1) {
+GraphNode* GraphNode_GetChildByIndex(GraphNode* arg0, s32 arg1) {
     GraphNode* var_v1;
     s32 i;
     var_v1 = (GraphNode*)arg0->unk_0C;

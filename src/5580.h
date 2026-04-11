@@ -80,7 +80,13 @@ typedef struct DisplayCtx {
     /* 0xAB8 */ s32 unk_AB8;
 } DisplayCtx; // size >= 0xABC
 
-extern Scheduler D_800A62E0;
+#define SCHED_MSG_SP_DONE    0x64
+#define SCHED_MSG_DP_DONE    0x65
+#define SCHED_MSG_VBLANK     0x66
+#define SCHED_MSG_START_GFX  0x67
+#define SCHED_MSG_PRE_NMI    0x68
+ 
+extern Scheduler gScheduler;
 
 void SchedClient_Init(DisplayCtx*, s32, s32);
 s32 SchedClient_WaitMsg(DisplayCtx*);

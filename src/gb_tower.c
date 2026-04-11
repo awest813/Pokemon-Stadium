@@ -19,7 +19,7 @@ extern s32 D_800A82A8;
 
 // these first 4 funcs might be part of a hal_libc file or something instead of GB Tower.
 
-s32 func_8000AEBC(s32 arg0, void* arg1, u16 arg2, u16 arg3);
+s32 GbPak_ReadWriteMbc(s32 arg0, void* arg1, u16 arg2, u16 arg3);
 s32 func_8000AF40(s32 arg0, void* arg1, u16 arg2, u16 arg3);
 
 // TODO: These 0x20 sizes probably belong to a struct size or something. Use
@@ -30,7 +30,7 @@ s32 func_8000A630(s32 arg0, void* arg1) {
     s32 sp20 = 0;
     UNUSED u8 padding[8];
 
-    if ((func_8000AF40(arg0, arg1, 0, 0x20) == 0) && (func_8000AEBC(arg0, (uintptr_t)&sp24, 0, 0x20) == 0) &&
+    if ((func_8000AF40(arg0, arg1, 0, 0x20) == 0) && (GbPak_ReadWriteMbc(arg0, (uintptr_t)&sp24, 0, 0x20) == 0) &&
         (bcmp(&sp24, arg1, 0x20) == 0) && (osGbpakGetStatus(&D_800A8100[arg0], &sp47) == 0)) {
         sp20 = ((sp47 & 4) != 0) == 0;
     }
@@ -98,7 +98,7 @@ s32 func_8000A888(s32 arg0, u8 arg1) {
     return temp_v1;
 }
 
-void func_8000A924(void) {
+void GbPak_PowerOffAll(void) {
     s32 i;
 
     for (i = 0; i < 4; i++) {
@@ -109,7 +109,7 @@ void func_8000A924(void) {
     }
 }
 
-s32 func_8000A9D0(OSGbpakId* header) {
+s32 GbPak_CheckGameTitle(OSGbpakId* header) {
     // make sure its 0 terminated. dont want those dirty hackers abusing a Strcmp exploit
     header->game_title[15] = '\0';
 
@@ -133,7 +133,7 @@ s32 func_8000A9D0(OSGbpakId* header) {
     return 0;
 }
 
-s32 func_8000AA7C(void) {
+s32 GbPak_InitAll(void) {
     s32 i;
     s32 temp_v0;
     u8 status;
@@ -154,7 +154,7 @@ s32 func_8000AA7C(void) {
                     if (!(status & 8)) {
                         Game_PostBattle(i, 2);
                     }
-                    if (func_8000A9D0(&sp4C) != 0) {
+                    if (GbPak_CheckGameTitle(&sp4C) != 0) {
                         if (temp_v0 == 4) {
                             // what. the redundant temp_v0 functionless check is apparently needed to match.
                         }
@@ -181,7 +181,7 @@ s32 func_8000AA7C(void) {
     return (D_800A82A5 << 0x10) | D_800A82A4;
 }
 
-s32 func_8000AC7C(s32 arg0) {
+s32 GbPak_IsCartridgeConnected(s32 arg0) {
     u8 status;
     s32 ret = osGbpakGetStatus(&D_800A8100[arg0], &status);
     UNUSED u8 filler;
@@ -204,7 +204,7 @@ s32 func_8000ACF4(s32 arg0) {
     return ((status & OS_GBPAK_GBCART_ON) != 0);
 }
 
-s32 func_8000AD68(s32 arg0) {
+s32 GbPak_InitPak(s32 arg0) {
     UNUSED u8 filler[4];
     u8 status;
     OSGbpakId sp28;
@@ -227,14 +227,14 @@ s32 func_8000AE28(s32 arg0, void* arg1) {
     s32 sp18;
 
     sp18 = 0;
-    if ((func_8000AEBC(arg0, (uintptr_t)&sp1C, 0, 0x20) == 0) && (bcmp(&sp1C, arg1, 0x20) == 0) &&
+    if ((GbPak_ReadWriteMbc(arg0, (uintptr_t)&sp1C, 0, 0x20) == 0) && (bcmp(&sp1C, arg1, 0x20) == 0) &&
         (osGbpakGetStatus(&D_800A8100[arg0], &status) == 0) && !(status & OS_GBPAK_RSTB_DETECTION)) {
         sp18 = 1;
     }
     return sp18;
 }
 
-s32 func_8000AEBC(s32 arg0, void* arg1, u16 arg2, u16 arg3) {
+s32 GbPak_ReadWriteMbc(s32 arg0, void* arg1, u16 arg2, u16 arg3) {
     s32 var_v1;
 
     var_v1 = 1;
@@ -254,7 +254,7 @@ s32 func_8000AF40(s32 arg0, void* arg1, u16 arg2, u16 arg3) {
     return var_v1;
 }
 
-s32 func_8000AFC4(s32 arg0, u8* arg1, u16 arg2, u16 arg3) {
+s32 GbPak_ReadWrite(s32 arg0, u8* arg1, u16 arg2, u16 arg3) {
     s32 var_v1;
 
     var_v1 = 1;
@@ -316,7 +316,7 @@ s32 func_8000B1C4(s32 arg0, u8* arg1, s32 arg2, s32 arg3) {
             var_v1_2 = 0x4000;
         }
         temp_v0_4 = var_v1_2 - temp_s1;
-        ret = func_8000AFC4(arg0, arg1, temp_s1, temp_v0_4);
+        ret = GbPak_ReadWrite(arg0, arg1, temp_s1, temp_v0_4);
         if (ret != 0) {
             return ret;
         }
@@ -335,7 +335,7 @@ s32 func_8000B1C4(s32 arg0, u8* arg1, s32 arg2, s32 arg3) {
         if (ret != 0) {
             return ret;
         }
-        ret = func_8000AFC4(arg0, arg1, ((temp_s1 & 0x3FFF) + 0x4000) & 0xFFFF, temp_s1_2);
+        ret = GbPak_ReadWrite(arg0, arg1, ((temp_s1 & 0x3FFF) + 0x4000) & 0xFFFF, temp_s1_2);
         if (ret != 0) {
             return ret;
         }
@@ -352,7 +352,7 @@ u8 func_8000B318(u8 arg0) {
     return temp_v0;
 }
 
-void func_8000B330(void) {
+void GbPak_UpdateStatus(void) {
     u8 sp1F;
     static s32 D_800697D0 = 0; // .data
 

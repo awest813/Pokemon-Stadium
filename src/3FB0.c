@@ -21,11 +21,11 @@ static u8 D_800A60C0[0x200];
 static OSMesgQueue D_800A62C0;
 static OSMesg D_800A62D8;
 
-s32 func_800033B0(u8* arg0) {
+s32 JpegStream_ReadU16(u8* arg0) {
     return ((arg0[0] << 8) | arg0[1]) & 0xFFFF;
 }
 
-void func_800033C8(unk_func_80003680_sp300* arg0, u8* arg1) {
+void JpegStream_ParseMarkers(unk_JPEG_Decompress_sp300* arg0, u8* arg1) {
     s32 temp_v0_2;
     s32 var_s2;
     s32 var_v0;
@@ -50,21 +50,21 @@ void func_800033C8(unk_func_80003680_sp300* arg0, u8* arg1) {
 
                 case JPEG_MARKER_QUANTIZATION_TABLE:
                     arg0->quantization_table = arg1 + 2;
-                    arg1 += func_800033B0(arg1);
+                    arg1 += JpegStream_ReadU16(arg1);
                     break;
 
                 case JPEG_MARKER_HUFFMAN_TABLE:
                     arg0->huffman_table = arg1 + 2;
-                    arg1 += func_800033B0(arg1);
+                    arg1 += JpegStream_ReadU16(arg1);
                     break;
 
                 case JPEG_MARKER_START_OF_FRAME:
                     arg0->start_of_frame = arg1 + 2;
-                    arg1 += func_800033B0(arg1);
+                    arg1 += JpegStream_ReadU16(arg1);
                     break;
 
                 case JPEG_MARKER_START_OF_SCAN:
-                    arg1 += func_800033B0(arg1);
+                    arg1 += JpegStream_ReadU16(arg1);
                     arg0->start_of_scan = arg1;
                     break;
 
@@ -75,7 +75,7 @@ void func_800033C8(unk_func_80003680_sp300* arg0, u8* arg1) {
                     if ((temp_v0 >= JPEG_MARKER_RESTART0) && (temp_v0 <= JPEG_MARKER_RESTART7)) {
                         arg0->unk_01 = 1;
                     } else {
-                        arg1 += func_800033B0(arg1);
+                        arg1 += JpegStream_ReadU16(arg1);
                     }
                     break;
             }
@@ -98,7 +98,7 @@ void func_800033C8(unk_func_80003680_sp300* arg0, u8* arg1) {
 extern u64 njpgdspMainTextStart[];
 extern u64 njpgdspMainDataStart[];
 
-void func_80003558(RSPTask* arg0, unk_func_80003680_sp90* arg1) {
+void RSPTask_InitJpeg(RSPTask* arg0, unk_JPEG_Decompress_sp90* arg1) {
     arg0->task.t.type = 4;
     arg0->task.t.flags = 0;
     arg0->task.t.ucode_boot = rspbootTextStart;
@@ -119,7 +119,7 @@ void func_80003558(RSPTask* arg0, unk_func_80003680_sp90* arg1) {
     osCreateMesgQueue(&arg0->queue, &arg0->mesg, 1);
 }
 
-void func_80003608(unk_func_80003680_sp27* arg0, JpegHuffmanTable* arg1, unk_func_80003680_sp300* arg2) {
+void Jpeg_SetHuffmanData(unk_JPEG_Decompress_sp27* arg0, JpegHuffmanTable* arg1, unk_JPEG_Decompress_sp300* arg2) {
     arg0->unk_00 = arg2->start_of_scan;
     arg0->unk_04 = arg2->unk_00;
     arg0->unk_05 = 2;
@@ -130,7 +130,7 @@ void func_80003608(unk_func_80003680_sp27* arg0, JpegHuffmanTable* arg1, unk_fun
     arg0->unk_18 = arg2->unk_01;
 }
 
-void func_80003648(unk_func_80003680_sp90* arg0, u8(arg1)[2][0x80], unk_func_80003680_sp300* arg2) {
+void Jpeg_SetQuantizationData(unk_JPEG_Decompress_sp90* arg0, u8(arg1)[2][0x80], unk_JPEG_Decompress_sp300* arg2) {
     arg0->unk_00 = 0;
     arg0->unk_08 = arg2->unk_00;
     arg0->unk_04 = 1;
@@ -139,16 +139,16 @@ void func_80003648(unk_func_80003680_sp90* arg0, u8(arg1)[2][0x80], unk_func_800
     arg0->unk_14 = (u32)&arg1[1] & 0x1FFFFFFF;
 }
 
-s32 func_80003680(u32 addr, s32 arg1, u8* arg2) {
+s32 JPEG_Decompress(u32 addr, s32 arg1, u8* arg2) {
     RSPTask sp318;
-    unk_func_80003680_sp300 sp300;
+    unk_JPEG_Decompress_sp300 sp300;
     u8 sp200[2][0x80];
     JpegHuffmanTable spB0[4];
     u16* temp_s0;
     u8* temp_s3;
-    unk_func_80003680_sp90 sp90;
-    unk_func_80003680_sp27 sp74;
-    unk_func_80003680_sp60 sp60;
+    unk_JPEG_Decompress_sp90 sp90;
+    unk_JPEG_Decompress_sp27 sp74;
+    unk_JPEG_Decompress_sp60 sp60;
     u32 var_s1;
     s32 i;
     s32 j;
@@ -158,16 +158,16 @@ s32 func_80003680(u32 addr, s32 arg1, u8* arg2) {
     temp_s3 = Util_Malloc(0x110);
     temp_s0 = Util_Malloc(0x210);
 
-    func_800033C8(&sp300, arg2);
+    JpegStream_ParseMarkers(&sp300, arg2);
     JpegUtils_ProcessQuantizationTable(sp300.quantization_table, sp200, 2);
     JpegUtils_ProcessHuffmanTable(sp300.huffman_table, spB0, temp_s3, temp_s0, 4);
 
     Util_Free(temp_s0);
     Util_Free(temp_s3);
 
-    func_80003608(&sp74, &spB0, &sp300);
-    func_80003648(&sp90, &sp200, &sp300);
-    func_80003558(&sp318, &sp90);
+    Jpeg_SetHuffmanData(&sp74, &spB0, &sp300);
+    Jpeg_SetQuantizationData(&sp90, &sp200, &sp300);
+    RSPTask_InitJpeg(&sp318, &sp90);
 
     while (Display_IsReady() == 0) {}
 
@@ -198,7 +198,7 @@ void func_80003860(void) {
     osCreateMesgQueue(&D_800A62C0, &D_800A62D8, 1);
 }
 
-void func_80003890(u8* in_header, u8* memory) {
+void SZP_Decompress(u8* in_header, u8* memory) {
     UNUSED s32 pad2;
     PERSSZP* header = in_header;
     u32* sp2C = (u32*)header + 6;
@@ -266,7 +266,7 @@ s32 func_80003B04(s16 arg0) {
     return func_8000CDB8(arg0 << 7);
 }
 
-void func_80003B30(u32 arg0, u32 arg1, u32 arg2, s32 arg3) {
+void ROM_LoadDirect(u32 arg0, u32 arg1, u32 arg2, s32 arg3) {
     s32 var_s0;
     s32 var_s1;
     OSMesgQueue* mesq = &D_800A62C0;
@@ -306,11 +306,11 @@ void func_80003BE0(u8* arg0, u8* arg1, u8* arg2) {
     }
 }
 
-void* func_80003C80(u8* addr, PRESJPEG* arg1, s32 side) {
+void* Jpeg_AllocAndDecompress(u8* addr, PRESJPEG* arg1, s32 side) {
     s32 new_addr = main_pool_alloc(arg1->unk_0C + 0x100, side);
 
     if (new_addr != NULL) {
-        s32 size = func_80003680(new_addr, arg1->unk_0C + 0x100, (u32)arg1 + arg1->unk_08);
+        s32 size = JPEG_Decompress(new_addr, arg1->unk_0C + 0x100, (u32)arg1 + arg1->unk_08);
 
         if (size == 0) {
             main_pool_try_free(new_addr);
@@ -325,11 +325,11 @@ void* func_80003C80(u8* addr, PRESJPEG* arg1, s32 side) {
     return new_addr;
 }
 
-s32 func_80003D18(s32 arg0, PERSSZP* arg1, s32 side) {
+s32 SZP_AllocAndDecompress(s32 arg0, PERSSZP* arg1, s32 side) {
     s32 vaddr = main_pool_alloc(arg1->decompressed_size2, side);
 
     if (vaddr != NULL) {
-        func_80003890(arg1, vaddr);
+        SZP_Decompress(arg1, vaddr);
     }
 
     main_pool_try_free(arg0);
@@ -337,7 +337,7 @@ s32 func_80003D18(s32 arg0, PERSSZP* arg1, s32 side) {
     return vaddr;
 }
 
-u32* func_80003D64(u8* arg0, s32 arg1, u32 arg2, s32 arg3) {
+u32* ROM_AllocAndCopy(u8* arg0, s32 arg1, u32 arg2, s32 arg3) {
     u32* sp1C = main_pool_alloc(arg2, arg3);
 
     if (sp1C != NULL) {
@@ -349,7 +349,7 @@ u32* func_80003D64(u8* arg0, s32 arg1, u32 arg2, s32 arg3) {
     return sp1C;
 }
 
-void* func_80003DC4(u8* romStart, u8* romEnd, s32 arg2, s32 arg3) {
+void* ROM_LoadAndDecompress(u8* romStart, u8* romEnd, s32 arg2, s32 arg3) {
     u32* addr;
     u32* newaddr;
     u32* ret;
@@ -365,13 +365,13 @@ void* func_80003DC4(u8* romStart, u8* romEnd, s32 arg2, s32 arg3) {
             newaddr = main_pool_alloc(ALIGN16(romEnd - romStart), side);
             if (newaddr != NULL) {
                 func_80003B30(newaddr, romStart, romEnd, arg3);
-                ret = func_80003D18(newaddr, newaddr, arg2);
+                ret = SZP_AllocAndDecompress(newaddr, newaddr, arg2);
             }
         } else if ((addr[0] == 'PRES') && (addr[1] == 'JPEG')) {
             newaddr = main_pool_alloc(ALIGN16(romEnd - romStart), side);
             if (newaddr != NULL) {
                 func_80003B30(newaddr, romStart, romEnd, arg3);
-                ret = func_80003C80(newaddr, newaddr, arg2);
+                ret = Jpeg_AllocAndDecompress(newaddr, newaddr, arg2);
             }
         } else {
             newaddr = main_pool_alloc(ALIGN16(romEnd - romStart), arg2);
@@ -386,7 +386,7 @@ void* func_80003DC4(u8* romStart, u8* romEnd, s32 arg2, s32 arg3) {
     return ret;
 }
 
-void* func_80003F54(unk_func_800041C0* arg0, s32 arg1) {
+void* LBA_LoadAndDecompress(unk_func_800041C0* arg0, s32 arg1) {
     s32 sp44;
     u32* sp40;
     PERSSZP* temp_s0;
@@ -411,18 +411,18 @@ void* func_80003F54(unk_func_800041C0* arg0, s32 arg1) {
         osRecvMesg(&D_800A62C0, NULL, 1);
 
         if (((u32*)temp_s0->magic)[0] == 'PERS' && (((u32*)temp_s0->magic)[1] == '-SZP')) {
-            sp40 = func_80003D18(temp_v0, temp_s0, arg1);
+            sp40 = SZP_AllocAndDecompress(temp_v0, temp_s0, arg1);
         } else if (((u32*)temp_s0->magic)[0] == 'PRES' && (((u32*)temp_s0->magic)[1] == 'JPEG')) {
-            sp40 = func_80003C80(temp_v0, temp_s0, arg1);
+            sp40 = Jpeg_AllocAndDecompress(temp_v0, temp_s0, arg1);
         } else {
-            sp40 = func_80003D64(temp_v0, arg0->unk_04, arg0->unk_08, arg1);
+            sp40 = ROM_AllocAndCopy(temp_v0, arg0->unk_04, arg0->unk_08, arg1);
         }
     }
 
     return sp40;
 }
 
-unk_func_800041C0* func_80004098(unk_func_800041C0* arg0, s32 arg1, s32 arg2) {
+unk_func_800041C0* LBALoader_Init(unk_func_800041C0* arg0, s32 arg1, s32 arg2) {
     arg0->unk_00 = arg1;
     arg0->unk_02 = arg2 - arg1;
     arg0->unk_04 = 0;
@@ -432,7 +432,7 @@ unk_func_800041C0* func_80004098(unk_func_800041C0* arg0, s32 arg1, s32 arg2) {
     return arg0;
 }
 
-unk_func_800041C0* func_800040EC(unk_func_800041C0* arg0, u32 arg1, u32 offset, u32 size) {
+unk_func_800041C0* LBALoader_InitFromOffset(unk_func_800041C0* arg0, u32 arg1, u32 offset, u32 size) {
     s32 sp2C;
     s32 sp28;
     s32 sp24;
@@ -459,8 +459,8 @@ unk_func_800041C0* func_800040EC(unk_func_800041C0* arg0, u32 arg1, u32 offset, 
 void func_800041C0(s32 arg0, s32 arg1, s32 arg2) {
     unk_func_800041C0 sp1C;
 
-    func_80004098(&sp1C, arg0, arg1);
-    func_80003F54(&sp1C, arg2);
+    LBALoader_Init(&sp1C, arg0, arg1);
+    LBA_LoadAndDecompress(&sp1C, arg2);
 }
 
 void func_80004200(u32 block_addr, u32 addr) {
@@ -472,8 +472,8 @@ void func_80004200(u32 block_addr, u32 addr) {
     }
 }
 
-u8* func_80004258(s32 id, u8* rom_start, u8* rom_end, s32 arg3) {
-    u8* vaddr = func_80003DC4(rom_start, rom_end, arg3, 0);
+u8* Memmap_LoadAndMapSegment(s32 id, u8* rom_start, u8* rom_end, s32 arg3) {
+    u8* vaddr = ROM_LoadAndDecompress(rom_start, rom_end, arg3, 0);
 
     if ((vaddr != NULL) && (id > 0)) {
         Memmap_SetSegmentMap(id, vaddr, main_pool_get_block_dist(vaddr));
@@ -485,7 +485,7 @@ u8* func_80004258(s32 id, u8* rom_start, u8* rom_end, s32 arg3) {
 MainPoolBlock* func_800042E0(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     UNUSED s32 pad;
     unk_func_800041C0 sp28;
-    MainPoolBlock* temp_v0 = func_80003F54(func_80004098(&sp28, arg1, arg2), arg3);
+    MainPoolBlock* temp_v0 = LBA_LoadAndDecompress(LBALoader_Init(&sp28, arg1, arg2), arg3);
 
     if ((temp_v0 != NULL) && (arg0 > 0)) {
         Memmap_SetSegmentMap(arg0, temp_v0, main_pool_get_block_dist(temp_v0));
@@ -507,7 +507,7 @@ void func_80004364(u32 base_addr, u32 addr) {
     }
 }
 
-void func_800043BC(s32 arg0, Fragment* addr) {
+void Fragment_RelocateAndInit(s32 arg0, Fragment* addr) {
     UNUSED s32 pad;
     u32 sp20 = main_pool_get_block_dist(addr);
 
@@ -522,11 +522,11 @@ void func_800043BC(s32 arg0, Fragment* addr) {
     }
 }
 
-ret_func_80004454 func_80004454(s32 arg0, u8* romStart, u8* romEnd) {
-    void* addr = func_80003DC4(romStart, romEnd, 0, 0);
+void* Memmap_LoadAndInitFragment(s32 arg0, u8* romStart, u8* romEnd) {
+    void* addr = ROM_LoadAndDecompress(romStart, romEnd, 0, 0);
 
     if (addr != NULL) {
-        func_800043BC(arg0, (Fragment*)addr);
+        Fragment_RelocateAndInit(arg0, (Fragment*)addr);
     }
     return addr;
 }
@@ -535,14 +535,14 @@ void* func_800044A8(s32 arg0, s32 arg1, s32 arg2) {
     Fragment* sp2C;
     unk_func_800041C0 sp20;
 
-    sp2C = func_80003F54(func_80004098(&sp20, arg1, arg2), 0);
+    sp2C = LBA_LoadAndDecompress(LBALoader_Init(&sp20, arg1, arg2), 0);
     if (sp2C != NULL) {
-        func_800043BC(arg0, sp2C);
+        Fragment_RelocateAndInit(arg0, sp2C);
     }
     return sp2C;
 }
 
-BinArchive* func_800044F4(u8* romStart, u8* romEnd, s32 arg2, s32 arg3) {
+BinArchive* Archive_ROM_Load(u8* romStart, u8* romEnd, s32 arg2, s32 arg3) {
     BinArchive* ret = NULL;
     u32 sp28;
     u32 sp28_2;
@@ -550,7 +550,7 @@ BinArchive* func_800044F4(u8* romStart, u8* romEnd, s32 arg2, s32 arg3) {
 
     switch (arg2) {
         case 0:
-            newaddr = func_80003DC4(romStart, romEnd, 0, 0);
+            newaddr = ROM_LoadAndDecompress(romStart, romEnd, 0, 0);
             ret = newaddr;
             if (newaddr != NULL) {
                 newaddr[0] |= 1;
@@ -558,12 +558,12 @@ BinArchive* func_800044F4(u8* romStart, u8* romEnd, s32 arg2, s32 arg3) {
             break;
 
         case 1:
-            newaddr = func_80003DC4(romStart, romStart + 0x20, 0, 0);
+            newaddr = ROM_LoadAndDecompress(romStart, romStart + 0x20, 0, 0);
             ret = newaddr;
             if (newaddr != NULL) {
                 sp28 = (ret->num_files * 0x10) + 0x10;
                 main_pool_try_free(ret);
-                newaddr = func_80003DC4(romStart, romStart + sp28, 0, 0);
+                newaddr = ROM_LoadAndDecompress(romStart, romStart + sp28, 0, 0);
                 ret = newaddr;
                 if (newaddr != NULL) {
                     *newaddr |= 2;
@@ -575,12 +575,12 @@ BinArchive* func_800044F4(u8* romStart, u8* romEnd, s32 arg2, s32 arg3) {
             break;
 
         case 2:
-            newaddr = func_80003DC4(romStart, romStart + 0x20, 1, 0);
+            newaddr = ROM_LoadAndDecompress(romStart, romStart + 0x20, 1, 0);
             ret = newaddr;
             if (newaddr != NULL) {
                 sp28_2 = (ret->num_files * 0x10) + 0x10;
                 main_pool_try_free(ret);
-                newaddr = func_80003DC4(romStart, romStart + sp28_2, 1, 0);
+                newaddr = ROM_LoadAndDecompress(romStart, romStart + sp28_2, 1, 0);
                 ret = newaddr;
                 if ((newaddr != NULL) && (arg3 == 1)) {
                     *newaddr |= 4;
@@ -605,8 +605,8 @@ void* func_80004660(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
             break;
 
         case 0:
-            func_80004098(&sp20, arg0, arg1);
-            var_a0 = func_80003F54(&sp20, 0);
+            LBALoader_Init(&sp20, arg0, arg1);
+            var_a0 = LBA_LoadAndDecompress(&sp20, 0);
             if (var_a0 != NULL) {
                 main_pool_realloc(var_a0, var_a0->total_size);
                 var_a0->unk_00 |= 1;
@@ -614,8 +614,8 @@ void* func_80004660(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
             break;
 
         case 1:
-            func_80004098(&sp20, arg0, arg0 + 1);
-            var_a0 = func_80003F54(&sp20, 0);
+            LBALoader_Init(&sp20, arg0, arg0 + 1);
+            var_a0 = LBA_LoadAndDecompress(&sp20, 0);
             if (var_a0 != NULL) {
                 main_pool_realloc(var_a0, (var_a0->num_files * sizeof(BinArchiveFile)) + sizeof(BinArchive));
                 var_a0->unk_00 |= 2;
@@ -626,8 +626,8 @@ void* func_80004660(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
             break;
 
         case 2:
-            func_80004098(&sp20, arg0, arg0 + 1);
-            var_a0 = func_80003F54(&sp20, 1);
+            LBALoader_Init(&sp20, arg0, arg0 + 1);
+            var_a0 = LBA_LoadAndDecompress(&sp20, 1);
             if (arg3 == 1) {
                 var_a0->unk_00 |= 4;
             }
@@ -646,20 +646,20 @@ void func_800047A4(void* arg0) {
     main_pool_try_free(arg0);
 }
 
-Fragment* func_800047C4(BinArchive* arg0, BinArchiveFile* arg1) {
+Fragment* Archive_ROM_LoadFile(BinArchive* arg0, BinArchiveFile* arg1) {
     u8* temp_a0 = arg0->unk_04 + arg1->offset;
 
-    return func_80003DC4(temp_a0, arg1->size + temp_a0, 0, 0);
+    return ROM_LoadAndDecompress(temp_a0, arg1->size + temp_a0, 0, 0);
 }
 
-void* func_80004804(BinArchive* arg0, BinArchiveFile* arg1) {
+void* Archive_LBA_LoadFile(BinArchive* arg0, BinArchiveFile* arg1) {
     unk_func_800041C0 sp1C;
 
-    func_800040EC(&sp1C, arg0->unk_04, arg1->offset, arg1->size);
-    return func_80003F54(&sp1C, 0);
+    LBALoader_InitFromOffset(&sp1C, arg0->unk_04, arg1->offset, arg1->size);
+    return LBA_LoadAndDecompress(&sp1C, 0);
 }
 
-void* func_8000484C(BinArchive* archive, s32 file_number) {
+void* Archive_GetFile(BinArchive* archive, s32 file_number) {
     Fragment* var_a2 = NULL;
     UNUSED s32 pad;
     BinArchiveFile* sp18 = (u8*)archive + sizeof(BinArchive) + (file_number * sizeof(BinArchiveFile));
@@ -671,14 +671,14 @@ void* func_8000484C(BinArchive* archive, s32 file_number) {
             var_a2 = sp18->unk_08;
         } else {
             if (archive->unk_00 & 0x80) {
-                var_a2 = func_80004804(archive, sp18);
+                var_a2 = Archive_LBA_LoadFile(archive, sp18);
             } else {
-                var_a2 = func_800047C4(archive, sp18);
+                var_a2 = Archive_ROM_LoadFile(archive, sp18);
             }
 
             if (var_a2 != NULL) {
                 if ((((u32*)var_a2->magic)[0] == 'FRAG') && (((u32*)var_a2->magic)[1] == 'MENT')) {
-                    func_800043BC(archive->unk_02, var_a2);
+                    Fragment_RelocateAndInit(archive->unk_02, var_a2);
                 }
 
                 sp18->unk_08 = var_a2;

@@ -760,9 +760,9 @@ void func_800314BC(unk_func_80031270* arg0) {
     unk_func_800314BC_temp_v4* temp_v0_4;
     unk_func_80031270_024* temp_v1;
 
-    func_8001103C(0, arg0->unk_28);
-    func_8001103C(0, arg0->unk_2C);
-    func_8001103C(0, arg0->unk_30);
+    GraphNode_Create(0, arg0->unk_28);
+    GraphNode_Create(0, arg0->unk_2C);
+    GraphNode_Create(0, arg0->unk_30);
     sp20 = func_8000484C(arg0->unk_14, D_8007616C[func_8002FF7C(arg0->unk_18)]);
     sp24 = func_80002D10(main_pool_get_available(), 0);
     temp_v0 = sp20(0, 0);

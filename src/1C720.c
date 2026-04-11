@@ -13,25 +13,25 @@
 #include "src/12D80.h"
 
 void func_8001BB20(void) {
-    func_8001103C(0, &D_800AC840);
-    func_8001103C(0, &D_800AC858);
+    GraphNode_Create(0, &D_800AC840);
+    GraphNode_Create(0, &D_800AC858);
 }
 
 void func_8001BB58(unk_D_86002F58_004_000* arg0) {
     func_80011938(NULL, arg0, 0, &D_8006F050, &D_8006F05C, &D_8006F064);
-    func_80012094(&D_800AC840, &arg0->unk_000);
+    GraphNode_AppendChild(&D_800AC840, &arg0->unk_000);
     arg0->unk_0A6 = 0;
     arg0->unk_000.unk_01 &= ~1;
 }
 
 void func_8001BBC8(unk_D_86002F58_004_000* arg0) {
     func_80011938(NULL, arg0, 0, &D_8006F050, &D_8006F05C, &D_8006F064);
-    func_80012094(&D_800AC858, &arg0->unk_000);
+    GraphNode_AppendChild(&D_800AC858, &arg0->unk_000);
     arg0->unk_000.unk_01 &= ~1;
 }
 
 void func_8001BC34(unk_D_86002F58_004_000* arg0, s16 arg1, s16 arg2, unk_D_86002F58_004_000_004* arg3) {
-    func_80012094(&arg0->unk_000, arg3);
+    GraphNode_AppendChild(&arg0->unk_000, arg3);
     func_8000ED98(&arg0->unk_060);
     arg0->unk_018 = arg1;
     arg0->unk_01A = arg2;

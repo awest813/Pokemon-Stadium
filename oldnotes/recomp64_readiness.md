@@ -37,9 +37,14 @@ This repo is already a strong candidate for a future N64Recomp port because it h
 
 1. Fix the WSL/IDO include failure and restore a clean `make` path.
 2. Keep converting easy `NON_MATCHING` functions into normal C so more symbol names survive into the ELF cleanly.
-3. Produce and archive one known-good `build/pokestadium-us.elf` and `build/pokestadium-us.map`.
-4. Add a small script or note for generating a first-pass N64Recomp TOML and symbol dump from that ELF.
-5. Prioritize naming around:
+3. Produce and archive one known-good `build/pokestadium-us.elf`
+4. [IN PROGRESS] Naming pass on critical systems:
+   - [DONE] Memory pool / Allocation (memory.c)
+   - [DONE] Math / Matrix utilities (F420.c)
+   - [ ] Scheduler / RSP task submission
+   - [ ] Audio manager startup
+5. [ ] Add a small script or note for generating a first-pass N64Recomp TOML and symbol dump from that ELF.
+6. Prioritize naming around:
    - fragment loader / relocator paths
    - DMA and ROM reads
    - scheduler + RSP task submission

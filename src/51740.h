@@ -3,6 +3,6 @@
 
 #include "global.h"
 
-void func_80050B40(s32, void*, s32);
+void Yay0_Decompress(s32, void*, s32);
 
 #endif // _51740_H_
