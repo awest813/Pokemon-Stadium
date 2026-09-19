@@ -5055,7 +5055,15 @@ void func_8432CF74(UNUSED unk_D_86002F34_00C* arg0) {
     }
 }
 
-void func_8432CFCC(unk_D_86002F34_00C* arg0) {
+/*
+ * BattleScene_SetupCamera
+ * Original symbol: func_8432CFCC
+ *
+ * Verified:
+ *     Copies the current camera node's look-at / eye into the battle scene
+ *     camera workspace (D_8140E628 / D_8140E6B4).
+ */
+void BattleScene_SetupCamera(unk_D_86002F34_00C* arg0) {
     D_8140E628.unk_0C = arg0;
     D_8140E6B4 = &D_8140E628.unk_10;
 
@@ -5068,7 +5076,16 @@ void func_8432CFCC(unk_D_86002F34_00C* arg0) {
     func_81400F44(&D_8140E6B4->unk_64, D_8140E6B4->unk_4C, D_8140E6B4->unk_40);
 }
 
-s32 func_8432D0D8(s32 arg0, unk_D_86002F34_00C* arg1) {
+/*
+ * BattleScene_SubstateDispatch
+ * Original symbol: func_8432D0D8
+ *
+ * Verified:
+ *     Switch on a small integer substate used by BattleScene_Run.
+ *     0 = BattleScene_Init, 2 = setup camera + related, 5 = extra path
+ *     from BattleScene_Run(arg0 == 2). Cases 1/3/4 currently no-ops.
+ */
+s32 BattleScene_SubstateDispatch(s32 arg0, unk_D_86002F34_00C* arg1) {
     switch (arg0) {
         case 1:
         case 3:
@@ -5076,11 +5093,11 @@ s32 func_8432D0D8(s32 arg0, unk_D_86002F34_00C* arg1) {
             break;
 
         case 0:
-            func_8432D150();
+            BattleScene_Init();
             break;
 
         case 2:
-            func_8432CFCC(arg1);
+            BattleScene_SetupCamera(arg1);
             func_8432C4CC(arg1);
             func_8432CEF0(arg1);
             break;
@@ -5093,12 +5110,26 @@ s32 func_8432D0D8(s32 arg0, unk_D_86002F34_00C* arg1) {
     return 0;
 }
 
-void func_8432D150(void) {
+/*
+ * BattleScene_Init
+ * Original symbol: func_8432D150
+ *
+ * Verified:
+ *     Entry for substate 0: further init then BattleScene_ResetState.
+ */
+void BattleScene_Init(void) {
     func_8432D5B0();
-    func_8432D178();
+    BattleScene_ResetState();
 }
 
-void func_8432D178(void) {
+/*
+ * BattleScene_ResetState
+ * Original symbol: func_8432D178
+ *
+ * Verified:
+ *     Clears callback tables D_84390300/D_84390320 and default scene scalars.
+ */
+void BattleScene_ResetState(void) {
     s32 i;
 
     D_843902E8 = NULL;

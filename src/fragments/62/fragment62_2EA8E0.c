@@ -10,7 +10,7 @@
  *
  * Evidence:
  *     - Entry point called by core game dispatcher (src/29BA0.c)
- *     - Transitions into scene-local state machine (func_8432D0D8, etc.)
+ *     - Transitions into scene-local state machine (BattleScene_SubstateDispatch, etc.)
  *     - Direct access to BattleContext struct (D_800AE540)
  *
  * Verified:
@@ -112,12 +112,12 @@ static u32 D_84384514[] = {
  *         Always returns 1 in observed paths.
  *
  * Verified behavior:
- *     - Branches on arg0 == 2 to trigger a specific substate (5) in func_8432D0D8.
+ *     - Branches on arg0 == 2 to trigger a specific substate (5) in BattleScene_SubstateDispatch.
  *     - Sets unk_D_8438E798 to global battle scenes pointer.
  */
 s32 BattleScene_Run(s32 arg0, GraphNode* arg1) {
     if (arg0 == 2) {
-        func_8432D0D8(5, &D_8438E440);
+        BattleScene_SubstateDispatch(5, &D_8438E440);
     }
     return 0;
 }
@@ -383,7 +383,7 @@ s32 func_84300E88(s32 arg0) {
     func_84307394(2, D_8438E798);
     func_84307A50(2, &D_8438E598, &D_8438E688);
     sp1C = func_8432AEE4(2, &D_8438E440);
-    func_8432D0D8(2, &D_8438E440);
+    BattleScene_SubstateDispatch(2, &D_8438E440);
     func_84300750(D_8438E788, D_8438E790);
     func_84300750(D_8438E78C, D_8438E794);
     Stage_ActivateFramebuffer();
@@ -612,7 +612,7 @@ void func_84301430(RenderContext* arg0) {
     func_84307394(0, D_8438E798);
     func_84307A50(0, &D_8438E598, &D_8438E688);
     func_8432AEE4(0, &D_8438E440);
-    func_8432D0D8(0, &D_8438E440);
+    BattleScene_SubstateDispatch(0, &D_8438E440);
 
     sp44 = func_80002D10(main_pool_get_available(), 0);
     D_8438E784 = process_geo_layout(sp44, D_84384364);
@@ -650,7 +650,7 @@ void func_84301430(RenderContext* arg0) {
     func_84307394(3, D_8438E798);
     func_84307A50(3, &D_8438E598, &D_8438E688);
     func_8432AEE4(3, &D_8438E440);
-    func_8432D0D8(3, &D_8438E440);
+    BattleScene_SubstateDispatch(3, &D_8438E440);
 
     D_8438E7A0 = 1;
     D_8438E79C = 0;

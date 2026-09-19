@@ -53,7 +53,7 @@ That is the right contribution *on top of* pret. It should not be thrown away fo
 ### 2.2 What the fork got wrong or left unsafe
 
 1. **Renames without `symbol_addrs` updates.**  
-   C functions are `DLBuf_Init` / `JPEG_Decompress` / … while `linker_scripts/us/symbol_addrs_code.txt` still lists `func_80005E40` / `func_80003680`. Matching bytes can still work; maps, diffs, and N64Recomp symbol quality will not. This is now the highest-leverage cleanup.
+   C functions used to be `DLBuf_Init` / `JPEG_Decompress` / … while `symbol_addrs_code.txt` still listed `func_*`. `tools/sync_promoted_symbol_addrs.py` rewrote the bulk of those rows (identity-anchor walk). Remaining gaps: files that stop at a missing body (`func_80014124` / `SceneGraph_HandleCallbackAndVisitChildren` has no C yet), and off-by-one TUs such as `373A0.c` (`func_8003733C` vs `func_80037340`).
 
 2. **Duplicate `Audio_Init`.**  
    Both `func_8000D564` (start audio thread) and `func_800373D8` (load banks / `MusInitialize`) were named `Audio_Init`. Idle boot must call the thread starter. This merge splits them: `Audio_StartThread` vs `Audio_Init`.
@@ -68,10 +68,10 @@ That is the right contribution *on top of* pret. It should not be thrown away fo
    README still listed `src/19840.c` / `gbi.h` as a hard `make` blocker and “174 NONMATCH stubs”. Pret has since matched `19840` and many other TUs. Counts and blockers need a living progress command, not a frozen table.
 
 6. **Fragment 62 is still the battle-shell blocker.**  
-   pret mapped fragment 62 *data*; this fork started effect/actor comments. Neither side has a structural `BattleScene_` / `BattleTurn_` / `BattleAI_` pass on the fragment 62 C files. The blocker guide is still the correct next RE task.
+   pret mapped fragment 62 *data*. This fork now has `BattleScene_Run` plus `BattleScene_SubstateDispatch` / `Init` / `ResetState` / `SetupCamera` (`func_8432D0D8` / `D150` / `D178` / `CFCC`). `BattleTurn_*` / `BattleAI_*` already exist on other TUs. Do not invent move-effect names; next is remaining `func_8432xxxx` around the substate switch.
 
 7. **`12D80.c` is only half-promoted.**  
-   Headers have GraphNode buckets; many helpers remain `func_80014xxx`. Traversal vs node-type vs renderer submit is still mixed.
+   Dispatch table `D_8006F0A4` now names Z-range, switch, rotation, translation, billboard, attached DL, visit-only, and shadow processors. Remaining `func_80014xxx` are still mixed (model / primitive helpers). `SceneGraph_HandleCallbackAndVisitChildren` is the name for `0x80014124` but that body is not in the TU yet.
 
 ### 2.3 N64Recomp / README blockers, re-scored
 
@@ -92,7 +92,7 @@ That is the right contribution *on top of* pret. It should not be thrown away fo
 ### P0 — Make the merged tree honest and buildable
 
 1. **Matching build.** Place US 1.0 `baseroms/us/baserom.z64`, `make init`, `make`. Diff any non-match against pret’s current objects before changing names further.
-2. **One symbol policy.** For every promoted C name, add the same name (or a splat alias) in `symbol_addrs_code.txt` / `symbol_addrs.txt` at the original address. Stop leaving `func_*` as the only linker identity.
+2. **One symbol policy.** Done for the bulk of `symbol_addrs_code.txt` via `tools/sync_promoted_symbol_addrs.py`. Re-run after further C renames. Keep `orig:func_*` on the same line.
 3. **Document the split audio API** in a one-line comment at `Audio_StartThread` / `Audio_Init` so it is not re-merged by accident.
 
 ### P1 — Finish the two systems the blocker guide named
@@ -105,7 +105,7 @@ Follow [POKEMON_STADIUM_USA_PARTIAL_SYSTEMS_BLOCKER_GUIDE.md](POKEMON_STADIUM_US
 
 ### P2 — Overlay / RSP / ELF (recomp path)
 
-1. **Fragment catalog.** Table of fragment 1–77: load site, game state (`STATE_*`), likely role (menu, battle shell, minigame, lab, GB tower). Start from the dispatcher the blocker guide already lists (62/63/64).
+1. **Fragment catalog.** First pass is [FRAGMENT_ROLES.md](FRAGMENT_ROLES.md) from `GameState_*`, Kids Club, and gallery dispatchers. Fill remaining IDs only from load sites.
 2. **RSP audit.** Trace `rsp_init` / `RSPTask_*` / JPEG task. Confirm no overlay-style RSP loads. Write the finding into this file or the recomp notes.
 3. **ELF snapshot.** After P0, keep `build/pokestadium-us.elf` + `.map` as artifacts (not in git). Optional: a small script that dumps overlay bounds + named functions into a first-pass N64Recomp TOML.
 
@@ -138,9 +138,15 @@ Pret’s recent style is: match a whole file’s remaining `GLOBAL_ASM`, then ma
 ## 5. Suggested next agent task
 
 ```text
-After a matching make (US 1.0 ROM):
-1) Sync symbol_addrs_code.txt with current C function names (aliases at original VAs).
-2) Structural naming pass on fragment 62 + remaining 12D80.c helpers per
-   POKEMON_STADIUM_USA_PARTIAL_SYSTEMS_BLOCKER_GUIDE.md.
-3) Write a fragment 1–77 role table from the game-state dispatcher.
+Done on this branch (no US 1.0 ROM, matching make still blocked):
+1) tools/sync_promoted_symbol_addrs.py --write (plus manual orig: for new names).
+2) BattleScene_SubstateDispatch / Init / ResetState / SetupCamera.
+3) GraphNode_ProcessZRange / Switch / Rotation / Translation / Billboard /
+   AttachedDisplayList / VisitOnly / ProcessShadow + FRAGMENT_ROLES.md.
+
+Next:
+- Matching make with US 1.0 baserom.
+- Recover C (or GLOBAL_ASM) for SceneGraph_HandleCallbackAndVisitChildren (0x80014124).
+- Name remaining func_80014xxx in 12D80.c and func_8432xxxx around BattleScene_SubstateDispatch.
+- Do not invent move-effect names.
 ```

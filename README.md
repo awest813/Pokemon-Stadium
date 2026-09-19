@@ -14,6 +14,7 @@ These documents are for human contributors and AI coding agents working on disas
 * **[UPSTREAM_AUDIT_AND_PLAN.md](UPSTREAM_AUDIT_AND_PLAN.md)** — pret catch-up, fork audit, and ordered improvement plan.
 * **[AI_MIPS_HEADER_GUIDE.md](AI_MIPS_HEADER_GUIDE.md)** — How to write headers, comments, and metadata for N64/MIPS decomp work (certainty labels, address identity, overlay conventions).
 * **[POKEMON_STADIUM_USA_PARTIAL_SYSTEMS_BLOCKER_GUIDE.md](POKEMON_STADIUM_USA_PARTIAL_SYSTEMS_BLOCKER_GUIDE.md)** — Current frontier: Fragment 62 battle shell, `12D80.c` scene-graph traversal, and what still blocks cleaner promotion.
+* **[FRAGMENT_ROLES.md](FRAGMENT_ROLES.md)** — Overlay 1–77 roles from `GameState_*` / Kids Club / gallery load sites.
 
 # Decomp Progress
 
@@ -73,10 +74,10 @@ See **[UPSTREAM_AUDIT_AND_PLAN.md](UPSTREAM_AUDIT_AND_PLAN.md)** for the pret ca
    N64Recomp uses the ELF (not the raw ROM) as its metadata source.  `KEEP_MDEBUG ?= 1` is already set in the Makefile, which preserves debug info.  Once `make` is clean, archive `build/pokestadium-us.elf` and verify the symbol table is complete.
 
 3. **Sync `symbol_addrs` with promoted C names.**  
-   Scheduler, display, archive, GB Tower, and DL buffer APIs are named in C, but many linker scripts still list `func_*`.  Aliases at the original VAs are required before the ELF is useful.
+   Bulk rewrite is in `linker_scripts/us/symbol_addrs_code.txt` (`tools/sync_promoted_symbol_addrs.py`). Re-run after further C renames; keep `orig:func_*`.
 
 4. **Name remaining anonymous main-text C units.**  
-   Priority after the sync: leftover address-named files, then Fragment 62 battle shell and remaining `12D80.c` graph helpers (see the [partial-systems guide](POKEMON_STADIUM_USA_PARTIAL_SYSTEMS_BLOCKER_GUIDE.md)).
+   Fragment 62 now has `BattleScene_SubstateDispatch` and related entry names; `12D80.c` names the remaining graph processors in `D_8006F0A4` that were still `func_80014xxx` / `func_800143xx`. See the [partial-systems guide](POKEMON_STADIUM_USA_PARTIAL_SYSTEMS_BLOCKER_GUIDE.md) and [fragment roles](FRAGMENT_ROLES.md).
 
 5. **Resolve remaining `GLOBAL_ASM` / NONMATCH stubs.**  
    pret reduced this set substantially; re-count from `progress.py` after extract.  Convert easy ones to normal C first; use `NON_MATCHING=1` only for the hardest cases.

@@ -42,6 +42,8 @@ void GraphNode_ProcessPerspective(GraphNode* arg0);
 void GraphNode_ProcessScene(GraphNode* arg0);
 void GraphNode_ProcessTransform(GraphNode* arg0);
 void GraphNode_ProcessBillboard(GraphNode* arg0);
+void GraphNode_ProcessRotation(GraphNode* arg0);
+void GraphNode_ProcessTranslation(GraphNode* arg0);
 void GraphNode_ProcessBackground(GraphNode* arg0);
 void GraphNode_ProcessClearDepth(UNUSED GraphNode* arg0);
 void GraphNode_ProcessMaster(GraphNode* arg0);
@@ -81,7 +83,7 @@ void func_80013C1C(GraphNode* arg0);
 void func_80013D34(GraphNode* arg0);
 void func_80013F7C(UNUSED GraphNode* arg0);
 void func_80013F84(GraphNode* arg0);
-void func_80014124(GraphNode* arg0);
+/* SceneGraph_HandleCallbackAndVisitChildren is 0x80014124; body is not yet in this TU. */
 
 typedef void (*func_D_8006F0A4)(GraphNode* arg0);
 
@@ -104,9 +106,9 @@ unk_D_86002F34_alt11* D_8006F0A0 = NULL;
 static func_D_8006F0A4 D_8006F0A4[] = {
     SceneGraph_VisitChildren, SceneGraph_ProcessNodeVariant, GraphNode_ProcessCamera, GraphNode_ProcessPerspective, GraphNode_ProcessScene, GraphNode_ProcessTransform, GraphNode_ProcessBillboard,
     GraphNode_ProcessBackground, GraphNode_ProcessClearDepth, GraphNode_ProcessMaster, GraphNode_ProcessViewportChild, GraphNode_ProcessTranslationRotation, GraphNode_ProcessMasterChild, GraphNode_ProcessDisplayList,
-    RenderGraph_HandleTranslucentNode, func_80014D70, func_80014214, func_800142BC, func_80014334, func_80014384, func_800143C0,
-    func_80014624, func_80014690, func_800148D8, func_80014980, func_80014A60, func_80014AEC, func_80014D24,
-    func_80014D50, NULL,          NULL,
+    RenderGraph_HandleTranslucentNode, GraphNode_ProcessShadow, GraphNode_ProcessZRange, GraphNode_ProcessSwitch, GraphNode_ProcessRotation, GraphNode_ProcessTranslation, GraphNode_ProcessBillboard,
+    GraphNode_ProcessAttachedDisplayList, func_80014690, func_800148D8, func_80014980, func_80014A60, func_80014AEC, func_80014D24,
+    GraphNode_VisitOnly, NULL,          NULL,
 };
 
 static s32 D_8006F120 = 0;
@@ -729,7 +731,15 @@ void RenderGraph_HandleTranslucentNode(GraphNode* arg0) {
     D_8006F0A0 = NULL;
 }
 
-void func_80014214(GraphNode* arg0) {
+/*
+ * GraphNode_ProcessZRange
+ * Original symbol: func_80014214
+ *
+ * Verified:
+ *     Camera-space Z of the current matrix translation vs [unk_18, unk_1A).
+ *     Visits children only when that Z is inside the range.
+ */
+void GraphNode_ProcessZRange(GraphNode* arg0) {
     unk_D_86002F34_alt3* arg = (unk_D_86002F34_alt3*)arg0;
     MtxF* mtx2 = &D_8006F088->unk_60.mtxf;
     f32 a = D_800AA8C8.unk_0000[D_800AA8C8.unk_10A0].mf[3][0];
@@ -742,7 +752,15 @@ void func_80014214(GraphNode* arg0) {
     }
 }
 
-void func_800142BC(GraphNode* arg0) {
+/*
+ * GraphNode_ProcessSwitch
+ * Original symbol: func_800142BC
+ *
+ * Verified:
+ *     Walks unk_1A siblings from child unk_0C, then dispatches that one node
+ *     through D_8006F0A4 if flag bit 0x01 is set. Does not visit all children.
+ */
+void GraphNode_ProcessSwitch(GraphNode* arg0) {
     unk_D_86002F34_alt3* arg = (unk_D_86002F34_alt3*)arg0;
     s32 i;
     GraphNode* var_a1 = arg->unk_00.unk_0C;
@@ -758,6 +776,13 @@ void func_800142BC(GraphNode* arg0) {
     }
 }
 
+/*
+ * GraphNode_ProcessRotation
+ * Original symbol: func_80014334
+ *
+ * Verified:
+ *     Push pos+rot matrix, visit children, pop matrix stack index.
+ */
 void GraphNode_ProcessRotation(GraphNode* arg0) {
     MtxF sp20;
     unk_D_86002F34_alt5* arg = (unk_D_86002F34_alt5*)arg0;
@@ -769,6 +794,13 @@ void GraphNode_ProcessRotation(GraphNode* arg0) {
     D_800AA8C8.unk_10A0--;
 }
 
+/*
+ * GraphNode_ProcessTranslation
+ * Original symbol: func_80014384
+ *
+ * Verified:
+ *     Push translation, visit children, pop matrix stack index.
+ */
 void GraphNode_ProcessTranslation(GraphNode* arg0) {
     unk_D_86002F34_alt5* arg = (unk_D_86002F34_alt5*)arg0;
 
@@ -778,6 +810,14 @@ void GraphNode_ProcessTranslation(GraphNode* arg0) {
     D_800AA8C8.unk_10A0--;
 }
 
+/*
+ * GraphNode_ProcessBillboard
+ * Original symbol: func_800143C0
+ *
+ * Verified:
+ *     Camera-facing transform (flag bits on unk_31). Stores the resulting
+ *     matrix pointer in D_800AA6C8[unk_30] for attached display lists.
+ */
 void GraphNode_ProcessBillboard(GraphNode* arg0) {
     Vec3s sp90;
     Vec3f sp84;
@@ -830,7 +870,15 @@ void GraphNode_ProcessBillboard(GraphNode* arg0) {
     }
 }
 
-void func_80014624(GraphNode* arg0) {
+/*
+ * GraphNode_ProcessAttachedDisplayList
+ * Original symbol: func_80014624
+ *
+ * Verified:
+ *     If unk_18 is a Gfx*, bind D_800AA6C8[unk_1C] and submit that list,
+ *     then visit children. Used with GraphNode_ProcessBillboard slots.
+ */
+void GraphNode_ProcessAttachedDisplayList(GraphNode* arg0) {
     unk_D_86002F34_alt7* arg = (unk_D_86002F34_alt7*)arg0;
 
     if (arg->unk_18 != NULL) {
@@ -1003,11 +1051,28 @@ void func_80014D24(GraphNode* arg0) {
     SceneGraph_HandleCallbackAndVisitChildren(arg0);
 }
 
-void func_80014D50(GraphNode* arg0) {
+/*
+ * GraphNode_VisitOnly
+ * Original symbol: func_80014D50
+ *
+ * Verified:
+ *     Passthrough: only SceneGraph_HandleCallbackAndVisitChildren.
+ */
+void GraphNode_VisitOnly(GraphNode* arg0) {
     SceneGraph_HandleCallbackAndVisitChildren(arg0);
 }
 
-void func_80014D70(GraphNode* arg0) {
+/*
+ * GraphNode_ProcessShadow
+ * Original symbol: func_80014D70
+ *
+ * Verified:
+ *     Ground-plane blob at Y=0 from the current translation. Scale/alpha
+ *     shrink with height. Submits D_1002480 or D_1002508 via a 2-Gfx temp.
+ * Likely:
+ *     Actor / object drop shadow; two DL templates, not a unique mesh.
+ */
+void GraphNode_ProcessShadow(GraphNode* arg0) {
     Vec3f sp9C;
     Vec3f sp90;
     Vec3f sp84;
