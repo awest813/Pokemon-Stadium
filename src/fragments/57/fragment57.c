@@ -1510,7 +1510,7 @@ void func_82D02ED0(s32 arg0, s16 arg1) {
     Stage_ActivateFramebuffer();
     func_82D00088();
     func_82D01AB4(arg1);
-    func_80015094(D_82D09FF0);
+    SceneGraph_ProcessRoot(D_82D09FF0);
     func_82D0194C(sp1C);
     Stage_AdvanceFrame();
 }
@@ -2293,7 +2293,7 @@ void func_82D053F4(s32 arg0, s32 arg1) {
 
     Stage_ActivateFramebuffer();
     func_82D00088();
-    func_80015094(D_82D09FF0);
+    SceneGraph_ProcessRoot(D_82D09FF0);
     func_82D04FA0(arg0, sp30);
     func_82D05258(arg0, sp30);
 

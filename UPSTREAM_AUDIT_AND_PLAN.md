@@ -68,10 +68,10 @@ That is the right contribution *on top of* pret. It should not be thrown away fo
    README still listed `src/19840.c` / `gbi.h` as a hard `make` blocker and “174 NONMATCH stubs”. Pret has since matched `19840` and many other TUs. Counts and blockers need a living progress command, not a frozen table.
 
 6. **Fragment 62 is still the battle-shell blocker.**  
-   pret mapped fragment 62 *data*. This fork now has `BattleScene_Run` plus `BattleScene_SubstateDispatch` / `Init` / `ResetState` / `SetupCamera` (`func_8432D0D8` / `D150` / `D178` / `CFCC`). `BattleTurn_*` / `BattleAI_*` already exist on other TUs. Do not invent move-effect names; next is remaining `func_8432xxxx` around the substate switch.
+   pret mapped fragment 62 *data*. This fork now has overlay entry `BattleScene_OverlayEntry`, per-frame `BattleScene_Tick` / `FrameLoop`, `BattleScene_SubstateDispatch` / `Init` / `ResetState` / `SetupCamera` / `UpdateFrame`, plus existing `BattleTurn_*` / `BattleAI_*`. Geo callback `BattleScene_Run` is only substate 5. Do not invent move-effect names.
 
 7. **`12D80.c` is only half-promoted.**  
-   Dispatch table `D_8006F0A4` now names Z-range, switch, rotation, translation, billboard, attached DL, visit-only, and shadow processors. Remaining `func_80014xxx` are still mixed (model / primitive helpers). `SceneGraph_HandleCallbackAndVisitChildren` is the name for `0x80014124` but that body is not in the TU yet.
+   `D_8006F0A4` now follows SM64 `geo_process_*` roles: object, matrix, camera-relative, Gfx, generated list, object-point, plus earlier Z-range/switch/rotation/translation/billboard/shadow. Draw entry is `SceneGraph_ProcessRoot` (`geo_process_root`). `SceneGraph_HandleCallbackAndVisitChildren` is still a missing body at `0x80014124`.
 
 ### 2.3 N64Recomp / README blockers, re-scored
 
@@ -140,13 +140,14 @@ Pret’s recent style is: match a whole file’s remaining `GLOBAL_ASM`, then ma
 ```text
 Done on this branch (no US 1.0 ROM, matching make still blocked):
 1) tools/sync_promoted_symbol_addrs.py --write (plus manual orig: for new names).
-2) BattleScene_SubstateDispatch / Init / ResetState / SetupCamera.
-3) GraphNode_ProcessZRange / Switch / Rotation / Translation / Billboard /
-   AttachedDisplayList / VisitOnly / ProcessShadow + FRAGMENT_ROLES.md.
+2) BattleScene overlay: OverlayEntry / Setup / Tick / FrameLoop / SubstateDispatch.
+3) 12D80 D_8006F0A4 filled using SM64 geo_process_* analogues (object, gfx,
+   generated list, shadow, switch, …) + SceneGraph_ProcessRoot.
 
 Next:
 - Matching make with US 1.0 baserom.
 - Recover C (or GLOBAL_ASM) for SceneGraph_HandleCallbackAndVisitChildren (0x80014124).
-- Name remaining func_80014xxx in 12D80.c and func_8432xxxx around BattleScene_SubstateDispatch.
+- Remaining 12D80 helpers after ProcessRoot (func_80015400+ RDP/material).
+- Remaining func_8432xxxx queues behind BattleScene_FlushQueuedActions.
 - Do not invent move-effect names.
 ```

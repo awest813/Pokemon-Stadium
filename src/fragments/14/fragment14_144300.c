@@ -472,10 +472,10 @@ void func_86801644(void) {
     GFX_ClearDepth(&gDisplayListHead, 0, 0, 0x140, 0xF0);
 
     if (D_8780FC94 == 0) {
-        func_80015348();
+        SceneGraph_IncrementAnimFrame();
     }
 
-    func_80015094(D_86807500);
+    SceneGraph_ProcessRoot(D_86807500);
     func_87901C98();
 
     if (D_8780FC98 == 0) {

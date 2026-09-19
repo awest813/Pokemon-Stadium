@@ -477,11 +477,11 @@ void RattataMinigame_Update(s32 arg0) {
     func_8000699C(&gDisplayListHead, 1);
 
     if (D_8780FC94 == 0) {
-        func_80015348();
+        SceneGraph_IncrementAnimFrame();
     }
 
     func_878025D0();
-    func_80015094(D_86203E38);
+    SceneGraph_ProcessRoot(D_86203E38);
     gDisplayListHead = func_87A0002C(gDisplayListHead);
     func_86200034();
 

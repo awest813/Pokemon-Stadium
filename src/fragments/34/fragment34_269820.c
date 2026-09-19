@@ -141,7 +141,7 @@ unk_D_8140E720* func_81407C7C(unk_D_86002F58_004_000* arg0, func_unk_D_8140E724_
             sp1C->unk_38.y = arg0->unk_024.y;
             sp1C->unk_38.z = arg0->unk_024.z;
         } else {
-            func_80015390(arg0, arg4, &sp1C->unk_38);
+            SceneGraph_FindObjectPoint(arg0, arg4, &sp1C->unk_38);
         }
 
         sp1C->unk_94.x = arg0->unk_01E.x;

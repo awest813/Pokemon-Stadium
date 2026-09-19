@@ -13,6 +13,12 @@
  *     - Implements recursive child node processing (SceneGraph_VisitChildren)
  *     - Links common RSP matrix utilities to scene entities
  *
+ * Naming:
+ *     Processor names follow SM64 rendering_graph_node.c (geo_process_object,
+ *     geo_process_switch, geo_process_shadow, geo_call_global_function_nodes)
+ *     where the control flow matches. Stadium-only nodes keep honest structural
+ *     names (Z-range, attached DL, object point list).
+ *
  * Verified:
  *     - Coordinates the high-level rendering loop for all game states
  *     - Manages the Matrix stack for node-local coordinate spaces
@@ -44,6 +50,12 @@ void GraphNode_ProcessTransform(GraphNode* arg0);
 void GraphNode_ProcessBillboard(GraphNode* arg0);
 void GraphNode_ProcessRotation(GraphNode* arg0);
 void GraphNode_ProcessTranslation(GraphNode* arg0);
+void GraphNode_ProcessObject(GraphNode* arg0);
+void GraphNode_ProcessMatrix(GraphNode* arg0);
+void GraphNode_ProcessCameraRelative(GraphNode* arg0);
+void GraphNode_ProcessGfx(GraphNode* arg0);
+void GraphNode_ProcessGeneratedList(GraphNode* arg0);
+void GraphNode_ProcessObjectPoint(GraphNode* arg0);
 void GraphNode_ProcessBackground(GraphNode* arg0);
 void GraphNode_ProcessClearDepth(UNUSED GraphNode* arg0);
 void GraphNode_ProcessMaster(GraphNode* arg0);
@@ -107,7 +119,7 @@ static func_D_8006F0A4 D_8006F0A4[] = {
     SceneGraph_VisitChildren, SceneGraph_ProcessNodeVariant, GraphNode_ProcessCamera, GraphNode_ProcessPerspective, GraphNode_ProcessScene, GraphNode_ProcessTransform, GraphNode_ProcessBillboard,
     GraphNode_ProcessBackground, GraphNode_ProcessClearDepth, GraphNode_ProcessMaster, GraphNode_ProcessViewportChild, GraphNode_ProcessTranslationRotation, GraphNode_ProcessMasterChild, GraphNode_ProcessDisplayList,
     RenderGraph_HandleTranslucentNode, GraphNode_ProcessShadow, GraphNode_ProcessZRange, GraphNode_ProcessSwitch, GraphNode_ProcessRotation, GraphNode_ProcessTranslation, GraphNode_ProcessBillboard,
-    GraphNode_ProcessAttachedDisplayList, func_80014690, func_800148D8, func_80014980, func_80014A60, func_80014AEC, func_80014D24,
+    GraphNode_ProcessAttachedDisplayList, GraphNode_ProcessObject, GraphNode_ProcessMatrix, GraphNode_ProcessCameraRelative, GraphNode_ProcessGfx, GraphNode_ProcessGeneratedList, GraphNode_ProcessObjectPoint,
     GraphNode_VisitOnly, NULL,          NULL,
 };
 
@@ -889,7 +901,17 @@ void GraphNode_ProcessAttachedDisplayList(GraphNode* arg0) {
     SceneGraph_HandleCallbackAndVisitChildren(arg0);
 }
 
-void func_80014690(GraphNode* arg0) {
+/*
+ * GraphNode_ProcessObject
+ * Original symbol: func_80014690
+ * SM64 analogue: geo_process_object
+ *
+ * Verified:
+ *     Type 0x16. If scene id unk_018 matches, apply pos/rot/throw-matrix flags,
+ *     scale, animation (func_80017090 / func_800175E8), set D_8006F09C, visit
+ *     children, then pop. Current-object pointer used by shadow and object points.
+ */
+void GraphNode_ProcessObject(GraphNode* arg0) {
     MtxF sp38;
     Color_RGBA8_u32 sp34;
     unk_D_86002F58_004_000* arg = (unk_D_86002F58_004_000*)arg0;
@@ -941,7 +963,16 @@ void func_80014690(GraphNode* arg0) {
     }
 }
 
-void func_800148D8(GraphNode* arg0) {
+/*
+ * GraphNode_ProcessMatrix
+ * Original symbol: func_800148D8
+ * SM64 analogue: geo_process_scale (push mtx, optional DL, children, pop)
+ *
+ * Verified:
+ *     Push unk_1C (MtxF) via func_800122B4, submit unk_18 Gfx* if present,
+ *     visit children, pop matrix stack.
+ */
+void GraphNode_ProcessMatrix(GraphNode* arg0) {
     unk_D_86002F34_alt8* arg = (unk_D_86002F34_alt8*)arg0;
 
     func_800122B4(&arg->unk_1C);
@@ -957,7 +988,15 @@ void func_800148D8(GraphNode* arg0) {
     D_800AA8C8.unk_10A0--;
 }
 
-void func_80014980(GraphNode* arg0) {
+/*
+ * GraphNode_ProcessCameraRelative
+ * Original symbol: func_80014980
+ *
+ * Verified:
+ *     Combine camera look mtx with translation unk_1C and scale unk_28,
+ *     then same optional Gfx* submit as GraphNode_ProcessGfx.
+ */
+void GraphNode_ProcessCameraRelative(GraphNode* arg0) {
     MtxF sp30;
     unk_D_86002F34_alt9* arg = (unk_D_86002F34_alt9*)arg0;
 
@@ -978,7 +1017,15 @@ void func_80014980(GraphNode* arg0) {
     D_800AA8C8.unk_10A0--;
 }
 
-void func_80014A60(GraphNode* arg0) {
+/*
+ * GraphNode_ProcessGfx
+ * Original symbol: func_80014A60
+ * SM64 analogue: geo_process_display_list
+ *
+ * Verified:
+ *     Submit Gfx* unk_18 at the current matrix; optional node callback (5, node).
+ */
+void GraphNode_ProcessGfx(GraphNode* arg0) {
     unk_D_86002F34_alt9* arg = (unk_D_86002F34_alt9*)arg0;
 
     if ((arg->unk_18 != NULL) || (arg->unk_00.unk_10 != NULL)) {
@@ -991,7 +1038,16 @@ void func_80014A60(GraphNode* arg0) {
     SceneGraph_HandleCallbackAndVisitChildren(arg0);
 }
 
-void func_80014AEC(GraphNode* arg0) {
+/*
+ * GraphNode_ProcessGeneratedList
+ * Original symbol: func_80014AEC
+ * SM64 analogue: geo_process_generated_list
+ *
+ * Verified:
+ *     Builds a list through func_80016364 using D_8006F0A0 slots and the
+ *     current object's unk_03C color scale. Requires a translucent parent.
+ */
+void GraphNode_ProcessGeneratedList(GraphNode* arg0) {
     Color_RGBA8_u32 sp44;
     unk_D_86002F34_alt10* arg = (unk_D_86002F34_alt10*)arg0;
     unk_D_86002F34_alt11_018* sp3C;
@@ -1027,7 +1083,14 @@ void func_80014AEC(GraphNode* arg0) {
     SceneGraph_HandleCallbackAndVisitChildren(arg0);
 }
 
-void func_80014CB8(s32 arg0) {
+/*
+ * SceneGraph_RecordObjectPoint
+ * Original symbol: func_80014CB8
+ *
+ * Verified:
+ *     Appends (id, current mtx translation) to D_8006F09C->unk_0A8 (max 12).
+ */
+void SceneGraph_RecordObjectPoint(s32 arg0) {
     MtxF* temp_a1;
     unk_D_86002F58_004_000_0A8* ptr;
 
@@ -1044,10 +1107,17 @@ void func_80014CB8(s32 arg0) {
     }
 }
 
-void func_80014D24(GraphNode* arg0) {
+/*
+ * GraphNode_ProcessObjectPoint
+ * Original symbol: func_80014D24
+ *
+ * Verified:
+ *     Records this node's unk_18 id as an object point, then visits children.
+ */
+void GraphNode_ProcessObjectPoint(GraphNode* arg0) {
     unk_D_86002F34_alt3* arg = (unk_D_86002F34_alt3*)arg0;
 
-    func_80014CB8(arg->unk_18);
+    SceneGraph_RecordObjectPoint(arg->unk_18);
     SceneGraph_HandleCallbackAndVisitChildren(arg0);
 }
 
@@ -1085,8 +1155,8 @@ void GraphNode_ProcessShadow(GraphNode* arg0) {
     sp3C = &D_800AA8C8.unk_0000[D_800AA8C8.unk_10A0];
     temp_s1 = DLBuf_AllocTemp(sizeof(Gfx) * 2);
 
-    if (func_80015390(D_8006F09C, 0x64, NULL) == 0) {
-        func_80014CB8(0x64);
+    if (SceneGraph_FindObjectPoint(D_8006F09C, 0x64, NULL) == 0) {
+        SceneGraph_RecordObjectPoint(0x64);
     }
 
     Vec3f_Set(&sp9C, sp3C->mf[3][0], sp3C->mf[3][1] + arg->unk_1E, sp3C->mf[3][2]);
@@ -1136,7 +1206,16 @@ void GraphNode_ProcessShadow(GraphNode* arg0) {
     }
 }
 
-void func_80015094(GraphNode* arg0) {
+/*
+ * SceneGraph_ProcessRoot
+ * Original symbol: func_80015094
+ * SM64 analogue: geo_process_root
+ *
+ * Verified:
+ *     If flag bit 0x01, reset RDP texture state, set D_8006F08C, visit children.
+ *     Called from battle, minigames, and menus as the graph draw entry.
+ */
+void SceneGraph_ProcessRoot(GraphNode* arg0) {
     unk_D_86002F34_alt1* arg = (unk_D_86002F34_alt1*)arg0;
 
     if (arg0->unk_01 & 1) {
@@ -1161,7 +1240,16 @@ void func_80015094(GraphNode* arg0) {
     D_8006F080 = 0;
 }
 
-void func_80015220(GraphNode* arg0, s32 arg1) {
+/*
+ * SceneGraph_CallNodeCallbacks
+ * Original symbol: func_80015220
+ * SM64 analogue: geo_call_global_function_nodes
+ *
+ * Verified:
+ *     Walk siblings; invoke unk_10(context, node). While visiting children,
+ *     stash camera (type 2), scene (4), type-6, or object (0x16) into globals.
+ */
+void SceneGraph_CallNodeCallbacks(GraphNode* arg0, s32 arg1) {
     GraphNode* var_s1 = arg0;
     GraphNode** var_s0;
 
@@ -1208,15 +1296,15 @@ void func_80015220(GraphNode* arg0, s32 arg1) {
     } while (var_s1 != arg0);
 }
 
-void func_8001533C(s32 arg0) {
+void SceneGraph_SetRenderPass(s32 arg0) {
     D_8006F080 = arg0;
 }
 
-void func_80015348(void) {
+void SceneGraph_IncrementAnimFrame(void) {
     D_8006F084++;
 }
 
-s32 func_80015360(void) {
+s32 SceneGraph_AnimFrameMatchesScene(void) {
     s32 var_v1 = 1;
 
     if (D_8006F090 != NULL) {
@@ -1225,7 +1313,14 @@ s32 func_80015360(void) {
     return var_v1;
 }
 
-Vec3f* func_80015390(unk_D_86002F58_004_000* arg0, s16 arg1, Vec3f* arg2) {
+/*
+ * SceneGraph_FindObjectPoint
+ * Original symbol: func_80015390
+ *
+ * Verified:
+ *     Linear search of recorded object points by id. Optional copy to arg2.
+ */
+Vec3f* SceneGraph_FindObjectPoint(unk_D_86002F58_004_000* arg0, s16 arg1, Vec3f* arg2) {
     s32 i;
     s32 var_v0;
     u8 temp_v1;

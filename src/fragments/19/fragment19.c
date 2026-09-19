@@ -43,8 +43,8 @@ void miniUnkUpdateCamera(void) {
 void miniUnkDrawHUB(UNUSED s32 arg0) {
     Stage_ActivateFramebuffer();
     GFX_ClearScreen(&gDisplayListHead, 1);
-    func_80015348();
-    func_80015094(&D_87906050->unk_00);
+    SceneGraph_IncrementAnimFrame();
+    SceneGraph_ProcessRoot(&D_87906050->unk_00);
 
     if (miniDebugMode != 0) {
         showDebuggCameraInfo();

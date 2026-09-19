@@ -2085,7 +2085,7 @@ void func_82602294(void) {
     Stage_ActivateFramebuffer();
     GFX_ClearScreen(&gDisplayListHead, 0x2A9);
     GFX_ClearDepth(&gDisplayListHead, 0, 0, 0x140, 0xF0);
-    func_80015094(D_82607418);
+    SceneGraph_ProcessRoot(D_82607418);
     func_8260125C();
     Stage_AdvanceFrame();
 }

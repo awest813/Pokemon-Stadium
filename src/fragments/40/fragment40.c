@@ -521,7 +521,7 @@ void func_83101608(void) {
 void func_83101674(void) {
     Stage_ActivateFramebuffer();
     func_8310102C();
-    func_80015094(D_83101EF4);
+    SceneGraph_ProcessRoot(D_83101EF4);
     if (D_83101EEC != 0) {
         func_831013FC();
     }

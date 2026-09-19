@@ -829,7 +829,7 @@ s32 func_88803614(void) {
         }
 
         ((func8850BC94)Memmap_GetFragmentVaddr(func_8850BC94))(var_s0);
-        func_80015348();
+        SceneGraph_IncrementAnimFrame();
         Stage_ActivateFramebuffer();
         ((func885008C4)Memmap_GetFragmentVaddr(func_885008C4))(D_88826940);
         ((func88500828)Memmap_GetFragmentVaddr(func_88500828))(D_88826940, 0, 0);
@@ -903,7 +903,7 @@ s32 func_888038E0(void) {
         }
 
         ((func8850BC94)Memmap_GetFragmentVaddr(func_8850BC94))(var_s0);
-        func_80015348();
+        SceneGraph_IncrementAnimFrame();
         Stage_ActivateFramebuffer();
         ((func885008C4)Memmap_GetFragmentVaddr(func_885008C4))(D_88826940);
         ((func88500828)Memmap_GetFragmentVaddr(func_88500828))(D_88826940, 0, 0);
@@ -6135,7 +6135,7 @@ s32 func_88803C74(void) {
             var_s1 = 1;
             func_80048B90(2);
         }
-        func_80015348();
+        SceneGraph_IncrementAnimFrame();
         Stage_ActivateFramebuffer();
         ((func885008C4)Memmap_GetFragmentVaddr(func_885008C4))(D_88826940);
         ((func88500828)Memmap_GetFragmentVaddr(func_88500828))(D_88826940, 0, 0);

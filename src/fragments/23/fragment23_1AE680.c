@@ -2608,7 +2608,7 @@ void func_8820C510(unk_func_8820BE14* arg0) {
     volatile s32 sp34 = 0;
 
     while (sp34 == 0) {
-        func_80015348();
+        SceneGraph_IncrementAnimFrame();
         Stage_ActivateFramebuffer();
 
         ((func885008C4)Memmap_GetFragmentVaddr(func_885008C4))(&arg0->unk_00);

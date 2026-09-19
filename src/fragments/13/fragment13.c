@@ -132,8 +132,8 @@ void func_86700254(s32 arg0) {
 void func_86700428(s32 arg0) {
     Stage_ActivateFramebuffer();
     GFX_ClearScreen(&gDisplayListHead, 0xA6BF);
-    func_80015348();
-    func_80015094(D_86700934);
+    SceneGraph_IncrementAnimFrame();
+    SceneGraph_ProcessRoot(D_86700934);
     func_86700254(arg0);
     Stage_AdvanceFrame();
 }

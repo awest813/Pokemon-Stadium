@@ -54,7 +54,7 @@ Confidence: **Verified** where a load sits in a named `GameState_*` or named dis
 | 55 | Setup helper | Loaded from fragment 54 / 38 |
 | 56 | Options | `GameState_Options` |
 | 57 | Menu select | `GameState_MenuSelect` |
-| 62 | **Battle scene / turn engine** | `BattleScene_Run` (`func_84300020`) |
+| 62 | **Battle scene / turn engine** | Overlay yaml name `BattleScene_Run`; C entry `BattleScene_OverlayEntry` (`func_84301A2C`). Geo callback `BattleScene_Run` is only substate 5. |
 | 63 | Battle shell begin | `BattleShell_Begin` |
 | 64 | Battle shell tick | `BattleShell_Tick` |
 | 65 | Gym Leader Castle mid-step | `GymLeaderCastle_RunLoop` case 2 |

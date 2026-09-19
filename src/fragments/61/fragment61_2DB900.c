@@ -358,7 +358,7 @@ void func_84204760(s32 arg0) {
     if (D_8423E56C != 0) {
         temp_s0 = (0x38 - D_8423E574) / 2;
         sp32 = (0x28 - D_8423E576) / 2;
-        func_80015094(D_8423D400);
+        SceneGraph_ProcessRoot(D_8423D400);
         func_84204210();
 
         if (D_8423E574 > 0) {

@@ -704,10 +704,10 @@ u8* func_80031660(unk_func_80031270* arg0) {
                 } else {
                     GFX_ClearScreen(&gDisplayListHead, 0xA6BF);
                 }
-                func_80015348();
+                SceneGraph_IncrementAnimFrame();
                 *((s32*)Util_ConvertAddrToVirtAddr(&D_8140E6B8)) = sp24->unk_18;
                 sp20();
-                func_80015094(arg0->unk_1C);
+                SceneGraph_ProcessRoot(arg0->unk_1C);
                 break;
             default:
                 break;

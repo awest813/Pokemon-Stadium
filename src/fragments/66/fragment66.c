@@ -215,12 +215,12 @@ void func_83200468(void) {
 }
 
 s32 func_8320058C(u8 arg0) {
-    func_80015348();
+    SceneGraph_IncrementAnimFrame();
     func_832003AC();
     func_83200468();
     Stage_ActivateFramebuffer();
     GFX_ClearScreen(&gDisplayListHead, 1);
-    func_80015094(D_83202010);
+    SceneGraph_ProcessRoot(D_83202010);
     return 0;
 }
 

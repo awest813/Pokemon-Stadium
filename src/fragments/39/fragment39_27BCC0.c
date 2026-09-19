@@ -1988,7 +1988,7 @@ void func_82502F44(void) {
     func_82502BB0();
     Stage_ActivateFramebuffer();
     func_8001D924(D_8250A268);
-    func_80015094(D_8250A270);
+    SceneGraph_ProcessRoot(D_8250A270);
     func_825054F4();
     func_82505C10();
     func_82502C78();

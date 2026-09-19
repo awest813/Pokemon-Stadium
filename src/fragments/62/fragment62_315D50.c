@@ -4698,7 +4698,15 @@ void func_8432C1E0(s32 arg0, s32 arg1, s32 arg2) {
     }
 }
 
-void func_8432C3F8(void) {
+/*
+ * BattleScene_FlushQueuedActions
+ * Original symbol: func_8432C3F8
+ *
+ * Verified:
+ *     Drains four pending action queues (D_843902B0 / C8 / D4 / C0) via
+ *     func_8432C1E0, then clears each count.
+ */
+void BattleScene_FlushQueuedActions(void) {
     if (D_843902B0 != 0) {
         func_8432EB44();
         func_8432C1E0(D_843902AC, D_843902B8, D_843902B0);
@@ -4721,9 +4729,17 @@ void func_8432C3F8(void) {
     }
 }
 
-void func_8432C4CC(UNUSED unk_D_86002F34_00C* arg0) {
+/*
+ * BattleScene_UpdateFrame
+ * Original symbol: func_8432C4CC
+ *
+ * Verified:
+ *     Substate 2 hook: func_8140C5D0, flush queued actions, func_8432E68C,
+ *     func_843592E0.
+ */
+void BattleScene_UpdateFrame(UNUSED unk_D_86002F34_00C* arg0) {
     func_8140C5D0();
-    func_8432C3F8();
+    BattleScene_FlushQueuedActions();
     func_8432E68C();
     func_843592E0();
 }
@@ -5034,7 +5050,15 @@ s32 func_8432CED4(unk_D_86002F58_004_000* arg0) {
     return ret;
 }
 
-void func_8432CEF0(UNUSED unk_D_86002F34_00C* arg0) {
+/*
+ * BattleScene_PollUpdateCallbacks
+ * Original symbol: func_8432CEF0
+ *
+ * Verified:
+ *     For each of 8 slots, if D_84390300[i]() != 0, clear that slot and
+ *     D_84390320[i].
+ */
+void BattleScene_PollUpdateCallbacks(UNUSED unk_D_86002F34_00C* arg0) {
     s32 i;
 
     for (i = 0; i < 8; i++) {
@@ -5045,7 +5069,14 @@ void func_8432CEF0(UNUSED unk_D_86002F34_00C* arg0) {
     }
 }
 
-void func_8432CF74(UNUSED unk_D_86002F34_00C* arg0) {
+/*
+ * BattleScene_RunDrawCallbacks
+ * Original symbol: func_8432CF74
+ *
+ * Verified:
+ *     Call every non-NULL D_84390320[i] (paired with the update table).
+ */
+void BattleScene_RunDrawCallbacks(UNUSED unk_D_86002F34_00C* arg0) {
     s32 i;
 
     for (i = 0; i < 8; i++) {
@@ -5081,9 +5112,10 @@ void BattleScene_SetupCamera(unk_D_86002F34_00C* arg0) {
  * Original symbol: func_8432D0D8
  *
  * Verified:
- *     Switch on a small integer substate used by BattleScene_Run.
- *     0 = BattleScene_Init, 2 = setup camera + related, 5 = extra path
- *     from BattleScene_Run(arg0 == 2). Cases 1/3/4 currently no-ops.
+ *     Switch on a small integer substate used by BattleScene_Tick / Setup.
+ *     0 = BattleScene_Init, 2 = BattleScene_SetupCamera + UpdateFrame +
+ *     PollUpdateCallbacks, 5 = extra path from geo callback BattleScene_Run.
+ *     Cases 1/3/4 currently no-ops.
  */
 s32 BattleScene_SubstateDispatch(s32 arg0, unk_D_86002F34_00C* arg1) {
     switch (arg0) {
@@ -5098,8 +5130,8 @@ s32 BattleScene_SubstateDispatch(s32 arg0, unk_D_86002F34_00C* arg1) {
 
         case 2:
             BattleScene_SetupCamera(arg1);
-            func_8432C4CC(arg1);
-            func_8432CEF0(arg1);
+            BattleScene_UpdateFrame(arg1);
+            BattleScene_PollUpdateCallbacks(arg1);
             break;
 
         case 5:

@@ -1868,7 +1868,7 @@ void func_86F00920(MiniActor* sandshrew) {
 
         case 0x65: //	win animation loop
             minigameActorLocalOriginToZero(sandshrew);
-            func_80015390(&miniSandshrewGeiserPtr->unk_000, 0xA, &sandshrew->position_2);
+            SceneGraph_FindObjectPoint(&miniSandshrewGeiserPtr->unk_000, 0xA, &sandshrew->position_2);
             break;
     }
 }
@@ -2347,10 +2347,10 @@ void func_86F01F58(s32 arg0) {
     GFX_ClearScreen(&gDisplayListHead, 0xA6BF);
 
     if (D_8780FC94 == 0) {
-        func_80015348();
+        SceneGraph_IncrementAnimFrame();
     }
 
-    func_80015094(&D_87906050->unk_00);
+    SceneGraph_ProcessRoot(&D_87906050->unk_00);
     func_87901C98();
 
     if (miniDebugMode == 0) {

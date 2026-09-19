@@ -821,14 +821,14 @@ void func_8432FA54(unk_D_84390010* arg0, s16 arg1, Vec3f* arg2) {
 
     if (arg0 != NULL) {
         if (arg1 == 0x64) {
-            if (func_80015390(&arg0->unk_000, 0xA, arg2) != NULL) {
+            if (SceneGraph_FindObjectPoint(&arg0->unk_000, 0xA, arg2) != NULL) {
                 sp24 = 1;
-            } else if (func_80015390(&arg0->unk_000, 0x64, arg2) != NULL) {
+            } else if (SceneGraph_FindObjectPoint(&arg0->unk_000, 0x64, arg2) != NULL) {
                 sp24 = 2;
             }
         } else {
-            if (func_80015390(&arg0->unk_000, arg1, arg2) == NULL) {
-                if (func_80015390(&arg0->unk_000, 0x64, arg2) != NULL) {
+            if (SceneGraph_FindObjectPoint(&arg0->unk_000, arg1, arg2) == NULL) {
+                if (SceneGraph_FindObjectPoint(&arg0->unk_000, 0x64, arg2) != NULL) {
                     sp24 = 3;
                 }
             } else {

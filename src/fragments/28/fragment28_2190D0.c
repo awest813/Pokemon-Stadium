@@ -3876,9 +3876,9 @@ s32 func_8880725C(UNUSED u8 arg0) {
 
     spF4 = func_8002D7C0(NULL, 0, D_88826A3C, D_88826A4E + 0x13);
     func_88807090();
-    func_80015348();
+    SceneGraph_IncrementAnimFrame();
     Stage_ActivateFramebuffer();
-    func_80015094(D_88826A44);
+    SceneGraph_ProcessRoot(D_88826A44);
     func_8001F3F4();
     func_8001EBE0(1, 0);
     func_8001F324(0xFF, 0xFF, 0xFF, 0xFF);

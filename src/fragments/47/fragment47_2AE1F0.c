@@ -760,7 +760,7 @@ void func_838022C8(s32 arg0) {
     if ((D_838067D8 != 0) && (arg0 != 0)) {
         temp_s0 = (0x38 - D_838067E4) / 2;
         sp3A = (0x28 - D_838067E6) / 2;
-        func_80015094(D_83805670);
+        SceneGraph_ProcessRoot(D_83805670);
         func_83801E00();
 
         if (D_838067E4 > 0) {
