@@ -34,17 +34,16 @@ s32 func_8790168C(void) {
     }
 
     if (i >= 0x80) {
-        return -1;
+        var_v1 = -1;
+    } else {
+        var_v1->unk_2B = 1;
+    
+        D_8140E734 = var_v0 + 1;
+        if (D_8140E734 >= 0x80) {
+            D_8140E734 = 0;
+        }
     }
-
-    var_v1->unk_2B = 1;
-
-    D_8140E734 = var_v0 + 1;
-    if (D_8140E734 >= 0x80) {
-        D_8140E734 = 0;
-    }
-
-    return (s32)var_v1;
+    return var_v1;
 }
 
 void func_87901720(unk_D_8140E728* arg0) {

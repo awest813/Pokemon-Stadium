@@ -4,22 +4,23 @@
 #include "profiler.h"
 #include "4BDC0.h"
 #include "5580.h"
+#include "E1C0.h"
 #include "373A0.h"
 #include "src/50860.h"
 #include "src/490A0.h"
 #include "src/4BA90.h"
 #include "src/4BDC0.h"
 
-extern s32 gAudioStatus;
+typedef struct unk_D_800A8480 {
+  /* 0x0000 */ OSThread thread;
+  /* 0x01B0 */ char unk01B0[0x2030];
+} unk_D_800A8480; // size = 0x21E0
 
-extern RSPTask D_800A83A8[];
-
-extern s32 D_800A8478;
-extern s32 gCurrentTrack;
-
-extern OSThread gAudioThread;
-
-extern u8 D_800AA660[];
+static s32 D_800A83A0;
+static RSPTask D_800A83A8[2];
+static s32 D_800A8478;
+static s32 D_800A847C;
+static unk_D_800A8480 D_800A8480;
 
 void Audio_OnStart(void) {
 }
@@ -34,30 +35,30 @@ void Audio_OnResume(void) {
 }
 
 void Audio_ResetTrack(void) {
-    gCurrentTrack = -1;
+    D_800A847C = -1;
 }
 
 void Audio_PlayTrack(s32 arg0) {
-    if (arg0 != gCurrentTrack) {
-        if (gCurrentTrack >= 0) {
-            Audio_Stop(0);
+    if (arg0 != D_800A847C) {
+        if (D_800A847C >= 0) {
+            func_8004B9C4(0);
         }
-        Audio_Play(arg0);
-        gCurrentTrack = arg0;
+        func_8004B1CC(arg0);
+        D_800A847C = arg0;
     }
 }
 
 void Audio_SwitchTrack(s32 arg0) {
-    if (arg0 != gCurrentTrack) {
-        Audio_Play(arg0);
-        gCurrentTrack = arg0;
+    if (arg0 != D_800A847C) {
+        func_8004B1CC(arg0);
+        D_800A847C = arg0;
     }
 }
 
 void Audio_StopTrack(s32 arg0) {
-    if (gCurrentTrack >= 0) {
-        Audio_Stop(arg0);
-        gCurrentTrack = -1;
+    if (D_800A847C >= 0) {
+        func_8004B9C4(arg0);
+        D_800A847C = -1;
     }
 }
 
@@ -83,21 +84,21 @@ void Audio_StopAll(void) {
 }
 
 void Audio_Disable(void) {
-    gAudioStatus = 0;
+    D_800A83A0 = 0;
     func_8003D4A0(0);
 }
 
 void Audio_Enable(void) {
     func_8003D4A0(1);
-    gAudioStatus = 1;
+    D_800A83A0 = 1;
 }
 
 void AudioThread_Main(void* unused) {
     __osSetFpcCsr(0x01000C01);
-    SchedClient_Init(&gAudioThread, 1, 1);
-    Sched_RegisterClient(&gAudioThread);
-    gAudioStatus = 1;
-    gCurrentTrack = -1;
+    SchedClient_Init(&D_800A8480.thread, 1, 1);
+    Sched_RegisterClient(&D_800A8480.thread);
+    D_800A83A0 = 1;
+    D_800A847C = -1;
     D_800A8478 = 0;
     osCreateMesgQueue(&D_800A83A8[0].queue, &D_800A83A8[0].mesg, 1);
     osCreateMesgQueue(&D_800A83A8[1].queue, &D_800A83A8[1].mesg, 1);
@@ -109,9 +110,9 @@ void AudioThread_Main(void* unused) {
 
     // thread loop
     while (1) {
-        SchedClient_WaitMsg(&gAudioThread);
+        SchedClient_WaitMsg(&D_800A8480.thread);
         profiler_log_thread4_time();
-        if ((gAudioStatus != 0) && (gScheduler.pre_nmi < 0x15)) {
+        if ((D_800A83A0 != 0) && (D_800A62E0.pre_nmi < 0x15)) {
             Audio_BuildTask(&D_800A83A8[D_800A8478].task);
             Sched_QueueTask(&D_800A83A8[D_800A8478], 0);
         }
@@ -120,7 +121,7 @@ void AudioThread_Main(void* unused) {
     }
 }
 
-void Audio_Init(void) {
-    osCreateThread(&gAudioThread, 4, AudioThread_Main, NULL, D_800AA660, 0x50);
-    osStartThread(&gAudioThread);
+void Audio_StartThread(void) {
+    osCreateThread(&D_800A8480.thread, 4, AudioThread_Main, NULL, &D_800AA660, 0x50);
+    osStartThread(&D_800A8480.thread);
 }

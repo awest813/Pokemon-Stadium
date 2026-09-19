@@ -8,10 +8,6 @@ typedef struct PosBlend {
     /* 0x0C */ Vec3f offset;
 } PosBlend; // size = 0x18
 
-typedef struct Vec3sPad {
-    /* 0x0 */ Vec3s vec;
-    /* 0x6 */ char pad06[0x9];
-} Vec3sPad; // size = 0x10
 
 typedef struct Vec3fCounter {
     /* 0x00 */ Vec3f vec;
@@ -39,9 +35,10 @@ typedef struct ModelVertex {
     /* 0x00 */ s16 jointIndex;      // bone / transform index
     /* 0x02 */ s16 parentIndex;     // parent bone index
     /* 0x04 */ s16 childIndex;      // child / next transform
-    /* 0x06 */ u16  pad06;
+    /* 0x06 */ u16 pad06;
     /* 0x08 */ ModelTransformCmd cmd;
-    /* 0x14 */ u8   pad14[0xC];
+    /* 0x14 */ f32 unk_14;
+    /* 0x18 */ u8  pad18[0x8];
     /* 0x20 */ f32 unk_20;
     /* 0x24 */ u8  pad24[0x40];
     /* 0x64 */ PosBlend position;   // base + animated offset
@@ -97,13 +94,17 @@ typedef struct StadiumModel {
     /* 0x02 */  s16 unk_02;
     /* 0x04 */  StadiumTransform transforms[5];
     /* 0x130 */ u32 modelSegment;
-    /* 0x134 */ s8 pad134[0x24];
+    /* 0x134 */ s8 pad134[0x4];
+    /* 0x138 */ u32 unkSegment;
+    /* 0x13C */ s8 pad13C[0x1C];
     /* 0x158 */ Vec3f position;
     /* 0x164 */ s8 pad164[0xC];
     /* 0x170 */ ModelVertex mvtx;
 } StadiumModel; // size = 0x204
 
+void func_80033D1C(StadiumModel* model, MtxF* mtx);
 void func_800350E4(ModelSegment*, MtxF*, ModelVertex*);
+void func_800357F4(StadiumModel* model);
 void func_800359FC(ModelSegment*, ModelVertex*, StadiumModel*, f32);
 void func_80035FA8(ModelSegment*, ModelVertex*);
 

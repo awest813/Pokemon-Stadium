@@ -12,6 +12,7 @@
 #define THREAD_ID_IDLE 1
 #define THREAD_ID_RESET 21
 
+#define POOL_START   0x80104BB0
 #define POOL_END_4MB 0x80400000
 #define POOL_END_6MB 0x80600000
 
@@ -851,6 +852,7 @@ typedef struct ScissorRect {
 	/* 0x06 */ s16 y2;
 } ScissorRect; // size >= 0x8
 extern ScissorRect D_800A7440;
+#define unk_D_800A7440 ScissorRect
 
 extern struct unk_D_86002F58_004_000_000 D_800AC840;
 extern struct unk_D_86002F58_004_000_000 D_800AC858;
@@ -887,7 +889,6 @@ typedef struct unk_D_800AC870 {
     /* 0x52 */ u8 unk_52;
     /* 0x53 */ u8 unk_53;
 } unk_D_800AC870; // size = 0x54
-extern unk_D_800AC870* D_800AC870;
 
 extern Gfx D_8006F498[];
 
@@ -922,7 +923,6 @@ extern u32 D_1003E78[];
 extern u32 D_304F120[];
 
 extern s32 D_800FC820;
-extern u8* D_800FF9C0;
 
 extern OSViMode D_800795C0;
 extern u8 D_ADC80[];

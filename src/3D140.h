@@ -22,15 +22,16 @@ typedef struct BattleMove {
 /*
  * BattleActorState
  * Original symbol: unk_D_800FCB18
- * 
+ *
  * Summary:
  *     The active combat state of a Pokemon during a battle session.
  *     Maps closely to Gen 1 RAM structures.
  */
 typedef struct BattleActorState {
-    /* 0x00 */ char unk00[0x1];
+    /* 0x00 */ u8 unk_00;
     /* 0x01 */ u8 unk_01;
-    /* 0x02 */ char unk02[0x3];
+    /* 0x02 */ char unk02[0x2];
+    /* 0x04 */ u8 unk_04;
     /* 0x05 */ u8 unk_05;
     /* 0x06 */ char unk06[0x5];
     /* 0x0B */ u8 species;
@@ -84,17 +85,19 @@ typedef struct amConfig {
     /* 0x08 */ u32 maxACMDSize;
 } amConfig; // size = 0xC
 
-extern s32 D_80077DC4;
-extern f32 D_80077DC8;
-extern u8 D_80077DCC;
-extern f32 D_80077DD0;
+extern s32 mus_active_fade_handle;
+extern f32 mus_fade_start_volume;
+extern u8 mus_fade_target_volume;
+extern f32 mus_fade_step_rate;
 extern f32 D_80077DD4;
 extern f32 D_80077DD8;
 extern f32 D_80077DDC;
 extern f32 D_80077DE0;
-extern u8 D_80077DE4;
+extern u8 mus_sound_effect_blocked;
 
-extern unk_D_800FCB18* D_800FCB18[2];
+typedef BattleActorState unk_D_800FCB18;
+
+extern BattleActorState* D_800FCB18[4];
 
 void amCreateAudioMgr(ALSynConfig*, amConfig*, u32, s32, s32);
 OSTask* func_8003CADC(OSTask*);
@@ -109,8 +112,8 @@ void func_8003D828(u8, u8, u8, u8);
 void func_8003D918(u32 arg0, u32 arg1);
 void func_8003DB84(s32 arg0);
 void func_8003EB40(s32, unk_D_800FCB18*);
-void func_8003F1AC(s32);
-void func_8003F4C0(s32);
+void func_8003F1AC(u32);
+void func_8003F4C0(u32);
 void func_8003F624(u32 arg0);
 void func_8003F660(s32);
 void func_80040A70(unk_D_800FCB18* arg0, s32 arg1, s32 arg2, s32 arg3);

@@ -24,7 +24,7 @@ s32 func_8000B4C4(void);
 void Yay0_Decompress(void* src, void* dst);
 
 // DDC0.s
-void Audio_Init(void);
+void Audio_StartThread(void);
 
 // exception_set.s
 void set_watch_lohi(s32);

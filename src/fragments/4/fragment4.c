@@ -227,12 +227,11 @@ void func_87A00DB8(s32 arg0) {
     gDPSetTexturePersp(gfx++, G_TP_NONE);
 
     for (i = 0; i < 15; i++) {
-        s32 sp44 = arg0 + ((i * 0x14) << 9);
-
-        for (j = 0; j < 20; j++, sp44 += 0x200) {
+        for (j = 0; j < 20; j++) {
             gDPPipeSync(gfx++);
-            gDPLoadTextureBlock(gfx++, sp44, G_IM_FMT_RGBA, G_IM_SIZ_16b, 16, 16, 0, G_TX_NOMIRROR | G_TX_CLAMP,
-                                G_TX_NOMIRROR | G_TX_CLAMP, G_TX_NOMASK, G_TX_NOMASK, G_TX_NOLOD, G_TX_NOLOD);
+            gDPLoadTextureBlock(gfx++, arg0 + (i * 0x14 + j) * 0x200, G_IM_FMT_RGBA, G_IM_SIZ_16b, 16, 16, 0,
+                                G_TX_NOMIRROR | G_TX_CLAMP, G_TX_NOMIRROR | G_TX_CLAMP, G_TX_NOMASK, G_TX_NOMASK,
+                                G_TX_NOLOD, G_TX_NOLOD);
 
             gSPTextureRectangle(gfx++, (j * 0x10) << 2, (i * 0x10) << 2, ((j + 1) * 0x10) << 2, ((i + 1) * 0x10) << 2,
                                 G_TX_RENDERTILE, 0, 0, 0x0400, 0x0400);

@@ -1,8 +1,10 @@
 #include "global.h"
 #include "controller.h"
 
-extern s32 D_800697E0;
-extern u8 D_800A82B0[32];
+s32 D_800697E0[] = { 0, 0, 0, 0 };
+
+static u8 D_800A82B0[31];
+static u8 D_800A82CF;
 
 extern OSMesgQueue gSIEventMesgQueue;
 
@@ -10,8 +12,6 @@ s32 __osContRamWrite(OSMesgQueue* mq, int channel, u16 address, u8* buffer, int 
 s32 __osContRamRead(OSMesgQueue* mq, int channel, u16 address, u8* buffer);
 
 extern s32 osPfsIsPlug(OSMesgQueue*, u8*);
-
-extern u8 D_800A82CF;
 
 // some kind of cycle count sleep function. just like the one in crash_screen.c
 void func_8000B430(long ms) {
@@ -29,7 +29,7 @@ s32 func_8000B4C4(void) {
     s32 ret;
     u8 sp2F; // sp2F
 
-    if (D_800697E0 == 0) {
+    if (D_800697E0[0] == 0) {
         u8* buffer;
         osPfsIsPlug(&gSIEventMesgQueue, &sp2F);
         // is controller 4 plugged in? (why?)
@@ -60,7 +60,7 @@ s32 func_8000B4C4(void) {
             }
             if ((__osContRamRead(&gSIEventMesgQueue, 3, 0x400, buffer) == 0) && (D_800A82CF == 0x85)) {
                 Cont_NoBlockEepromQueue();
-                D_800697E0 = 1;
+                D_800697E0[0] = 1;
                 return 1;
             }
             Cont_NoBlockEepromQueue();

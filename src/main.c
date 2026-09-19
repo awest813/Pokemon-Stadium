@@ -4,6 +4,7 @@
 #include "rsp.h"
 #include "reset.h"
 #include "util.h"
+#include "DDC0.h"
 
 extern void Game_Thread(void* arg); // thread 6 function
 
@@ -26,7 +27,7 @@ void Idle_ThreadEntry(UNUSED void* unused) {
     crash_screen_init();
     rsp_init();
     Sched_Init();
-    Audio_Init();
+    Audio_StartThread();
     Display_Init();
     SoftReset_CreateThread();
     osCreateThread(&pThreads, 6, &Game_Thread, 0, &D_800818E0, 20);
