@@ -2,16 +2,18 @@
 
 This guide is a focused reverse-engineering brief for the current Pokémon Stadium USA decomp state.
 
+Counts and the ordered repo-wide plan live in **[UPSTREAM_AUDIT_AND_PLAN.md](UPSTREAM_AUDIT_AND_PLAN.md)**. This file is the *how* for the two remaining central systems.
+
 It targets three active problem areas:
 
-1. **Battle Engine (PARTIAL)**  
-   Move effects are mostly promoted, but the core AI and turn-logic in **Fragment 62** still need a symbolic naming pass.
+1. **Battle Engine (PARTIAL — shell named)**  
+   Overlay entry, substate dispatch, turn build/execute, AI choose/simulate, event queue, and a `BattleEffect_*` set are named. The body of Fragment 62 is still ~1926 `func_843*` helpers.
 
-2. **Scene Graph (PARTIAL)**  
-   The renderer traversal logic in **`12D80.c`** remains largely address-based and needs structural naming.
+2. **Scene Graph (PARTIAL — traversal named)**  
+   `12D80.c` processors in `D_8006F0A4` are named (`GraphNode_Process*`, `SceneGraph_*`, `Renderer_*`). Two `GLOBAL_ASM` functions and the `unk_*` node structs remain.
 
 3. **Remaining Blocker**  
-   A concrete next-step definition of what is still preventing clean promotion of the battle and rendering subsystems.
+   Mid-level names exist for the *skeleton*. Cleaner promotion is blocked by unnamed turn/event/AI internals (Fragment 62) and un-promoted graph-node structs (`12D80` / `11BA0`).
 
 This guide is written for AI coding agents and human reverse engineers.
 
@@ -39,6 +41,8 @@ Use this document when deciding:
 
 ### Current status
 The strongest currently exposed battle convergence point is **Fragment 62**.
+
+Named already (do not redo): `BattleScene_OverlayEntry` / `Tick` / `FrameLoop` / `SubstateDispatch` / `Init` / `ResetState` / `SetupCamera` / `UpdateFrame`, `BattleTurn_BuildOrder` / `Execute` / `CheckInterrupts` / `CheckPostAction`, `BattleAI_ChooseMove` / damage-sim helpers, `BattleEvent_PlayScript` / `QueueOpen*` / `QueueClose*` / `OpenNop` / `CloseNop`, plus `BattleEffect_*` in `fragment62_35DF70.c`.
 
 Multiple battle-capable flows eventually funnel into a stack that includes:
 - `fragment63`
@@ -241,13 +245,15 @@ That alone is enough to massively improve the repo, even before perfect mechanic
 ## 6. Scene Graph (PARTIAL)
 
 ### Current status
-The renderer traversal logic in **`12D80.c`** is still largely address-based.
+The renderer traversal logic in **`12D80.c`** has a named skeleton:
 
-That usually means:
-- many `func_800XXXXX` names still remain
-- graph-node roles may not be clearly named
-- traversal phases are recognizable but not symbolically organized
-- node handlers, recursion helpers, and dispatch callbacks are probably still mixed together
+- entry: `SceneGraph_ProcessRoot`
+- child walk: `SceneGraph_VisitChildren` (`0x80013330`)
+- dispatch table: `D_8006F0A4` → `GraphNode_Process*` (ortho, projection, background, fog, light, display list, object, matrix, switch, billboard, shadow, …)
+- translucent: `RenderGraph_HandleTranslucentNode` (`0x80014124`)
+- material/layer cache: `Renderer_*` (`SetViewport` / `ResetViewport` at `0x8001638C` / `0x8001660C`)
+
+Still address-based: `func_80012870` and `func_80012960` (vertex helpers), `GraphNode_ProcessLight` body (`GLOBAL_ASM` at `func_80013D34`), and almost every node struct (`unk_D_86002F34_*`, `unk_D_800ABB10` / `28`).
 
 ### Promotion goal
 The goal here is not “name every draw function.”
@@ -373,49 +379,36 @@ If a function is reused across many systems, it belongs in the scene-graph/rende
 ## 10. Remaining Blocker
 
 ### Plain-language blocker
-The remaining blocker is **not** that nothing is understood.
+The remaining blocker is **not** that the shells are unknown.
 
-The blocker is that the two remaining central systems still lack enough symbolic structure to make the codebase read naturally:
+The shells are named. What is left is the *body*:
 
 1. **Fragment 62**
-   - battle flow is identifiable
-   - but the AI / turn / phase functions are still not separated and named clearly enough
+   - scene / turn / AI / event *entrypoints* are named
+   - opcode handlers, turn helpers, and ~1926 other `func_843*` functions are not
 
 2. **`12D80.c`**
-   - traversal behavior is identifiable
-   - but the scene graph / node-processing structure is still too address-based
+   - traversal and node-type processors are named
+   - two helpers still `GLOBAL_ASM`, and graph-node structs are still `unk_*`
 
 ### Practical blocker definition
-The repo is currently blocked by a lack of **mid-level symbolic names**.
+The *shell* buckets exist. The remaining blocker is unnamed **bodies and structs**:
 
-Not:
-- raw disassembly access
-- fragment loading
-- relocation
-- state routing
-
-But:
-- symbolic grouping of the battle shell
-- symbolic grouping of traversal and node-handling logic
+- Fragment 62 opcode handlers, turn internals, leftover AI, result/exit
+- `12D80.c` two `GLOBAL_ASM` helpers and `unk_*` graph-node layouts
 
 ### What counts as “unblocked”
 You can consider these subsystems unblocked when:
 
 #### Battle side
-- Fragment 62 has named buckets for:
-  - scene state
-  - turn state
-  - AI selection
-  - action execution
-  - result handling
+- The 10–25 next helpers around `BattleTurn_*` / `BattleEvent_*` / `BattleAI_ChooseMove` are named
+- Remaining `GLOBAL_ASM` in fragment 62 is gone or isolated
+- Result/exit still may be `BattleResult_*` stubs — that is OK
 
 #### Scene graph side
-- `12D80.c` has named buckets for:
-  - root traversal
-  - node dispatch
-  - child/sibling recursion
-  - state propagation
-  - callback/display submission
+- `func_80012870` and `GraphNode_ProcessLight` match
+- `func_80012960` is named
+- The node structs those processors read have field names (even if incomplete)
 
 Once those buckets exist, deeper promotion becomes much easier.
 
@@ -423,18 +416,16 @@ Once those buckets exist, deeper promotion becomes much easier.
 
 ## 11. Recommended next-pass plan
 
-### Pass 1: Fragment 62 structural naming
-Create a naming map, not a mechanic-perfect decomp.
-Goal:
-- 10–25 key functions renamed into honest buckets
+### Pass 1: Fragment 62 body (shell is done)
+Next 10–25 names, not a mechanic-perfect decomp:
+- `fragment62_315D50.c` event opcode handlers (keep numeric ids)
+- `fragment62_3020D0.c` / `fragment62_359F90.c` turn helpers around the named entrypoints
+- `fragment62_361050.c` remaining AI after `BattleAI_ChooseMove`
 
-### Pass 2: `12D80.c` traversal skeleton
-Turn address soup into a traversal model.
-Goal:
-- identify entrypoint
-- identify recursion
-- identify node dispatch
-- identify render callback functions
+### Pass 2: `12D80.c` matching + structs
+- Match `func_80012870` and `GraphNode_ProcessLight`
+- Name `func_80012960`
+- Promote node structs from fields those processors actually read
 
 ### Pass 3: Shared data/context labeling
 Only after the two skeletons are readable, name:
@@ -500,17 +491,12 @@ Safe early names:
 
 ## 14. Final recommendation
 
-If you only do one thing next, do this:
+### If you only do one thing next
+Do **not** rename every `func_843*` or every graph-node field.
 
-### Choose structure over specificity
-For both Fragment 62 and `12D80.c`, the fastest real win is a **structural naming pass**.
+Do this:
 
-That means:
-- sort functions by role
-- assign honest mid-level names
-- keep addresses visible
-- document unknowns
+1. Match `12D80.c` `GLOBAL_ASM` (`func_80012870`, `GraphNode_ProcessLight`).
+2. Name 10–25 Fragment 62 helpers in `fragment62_315D50.c` (event opcodes, keep ids) and the turn files around `BattleTurn_BuildOrder` / `BattleTurn_Execute`.
 
-Do **not** try to perfectly name every gameplay mechanic or render node yet.
-
-That is how you remove the current blocker.
+That is how you remove the current blocker. Full order: [UPSTREAM_AUDIT_AND_PLAN.md](UPSTREAM_AUDIT_AND_PLAN.md).

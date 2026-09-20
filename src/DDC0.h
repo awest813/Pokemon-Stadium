@@ -16,6 +16,7 @@ void Audio_StopAll(void);
 void Audio_Disable(void);
 void Audio_Enable(void);
 void AudioThread_Main(void*);
+/* Create the audio thread. Distinct from Audio_Init in 373A0.c. */
 void Audio_StartThread(void);
 
 

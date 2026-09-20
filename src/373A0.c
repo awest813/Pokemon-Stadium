@@ -1,6 +1,5 @@
 #include "373A0.h"
 #include "src/4CBC0.h"
-#include "src/373A0.h"
 #include "src/3D140.h"
 #include "src/libnumus/player.h"
 #include "src/4B940.h"
@@ -491,6 +490,7 @@ void Audio_RelocateOffsets(u32* arg0, u32 arg1, s32 arg2) {
 
 #define AUDIO_HEAP_SIZE 300000
 
+/* Load banks and call MusInitialize. Distinct from Audio_StartThread in DDC0.c. */
 s32 Audio_Init(void) {
     s32 i;
     FileHeaders* sp78;

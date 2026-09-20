@@ -1,6 +1,5 @@
 #include "22630.h"
 #include "include/string.h"
-#include "src/22630.h"
 #include "src/26820.h"
 #include "src/2E110.h"
 #include "src/gb_tower.h"

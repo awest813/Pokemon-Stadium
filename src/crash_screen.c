@@ -5,7 +5,6 @@
 #include "crash_screen.h"
 #include "memmap.h"
 #include "controller.h"
-#include "stdarg.h"
 
 CrashScreen gCrashScreen;
 
