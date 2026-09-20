@@ -14,10 +14,12 @@
  *     - Links common RSP matrix utilities to scene entities
  *
  * Naming:
- *     Processor names follow SM64 rendering_graph_node.c (geo_process_object,
- *     geo_process_switch, geo_process_shadow, geo_call_global_function_nodes)
- *     where the control flow matches. Stadium-only nodes keep honest structural
- *     names (Z-range, attached DL, object point list).
+ *     Processor names follow pret’s D_8006F0A4 order and SM64
+ *     rendering_graph_node.c (geo_process_ortho, geo_process_object,
+ *     geo_process_switch, geo_process_shadow) where the control flow matches.
+ *     Stadium-only nodes keep honest structural names (Z-range, attached DL,
+ *     object point list). VisitChildren is 0x80013330; 0x80014124 is the
+ *     translucent node.
  *
  * Verified:
  *     - Coordinates the high-level rendering loop for all game states
@@ -43,59 +45,41 @@
 #include "src/util.h"
 
 void SceneGraph_VisitChildren(GraphNode* arg0);
+void SceneGraph_ProcessNodeVariant(GraphNode* arg0);
 void GraphNode_ProcessCamera(GraphNode* arg0);
 void GraphNode_ProcessPerspective(GraphNode* arg0);
 void GraphNode_ProcessScene(GraphNode* arg0);
-void GraphNode_ProcessTransform(GraphNode* arg0);
-void GraphNode_ProcessBillboard(GraphNode* arg0);
+void GraphNode_ProcessOrtho(GraphNode* arg0);
+void GraphNode_ProcessProjection(GraphNode* arg0);
+void GraphNode_ProcessBackground(GraphNode* arg0);
+void GraphNode_ProcessClearDepth(UNUSED GraphNode* arg0);
+void GraphNode_ProcessMaster(UNUSED GraphNode* arg0);
+void GraphNode_ProcessFog(GraphNode* arg0);
+void GraphNode_ProcessLight(GraphNode* arg0);
+void GraphNode_ProcessDisplayListSetup(UNUSED GraphNode* arg0);
+void GraphNode_ProcessDisplayList(GraphNode* arg0);
+void RenderGraph_HandleTranslucentNode(GraphNode* arg0);
+void GraphNode_ProcessShadow(GraphNode* arg0);
+void GraphNode_ProcessZRange(GraphNode* arg0);
+void GraphNode_ProcessSwitch(GraphNode* arg0);
 void GraphNode_ProcessRotation(GraphNode* arg0);
 void GraphNode_ProcessTranslation(GraphNode* arg0);
+void GraphNode_ProcessBillboard(GraphNode* arg0);
+void GraphNode_ProcessAttachedDisplayList(GraphNode* arg0);
 void GraphNode_ProcessObject(GraphNode* arg0);
 void GraphNode_ProcessMatrix(GraphNode* arg0);
 void GraphNode_ProcessCameraRelative(GraphNode* arg0);
 void GraphNode_ProcessGfx(GraphNode* arg0);
 void GraphNode_ProcessGeneratedList(GraphNode* arg0);
 void GraphNode_ProcessObjectPoint(GraphNode* arg0);
-void GraphNode_ProcessBackground(GraphNode* arg0);
-void GraphNode_ProcessClearDepth(UNUSED GraphNode* arg0);
-void GraphNode_ProcessMaster(GraphNode* arg0);
-void GraphNode_ProcessViewportChild(GraphNode* arg0);
-void GraphNode_ProcessTranslationRotation(GraphNode* arg0);
-void GraphNode_ProcessMasterChild(GraphNode* arg0);
-void GraphNode_ProcessDisplayList(GraphNode* arg0);
+void GraphNode_VisitOnly(GraphNode* arg0);
+void SceneGraph_UpdateAndProcessNode(GraphNode* arg0);
 void Renderer_SetMatrix(s16 arg0, MtxF* arg1);
 void Renderer_SetDisplayList(Gfx* arg0, s32 arg1);
 void Renderer_SetColor(Color_RGBA8_u32 arg0, u8 arg1, u32 arg2);
 void Renderer_SetViewport(s32 arg0, s32 arg1);
 void Renderer_ResetViewport(void);
-void RenderGraph_HandleTranslucentNode(GraphNode* arg0);
-void SceneGraph_ProcessNodeVariant(GraphNode* arg0);
-void SceneGraph_HandleCallbackAndVisitChildren(GraphNode* arg0);
-void SceneGraph_UpdateAndProcessNode(GraphNode* arg0);
-void func_8001638C(s32 arg0, s32 arg1);
-void func_8001660C(void);
 void func_8000E990(Vec3f* arg0, Vec3s* arg1);
-void func_800122B4(MtxF* arg0);
-void func_80012344(Vec3f* arg0);
-MtxF* func_800123D4(s32 arg0);
-MtxF* func_80012400(s32 arg0);
-void func_80012458(Vec3f* arg0);
-void func_80013330(GraphNode* arg0);
-void func_800133D8(GraphNode* arg0);
-void func_80013464(GraphNode* arg0);
-void func_80013764(GraphNode* arg0);
-void func_8001378C(GraphNode* arg0);
-void func_800138F0(GraphNode* arg0);
-void func_8001395C(GraphNode* arg0);
-void func_800139E8(GraphNode* arg0);
-void func_80013AF8(GraphNode* arg0);
-void func_80013B8C(UNUSED GraphNode* arg0);
-void func_80013C14(UNUSED GraphNode* arg0);
-void func_80013C1C(GraphNode* arg0);
-void func_80013D34(GraphNode* arg0);
-void func_80013F7C(UNUSED GraphNode* arg0);
-void func_80013F84(GraphNode* arg0);
-/* SceneGraph_HandleCallbackAndVisitChildren is 0x80014124; body is not yet in this TU. */
 
 typedef void (*func_D_8006F0A4)(GraphNode* arg0);
 
@@ -115,9 +99,10 @@ unk_D_86002F34_00C* D_8006F094 = NULL;
 unk_D_86002F34_alt1* D_8006F098 = NULL;
 unk_D_86002F58_004_000* D_8006F09C = NULL;
 unk_D_86002F34_alt11* D_8006F0A0 = NULL;
+/* Same order as pret D_8006F0A4 (func_80013330 … func_80014D50). */
 static func_D_8006F0A4 D_8006F0A4[] = {
-    SceneGraph_VisitChildren, SceneGraph_ProcessNodeVariant, GraphNode_ProcessCamera, GraphNode_ProcessPerspective, GraphNode_ProcessScene, GraphNode_ProcessTransform, GraphNode_ProcessBillboard,
-    GraphNode_ProcessBackground, GraphNode_ProcessClearDepth, GraphNode_ProcessMaster, GraphNode_ProcessViewportChild, GraphNode_ProcessTranslationRotation, GraphNode_ProcessMasterChild, GraphNode_ProcessDisplayList,
+    SceneGraph_VisitChildren, SceneGraph_ProcessNodeVariant, GraphNode_ProcessCamera, GraphNode_ProcessPerspective, GraphNode_ProcessScene, GraphNode_ProcessOrtho, GraphNode_ProcessProjection,
+    GraphNode_ProcessBackground, GraphNode_ProcessClearDepth, GraphNode_ProcessMaster, GraphNode_ProcessFog, GraphNode_ProcessLight, GraphNode_ProcessDisplayListSetup, GraphNode_ProcessDisplayList,
     RenderGraph_HandleTranslucentNode, GraphNode_ProcessShadow, GraphNode_ProcessZRange, GraphNode_ProcessSwitch, GraphNode_ProcessRotation, GraphNode_ProcessTranslation, GraphNode_ProcessBillboard,
     GraphNode_ProcessAttachedDisplayList, GraphNode_ProcessObject, GraphNode_ProcessMatrix, GraphNode_ProcessCameraRelative, GraphNode_ProcessGfx, GraphNode_ProcessGeneratedList, GraphNode_ProcessObjectPoint,
     GraphNode_VisitOnly, NULL,          NULL,
@@ -496,7 +481,7 @@ void SceneGraph_ProcessNodeVariant(GraphNode* arg0) {
         D_8006F0A4[temp_a1->unk_00](temp_a1);
     }
 
-    SceneGraph_HandleCallbackAndVisitChildren(arg0);
+    SceneGraph_VisitChildren(arg0);
 }
 
 void GraphNode_ProcessCamera(GraphNode* arg0) {
@@ -533,7 +518,7 @@ void GraphNode_ProcessCamera(GraphNode* arg0) {
 
     D_8006F088 = arg;
     if ((arg->unk_CC.unk_00 != 1) && (arg->unk_00.unk_0C != NULL)) {
-        SceneGraph_HandleCallbackAndVisitChildren(&arg->unk_00);
+        SceneGraph_VisitChildren(&arg->unk_00);
     }
     RenderGraph_HandlePrimitiveNode(&arg->unk_CC, temp_s2);
     GFX_RestoreScissor(&gDisplayListHead);
@@ -542,7 +527,7 @@ void GraphNode_ProcessCamera(GraphNode* arg0) {
 
 void GraphNode_ProcessPerspective(GraphNode* arg0) {
     D_8006F08C = arg0;
-    SceneGraph_HandleCallbackAndVisitChildren(arg0);
+    SceneGraph_VisitChildren(arg0);
     D_8006F08C = NULL;
 }
 
@@ -573,7 +558,7 @@ void GraphNode_ProcessScene(GraphNode* arg0) {
                   G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_MODELVIEW);
 
         D_8006F090 = arg;
-        SceneGraph_HandleCallbackAndVisitChildren(arg0);
+        SceneGraph_VisitChildren(arg0);
         D_8006F090 = NULL;
     }
 
@@ -585,16 +570,43 @@ void SceneGraph_UpdateAndProcessNode(GraphNode* arg0) {
 
     if ((D_8006F094 == NULL) && (arg->unk_00.unk_0C != NULL)) {
         D_8006F094 = arg;
-        func_8001638C(arg->unk_00.unk_02 & 3, D_8006F080);
-        SceneGraph_HandleCallbackAndVisitChildren(arg0);
-        func_8001660C();
+        Renderer_SetViewport(arg->unk_00.unk_02 & 3, D_8006F080);
+        SceneGraph_VisitChildren(arg0);
+        Renderer_ResetViewport();
         D_8006F094 = NULL;
     }
 }
 
 
 
-void GraphNode_ProcessTransform(GraphNode* arg0) {
+/*
+ * GraphNode_ProcessOrtho
+ * Original symbol: func_8001395C
+ * SM64 analogue: geo_process_ortho
+ *
+ * Verified:
+ *     Loads the camera ortho matrix (unk_40) as projection, then
+ *     SceneGraph_UpdateAndProcessNode.
+ */
+void GraphNode_ProcessOrtho(GraphNode* arg0) {
+    if ((D_8006F094 == NULL) && (arg0->unk_0C != NULL)) {
+        gSPPerspNormalize(gDisplayListHead++, 0xFFFF);
+        gSPMatrix(gDisplayListHead++, (u32)D_8006F088->unk_40.mtx & 0x1FFFFFFF,
+                  G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_PROJECTION);
+
+        SceneGraph_UpdateAndProcessNode(arg0);
+    }
+}
+
+/*
+ * GraphNode_ProcessProjection
+ * Original symbol: func_800139E8
+ *
+ * Verified:
+ *     LookAt + perspective projection matrices, then
+ *     SceneGraph_UpdateAndProcessNode.
+ */
+void GraphNode_ProcessProjection(GraphNode* arg0) {
     if ((D_8006F094 == NULL) && (arg0->unk_0C != NULL)) {
         gSPLookAt(gDisplayListHead++, (u32)&D_8006F088->unk_60.lookat->l & 0x1FFFFFFF);
 
@@ -628,9 +640,20 @@ void GraphNode_ProcessClearDepth(UNUSED GraphNode* arg0) {
     gDPSetCycleType(gDisplayListHead++, G_CYC_2CYCLE);
 }
 
+/*
+ * GraphNode_ProcessMaster
+ * Original symbol: func_80013C14
+ *
+ * Verified:
+ *     Empty node processor (dispatch slot 9).
+ */
 void GraphNode_ProcessMaster(UNUSED GraphNode* arg0) {
 }
 
+/*
+ * GraphNode_ProcessFog
+ * Original symbol: func_80013C1C
+ */
 void GraphNode_ProcessFog(GraphNode* arg0) {
     unk_D_86002F34_alt3* arg = (unk_D_86002F34_alt3*)arg0;
 
@@ -643,6 +666,10 @@ void GraphNode_ProcessFog(GraphNode* arg0) {
 }
 
 #ifdef NON_MATCHING
+/*
+ * GraphNode_ProcessLight
+ * Original symbol: func_80013D34
+ */
 void GraphNode_ProcessLight(GraphNode* arg0) {
     unk_D_86002F34_alt4* arg = (unk_D_86002F34_alt4*)arg0;
     Lights7* lights;
@@ -718,6 +745,14 @@ void GraphNode_ProcessDisplayList(GraphNode* arg0) {
     gSPLight(gDisplayListHead++, D_8006F090->lights, i + 1);
 }
 
+/*
+ * RenderGraph_HandleTranslucentNode
+ * Original symbol: func_80014124
+ *
+ * Verified:
+ *     Optional ground-plane billboard (flag 2), then VisitChildren.
+ *     This is pret's translucent graph node, not VisitChildren.
+ */
 void RenderGraph_HandleTranslucentNode(GraphNode* arg0) {
     unk_D_86002F34_alt11* arg = (unk_D_86002F34_alt11*)arg0;
     MtxF* temp_v0 = &D_800AA8C8.unk_0000[D_800AA8C8.unk_10A0];
@@ -739,7 +774,7 @@ void RenderGraph_HandleTranslucentNode(GraphNode* arg0) {
     }
 
     D_8006F0A0 = arg;
-    SceneGraph_HandleCallbackAndVisitChildren(arg0);
+    SceneGraph_VisitChildren(arg0);
     D_8006F0A0 = NULL;
 }
 
@@ -760,7 +795,7 @@ void GraphNode_ProcessZRange(GraphNode* arg0) {
     s16 temp_ft5 = ((a * mtx2->mf[0][2]) + (b * mtx2->mf[1][2]) + (c * mtx2->mf[2][2])) + mtx2->mf[3][2];
 
     if ((temp_ft5 >= arg->unk_18) && (temp_ft5 < arg->unk_1A)) {
-        SceneGraph_HandleCallbackAndVisitChildren(arg0);
+        SceneGraph_VisitChildren(arg0);
     }
 }
 
@@ -801,7 +836,7 @@ void GraphNode_ProcessRotation(GraphNode* arg0) {
 
     MtxF_FromPosRot(&sp20, &arg->unk_18, &arg->unk_24);
     SceneGraph_MulMatrixStack(&sp20);
-    SceneGraph_HandleCallbackAndVisitChildren(arg0);
+    SceneGraph_VisitChildren(arg0);
 
     D_800AA8C8.unk_10A0--;
 }
@@ -817,7 +852,7 @@ void GraphNode_ProcessTranslation(GraphNode* arg0) {
     unk_D_86002F34_alt5* arg = (unk_D_86002F34_alt5*)arg0;
 
     SceneGraph_MulVec3fMatrixStack(&arg->unk_18);
-    SceneGraph_HandleCallbackAndVisitChildren(arg0);
+    SceneGraph_VisitChildren(arg0);
 
     D_800AA8C8.unk_10A0--;
 }
@@ -873,7 +908,7 @@ void GraphNode_ProcessBillboard(GraphNode* arg0) {
     }
 
     D_800AA6C8[arg->unk_30] = D_800AA8C8.unk_1000[D_800AA8C8.unk_10A0];
-    SceneGraph_HandleCallbackAndVisitChildren(arg0);
+    SceneGraph_VisitChildren(arg0);
     D_800AA6C8[arg->unk_30] = NULL;
     D_800AA8C8.unk_10A0--;
 
@@ -898,7 +933,7 @@ void GraphNode_ProcessAttachedDisplayList(GraphNode* arg0) {
         Renderer_SetDisplayList(arg->unk_18, (arg->unk_00.unk_02 & 4) != 0);
     }
 
-    SceneGraph_HandleCallbackAndVisitChildren(arg0);
+    SceneGraph_VisitChildren(arg0);
 }
 
 /*
@@ -969,13 +1004,13 @@ void GraphNode_ProcessObject(GraphNode* arg0) {
  * SM64 analogue: geo_process_scale (push mtx, optional DL, children, pop)
  *
  * Verified:
- *     Push unk_1C (MtxF) via func_800122B4, submit unk_18 Gfx* if present,
+ *     Push unk_1C (MtxF) via SceneGraph_MulMatrixStack, submit unk_18 Gfx* if present,
  *     visit children, pop matrix stack.
  */
 void GraphNode_ProcessMatrix(GraphNode* arg0) {
     unk_D_86002F34_alt8* arg = (unk_D_86002F34_alt8*)arg0;
 
-    func_800122B4(&arg->unk_1C);
+    SceneGraph_MulMatrixStack(&arg->unk_1C);
 
     if ((arg->unk_18 != NULL) || (arg->unk_00.unk_10 != NULL)) {
         Renderer_SetMatrix(arg->unk_00.unk_03, D_800AA8C8.unk_1000[D_800AA8C8.unk_10A0]);
@@ -984,7 +1019,7 @@ void GraphNode_ProcessMatrix(GraphNode* arg0) {
         }
         Renderer_SetDisplayList(arg->unk_18, (arg->unk_00.unk_02 & 4) != 0);
     }
-    SceneGraph_HandleCallbackAndVisitChildren(arg0);
+    SceneGraph_VisitChildren(arg0);
     D_800AA8C8.unk_10A0--;
 }
 
@@ -1013,7 +1048,7 @@ void GraphNode_ProcessCameraRelative(GraphNode* arg0) {
         Renderer_SetDisplayList(arg->unk_18, (arg->unk_00.unk_02 & 4) != 0);
     }
 
-    SceneGraph_HandleCallbackAndVisitChildren(arg0);
+    SceneGraph_VisitChildren(arg0);
     D_800AA8C8.unk_10A0--;
 }
 
@@ -1035,7 +1070,7 @@ void GraphNode_ProcessGfx(GraphNode* arg0) {
         }
         Renderer_SetDisplayList(arg->unk_18, (arg->unk_00.unk_02 & 4) != 0);
     }
-    SceneGraph_HandleCallbackAndVisitChildren(arg0);
+    SceneGraph_VisitChildren(arg0);
 }
 
 /*
@@ -1080,7 +1115,7 @@ void GraphNode_ProcessGeneratedList(GraphNode* arg0) {
 
     func_800176DC(&sp3C, D_8006F0A0->unk_18, arg->unk_20);
     Renderer_SetPendingMaterial(arg->unk_22, sp44, sp3C, sp38, sp34);
-    SceneGraph_HandleCallbackAndVisitChildren(arg0);
+    SceneGraph_VisitChildren(arg0);
 }
 
 /*
@@ -1118,7 +1153,7 @@ void GraphNode_ProcessObjectPoint(GraphNode* arg0) {
     unk_D_86002F34_alt3* arg = (unk_D_86002F34_alt3*)arg0;
 
     SceneGraph_RecordObjectPoint(arg->unk_18);
-    SceneGraph_HandleCallbackAndVisitChildren(arg0);
+    SceneGraph_VisitChildren(arg0);
 }
 
 /*
@@ -1126,10 +1161,10 @@ void GraphNode_ProcessObjectPoint(GraphNode* arg0) {
  * Original symbol: func_80014D50
  *
  * Verified:
- *     Passthrough: only SceneGraph_HandleCallbackAndVisitChildren.
+ *     Passthrough: only SceneGraph_VisitChildren.
  */
 void GraphNode_VisitOnly(GraphNode* arg0) {
-    SceneGraph_HandleCallbackAndVisitChildren(arg0);
+    SceneGraph_VisitChildren(arg0);
 }
 
 /*
@@ -1200,7 +1235,7 @@ void GraphNode_ProcessShadow(GraphNode* arg0) {
         gDPSetPrimColor(gDisplayListHead++, 0, D_8006F09C->unk_01D, 255, 255, 255, 255);
 
         Renderer_SetDisplayList(temp_s1, 1);
-        SceneGraph_HandleCallbackAndVisitChildren(arg0);
+        SceneGraph_VisitChildren(arg0);
 
         D_800AA8C8.unk_10A0--;
     }
@@ -1233,7 +1268,7 @@ void SceneGraph_ProcessRoot(GraphNode* arg0) {
         gDPSetAlphaDither(gDisplayListHead++, G_AD_PATTERN);
 
         D_8006F08C = arg;
-        SceneGraph_HandleCallbackAndVisitChildren(arg0);
+        SceneGraph_VisitChildren(arg0);
         D_8006F08C = NULL;
     }
 

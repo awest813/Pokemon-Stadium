@@ -1,6 +1,6 @@
 # Upstream catch-up, audit, and improvement plan
 
-Last updated: 2026-09-19  
+Last updated: 2026-09-20  
 Upstream: [pret/pokestadium](https://github.com/pret/pokestadium) `0b614c2`  
 This fork: `awest813/Pokemon-Stadium`
 
@@ -53,7 +53,7 @@ That is the right contribution *on top of* pret. It should not be thrown away fo
 ### 2.2 What the fork got wrong or left unsafe
 
 1. **Renames without `symbol_addrs` updates.**  
-   C functions used to be `DLBuf_Init` / `JPEG_Decompress` / … while `symbol_addrs_code.txt` still listed `func_*`. `tools/sync_promoted_symbol_addrs.py` rewrote the bulk of those rows (identity-anchor walk). Remaining gaps: files that stop at a missing body (`func_80014124` / `SceneGraph_HandleCallbackAndVisitChildren` has no C yet), and off-by-one TUs such as `373A0.c` (`func_8003733C` vs `func_80037340`).
+   C functions used to be `DLBuf_Init` / `JPEG_Decompress` / … while `symbol_addrs_code.txt` still listed `func_*`. `tools/sync_promoted_symbol_addrs.py` rewrote the bulk of those rows (identity-anchor walk). `0x80014124` is `RenderGraph_HandleTranslucentNode`, not a missing VisitChildren helper. `373A0.c` empty nop is `func_8003733C`; `Audio_BuildTask` / `Audio_RelocateOffsets` / `Audio_Init` are `0x80037340` / `0x80037360` / `0x800373D8`.
 
 2. **Duplicate `Audio_Init`.**  
    Both `func_8000D564` (start audio thread) and `func_800373D8` (load banks / `MusInitialize`) were named `Audio_Init`. Idle boot must call the thread starter. This merge splits them: `Audio_StartThread` vs `Audio_Init`.
@@ -68,10 +68,10 @@ That is the right contribution *on top of* pret. It should not be thrown away fo
    README still listed `src/19840.c` / `gbi.h` as a hard `make` blocker and “174 NONMATCH stubs”. Pret has since matched `19840` and many other TUs. Counts and blockers need a living progress command, not a frozen table.
 
 6. **Fragment 62 is still the battle-shell blocker.**  
-   pret mapped fragment 62 *data*. This fork now has overlay entry `BattleScene_OverlayEntry`, per-frame `BattleScene_Tick` / `FrameLoop`, `BattleScene_SubstateDispatch` / `Init` / `ResetState` / `SetupCamera` / `UpdateFrame`, plus existing `BattleTurn_*` / `BattleAI_*`. Geo callback `BattleScene_Run` is only substate 5. Do not invent move-effect names.
+   pret mapped fragment 62 *data*. This fork now has overlay entry `BattleScene_OverlayEntry`, per-frame `BattleScene_Tick` / `FrameLoop`, `BattleScene_SubstateDispatch` / `Init` / `ResetState` / `SetupCamera` / `UpdateFrame`, plus `BattleTurn_*` / `BattleAI_*` and `BattleEvent_PlayScript` / `QueueOpen*` / `QueueClose*` (byte-list scripts, not move names). Opcode tables are `BattleEvent_OpenOps` / `CloseOps` / `ScriptLists`; unused slots are `BattleEvent_OpenNop` / `CloseNop`. Geo callback `BattleScene_Run` is only substate 5. Do not invent move-effect names.
 
 7. **`12D80.c` is only half-promoted.**  
-   `D_8006F0A4` now follows SM64 `geo_process_*` roles: object, matrix, camera-relative, Gfx, generated list, object-point, plus earlier Z-range/switch/rotation/translation/billboard/shadow. Draw entry is `SceneGraph_ProcessRoot` (`geo_process_root`). `SceneGraph_HandleCallbackAndVisitChildren` is still a missing body at `0x80014124`.
+   `D_8006F0A4` now follows pret’s table (and SM64 `geo_process_*` where the flow matches): ortho/projection, background, clear-depth, empty master, fog, light, display-list, translucent (`RenderGraph_HandleTranslucentNode` at `0x80014124`), then object/matrix/camera-relative/Gfx/generated-list/object-point plus Z-range/switch/rotation/translation/billboard/shadow. VisitChildren is `0x80013330`. Draw entry is `SceneGraph_ProcessRoot`. Material/layer cache is `Renderer_*` (`Renderer_SetViewport`/`ResetViewport` at `0x8001638C`/`0x8001660C`).
 
 ### 2.3 N64Recomp / README blockers, re-scored
 
@@ -140,13 +140,12 @@ Pret’s recent style is: match a whole file’s remaining `GLOBAL_ASM`, then ma
 ```text
 Done on this branch (no US 1.0 ROM, matching make still blocked):
 1) symbol_addrs sync + BattleScene overlay tick/entry.
-2) 12D80 D_8006F0A4 SM64 geo_process_* names + SceneGraph_ProcessRoot.
-3) Renderer_* material/layer cache (OoT Gfx_SetupDL / SM64 master-list).
-4) BattleEvent_PlayScript / QueueOpen* / QueueClose* behind FlushQueuedActions.
+2) 12D80 D_8006F0A4 aligned to pret (VisitChildren 13330, Ortho 1395C,
+   Projection 139E8, Fog 13C1C, Light 13D34, Translucent 14124).
+3) Renderer_* material/layer cache; SetViewport/ResetViewport at 1638C/1660C.
+4) BattleEvent_PlayScript / OpenOps / CloseOps / ScriptLists / OpenNop / CloseNop.
 
 Next:
 - Matching make with US 1.0 baserom.
-- Recover C (or GLOBAL_ASM) for SceneGraph_HandleCallbackAndVisitChildren (0x80014124).
-- Remaining 12D80 stubs func_8001638C / func_8001660C (no C body in this TU).
-- BattleEvent opcode tables D_84386480 / D_84386E08 — do not invent move names.
+- Remaining BattleEvent opcode *handlers* (keep ids; do not invent move names).
 ```

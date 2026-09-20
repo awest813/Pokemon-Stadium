@@ -1039,7 +1039,7 @@ s32 func_8004D9B0(s32 arg0, s32 arg1, s32 arg2) {
         sp24 = D_800FC6F8->seqArray[(temp_v1 >> 0x10) - 2].offset;
 
         func_8004ADB0(sp24, (u32)D_800FC798, 0xC);
-        func_80037360((u32)D_800FC798, sp24, 3);
+        Audio_RelocateOffsets((u32)D_800FC798, sp24, 3);
         func_8004ADB0(D_800FC798[0], D_800FC6DC, D_800FC798[1] - D_800FC798[0]);
         func_80050B40(D_800FC6DC, D_800FC6A8, 0xBB8);
         RemapBankPointers(D_800FC6A8);
@@ -1148,7 +1148,7 @@ s32 func_8004DDA4(s32 arg0, UNUSED s32 arg1, UNUSED s32 arg2) {
         sp34 = D_800FC6F4->seqArray[2].offset;
 
         func_8004ADB0(sp34, &D_800FC798[0], 0xC);
-        func_80037360(D_800FC798, sp34, 3);
+        Audio_RelocateOffsets(D_800FC798, sp34, 3);
         sp34 = D_800FC798[1] - D_800FC798[0];
         func_8004ADB0(D_800FC798[0], D_800FC6DC, sp34);
         func_80050B40(D_800FC6DC, D_800FC6A8, 0xBB8);
@@ -1213,7 +1213,7 @@ s32 func_8004DF94(s32 arg0, s32 arg1, s32 arg2) {
         sp2C = D_800FC6F4->seqArray[3].offset;
 
         func_8004ADB0(sp2C, (u32)D_800FC798, 0xC);
-        func_80037360((u32)D_800FC798, sp2C, 3);
+        Audio_RelocateOffsets((u32)D_800FC798, sp2C, 3);
         func_8004ADB0(D_800FC798[0], D_800FC6DC, D_800FC798[1] - D_800FC798[0]);
         func_80050B40(D_800FC6DC, D_800FC6A8, 0xBB8);
         RemapBankPointers(D_800FC6A8);
@@ -1343,7 +1343,7 @@ s32 func_8004E304(s32 arg0, UNUSED s32 arg1, UNUSED s32 arg2) {
         sp3C = D_800FC6F4->seqArray[4].offset;
 
         func_8004ADB0(sp3C, (u32)D_800FC798, 0xC);
-        func_80037360((u32)D_800FC798, sp3C, 3);
+        Audio_RelocateOffsets((u32)D_800FC798, sp3C, 3);
         func_8004ADB0(D_800FC798[0], D_800FC6DC, D_800FC798[1] - D_800FC798[0]);
         func_80050B40(D_800FC6DC, D_800FC6A8, 0xBB8);
         RemapBankPointers(D_800FC6A8);

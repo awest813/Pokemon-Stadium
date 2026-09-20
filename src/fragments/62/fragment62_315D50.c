@@ -944,43 +944,50 @@ unk_D_8140E728_01C D_843861D0[] = {
     },
 };
 
-static func_D_84390320 D_84386480[] = {
-    func_8432F998, func_84342CF0, func_8433B2E8, func_8434DE6C, func_8433BAA8, func_8432F998, func_8433B4AC,
-    func_84356AC8, func_84344A4C, func_8432F998, func_843473BC, func_84357AB8, func_84343288, func_84356FAC,
-    func_84343988, func_8433B290, func_8435811C, func_8434A324, func_8433DC80, func_8432F998, func_843378CC,
-    func_8434C590, func_84336B8C, func_84336EE8, func_8434BF2C, func_8432F998, func_8433BC38, func_8432F998,
-    func_843443E0, func_84358DE4, func_84358F6C, func_84357E60, func_8432F998, func_8432F998, func_84345038,
+/*
+ * BattleEvent_OpenOps / BattleEvent_CloseOps
+ * Original symbols: D_84386480 / D_843866C4
+ *
+ * Opcode-id function tables for BattleEvent_ExecOpenOps / ExecCloseOps.
+ * Empty slots are BattleEvent_OpenNop / CloseNop. Do not invent move names.
+ */
+static func_D_84390320 BattleEvent_OpenOps[] = {
+    BattleEvent_OpenNop, func_84342CF0, func_8433B2E8, func_8434DE6C, func_8433BAA8, BattleEvent_OpenNop, func_8433B4AC,
+    func_84356AC8, func_84344A4C, BattleEvent_OpenNop, func_843473BC, func_84357AB8, func_84343288, func_84356FAC,
+    func_84343988, func_8433B290, func_8435811C, func_8434A324, func_8433DC80, BattleEvent_OpenNop, func_843378CC,
+    func_8434C590, func_84336B8C, func_84336EE8, func_8434BF2C, BattleEvent_OpenNop, func_8433BC38, BattleEvent_OpenNop,
+    func_843443E0, func_84358DE4, func_84358F6C, func_84357E60, BattleEvent_OpenNop, BattleEvent_OpenNop, func_84345038,
     func_843371C0, func_8434CE14, func_8434A898, func_84342808, func_8433BD08, func_84345D74, func_84356254,
-    func_8432F998, func_8432F998, func_8432F998, func_8434ED48, func_8432F998, func_8433B988, func_8433B374,
-    func_8434D8D8, func_84348630, func_8432F998, func_84349628, func_84344508, func_8432F998, func_84349830,
-    func_843579C0, func_84357B80, func_8433B6FC, func_8433E124, func_84358DE4, func_84356DBC, func_8432F998,
-    func_84346B58, func_84346EEC, func_84344248, func_84346F40, func_8432F998, func_84349384, func_84349504,
+    BattleEvent_OpenNop, BattleEvent_OpenNop, BattleEvent_OpenNop, func_8434ED48, BattleEvent_OpenNop, func_8433B988, func_8433B374,
+    func_8434D8D8, func_84348630, BattleEvent_OpenNop, func_84349628, func_84344508, BattleEvent_OpenNop, func_84349830,
+    func_843579C0, func_84357B80, func_8433B6FC, func_8433E124, func_84358DE4, func_84356DBC, BattleEvent_OpenNop,
+    func_84346B58, func_84346EEC, func_84344248, func_84346F40, BattleEvent_OpenNop, func_84349384, func_84349504,
     func_8433BDFC, func_84349058, func_84347448, func_8433E46C, func_84349108, func_84346DC4, func_84344474,
     func_8433BB78, func_8433BECC, func_843498D8, func_84349A14, func_84358034, func_84348630, func_8434A7DC,
     func_843374A4, func_84358288, func_84345EC0, func_8434A9EC, func_8434AA6C, func_84358A5C, func_8434AC8C,
     func_8434AD1C, func_8434AD70, func_8434C618, func_8434B000, func_8434BA70, func_8434C070, func_8434C0C4,
-    func_8432F998, func_8434CAD8, func_8434D0F8, func_8434D448, func_8432E9B8, func_8434E0CC, func_8434E02C,
+    BattleEvent_OpenNop, func_8434CAD8, func_8434D0F8, func_8434D448, func_8432E9B8, func_8434E0CC, func_8434E02C,
     func_8434E74C, func_8434DA94, func_8434DB40, func_8435674C, func_84358EA0, func_84358EDC, func_843490A8,
     func_8434ACEC, func_8434E8E0, func_8435839C, func_843584C0, func_84358538, func_84357700, func_8434EBA0,
     func_8434EC08, func_8433BB78, func_8434E9A0, func_8433FD30, func_8435727C, func_8435742C, func_84344094,
     func_8433765C, func_8434EF68, func_8434EFBC, func_8434F010, func_8434F060, func_8434F0B8, func_8434F350,
-    func_8433FAF8, func_8433F758, func_8433F5D4, func_8432F998, func_84356CA4, func_84356D04, func_8433F414,
-    func_8433F4CC, func_8433F4EC, func_8433F5B4, func_8433F974, func_8432F998,
+    func_8433FAF8, func_8433F758, func_8433F5D4, BattleEvent_OpenNop, func_84356CA4, func_84356D04, func_8433F414,
+    func_8433F4CC, func_8433F4EC, func_8433F5B4, func_8433F974, BattleEvent_OpenNop,
 };
-static func_D_84390320 D_843866C4[] = {
-    func_8432F9A0, func_8432F9A0, func_8433B58C, func_84357A64, func_84357AE0, func_84357110, func_8434575C,
-    func_8434A384, func_8433DECC, func_8432F9A0, func_84346BE0, func_8432F9A0, func_8432F9A0, func_84344BDC,
-    func_84355E58, func_843372D8, func_8434CF64, func_84342908, func_84357CC8, func_8432F9A0, func_8433BF54,
-    func_84345B84, func_84337000, func_843450B4, func_8432F9A0, func_8434E1B8, func_84340CB0, func_8433B7E4,
-    func_8433E33C, func_843375B0, func_84356EF4, func_84344B04, func_8432F9A0, func_8432F9A0, func_8433B3D8,
+static func_D_84390320 BattleEvent_CloseOps[] = {
+    BattleEvent_CloseNop, BattleEvent_CloseNop, func_8433B58C, func_84357A64, func_84357AE0, func_84357110, func_8434575C,
+    func_8434A384, func_8433DECC, BattleEvent_CloseNop, func_84346BE0, BattleEvent_CloseNop, BattleEvent_CloseNop, func_84344BDC,
+    func_84355E58, func_843372D8, func_8434CF64, func_84342908, func_84357CC8, BattleEvent_CloseNop, func_8433BF54,
+    func_84345B84, func_84337000, func_843450B4, BattleEvent_CloseNop, func_8434E1B8, func_84340CB0, func_8433B7E4,
+    func_8433E33C, func_843375B0, func_84356EF4, func_84344B04, BattleEvent_CloseNop, BattleEvent_CloseNop, func_8433B3D8,
     func_84355EF0, func_84355F88, func_84356148, func_843561A0, func_843567F4, func_8433766C, func_8434915C,
-    func_8435643C, func_843565DC, func_84356020, func_843568C8, func_843569A0, func_843561F8, func_8432F9A0,
+    func_8435643C, func_843565DC, func_84356020, func_843568C8, func_843569A0, func_843561F8, BattleEvent_CloseNop,
     func_84345B28, func_84346E50, func_8434C5F0, func_84356AF0, func_8433C3A0, func_84336DD8, func_84357F64,
     func_84336C80, func_843581FC, func_8434A930, func_843378D4, func_8434C720, func_8434B064, func_8434BCD4,
     func_8434C144, func_8434CC68, func_8434D5EC, func_8434D938, func_8433C06C, func_8433C284, func_8433C4EC,
     func_8433C604, func_8433C784, func_8433DFF4, func_8434DD08, func_8434DBEC, func_8434A9CC, func_8434E870,
     func_8434E940, func_8434967C, func_8434ECF4, func_843560B4, func_843489FC, func_843489FC, func_8434917C,
-    func_8434EA10, func_8435783C, func_8433CAFC, func_84340D14, func_843574FC, func_8432F9A0,
+    func_8434EA10, func_8435783C, func_8433CAFC, func_84340D14, func_843574FC, BattleEvent_CloseNop,
 };
 static u8 D_8438682C[] = {
     0x3F, 0x00, 0x00, 0x00, 0x3F, 0x00, 0x00, 0x00, 0x3F, 0x00, 0x00, 0x00,
@@ -3018,7 +3025,13 @@ static u8* D_84386DEC[] = {
     D_84386BBC, D_84386BC4, D_84386BEC, D_84386BC8, D_84386CB8,
 };
 static u8* D_84386E00[] = { D_84386968, D_84386A2C };
-static u8* D_84386E08[][5] = {
+/*
+ * BattleEvent_ScriptLists
+ * Original symbol: D_84386E08
+ *
+ * Per-script-id byte lists: columns 0/1 open, 2 close, 3/4 extras.
+ */
+static u8* BattleEvent_ScriptLists[][5] = {
     {
         D_84386968,
         D_84386968,
@@ -4623,14 +4636,14 @@ void func_8432BF88(unk_D_84390010* arg0, s32 arg1) {
  * Original symbol: func_8432C0D0
  *
  * Verified:
- *     Runs D_84386480[id] with D_843902E4, then again with D_843902E6 if != 0xFF.
+ *     Runs BattleEvent_OpenOps[id] with D_843902E4, then again with D_843902E6 if != 0xFF.
  */
 void BattleEvent_ExecOpenOps(s16 arg0) {
     D_843902E2 = D_843902E4;
-    D_84386480[arg0]();
+    BattleEvent_OpenOps[arg0]();
     if (D_843902E6 != 0xFF) {
         D_843902E2 = D_843902E6;
-        D_84386480[arg0]();
+        BattleEvent_OpenOps[arg0]();
     }
 }
 
@@ -4639,11 +4652,11 @@ void BattleEvent_ExecOpenOps(s16 arg0) {
  * Original symbol: func_8432C14C
  *
  * Verified:
- *     Runs D_843866C4[id] with D_843902E4 only.
+ *     Runs BattleEvent_CloseOps[id] with D_843902E4 only.
  */
 void BattleEvent_ExecCloseOps(s16 arg0) {
     D_843902E2 = D_843902E4;
-    D_843866C4[arg0]();
+    BattleEvent_CloseOps[arg0]();
 }
 
 /*
@@ -4671,8 +4684,8 @@ void BattleEvent_PushPair(func_D_84390300 arg0, func_D_84390320 arg1) {
  *
  * Verified:
  *     Walks a NUL-terminated opcode list for script id arg0.
- *     arg2 == 1: open tables (D_84386E08[][0/1], D_84386D44, D_84386DBC, D_84386E00)
- *     else: close tables (D_84386E08[][2], D_84386DEC).
+ *     arg2 == 1: open tables (BattleEvent_ScriptLists[][0/1], D_84386D44, D_84386DBC, D_84386E00)
+ *     else: close tables (BattleEvent_ScriptLists[][2], D_84386DEC).
  *     Each byte: ExecOpen/CloseOps, a side-effect table, then PushPair.
  */
 void BattleEvent_PlayScript(s32 arg0, s32 arg1, s32 arg2) {
@@ -4683,11 +4696,11 @@ void BattleEvent_PlayScript(s32 arg0, s32 arg1, s32 arg2) {
     if (arg2 == 1) {
         switch (arg1) {
             case 0:
-                sp2C = D_84386E08[arg0][0];
+                sp2C = BattleEvent_ScriptLists[arg0][0];
                 break;
 
             case 1:
-                sp2C = D_84386E08[arg0][1];
+                sp2C = BattleEvent_ScriptLists[arg0][1];
                 break;
 
             case 3:
@@ -4712,7 +4725,7 @@ void BattleEvent_PlayScript(s32 arg0, s32 arg1, s32 arg2) {
     } else {
         switch (arg1) {
             case 2:
-                sp2C = D_84386E08[arg0][2];
+                sp2C = BattleEvent_ScriptLists[arg0][2];
                 break;
 
             case 6:
@@ -4903,7 +4916,7 @@ void func_8432C86C(void) {
 
 void func_8432C8BC(s16 arg0) {
     s32 var_v0 = 0;
-    u8* temp_a1 = D_84386E08[arg0][3];
+    u8* temp_a1 = BattleEvent_ScriptLists[arg0][3];
 
     while (*temp_a1 != 0x3F) {
         D_843924C0[var_v0] = *temp_a1;
@@ -4911,7 +4924,7 @@ void func_8432C8BC(s16 arg0) {
         var_v0++;
     }
 
-    temp_a1 = D_84386E08[arg0][4];
+    temp_a1 = BattleEvent_ScriptLists[arg0][4];
     while (*temp_a1 != 0x3F) {
         D_843924C0[var_v0] = *temp_a1;
         temp_a1++;

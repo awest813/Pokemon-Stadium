@@ -781,10 +781,16 @@ unk_D_8140E724* func_8432F93C(s32 arg0, u8 arg1) {
     return func_8432EB64(arg0, 0, 1, NULL, NULL, D_843902E8, 0, 0, 0x19, arg1, 0, 0);
 }
 
-void func_8432F998(void) {
+/*
+ * BattleEvent_OpenNop / BattleEvent_CloseNop
+ * Original symbols: func_8432F998 / func_8432F9A0
+ *
+ * Empty handlers for unused BattleEvent_OpenOps / CloseOps slots.
+ */
+void BattleEvent_OpenNop(void) {
 }
 
-void func_8432F9A0(void) {
+void BattleEvent_CloseNop(void) {
 }
 
 void func_8432F9A8(s32 arg0) {
