@@ -126,7 +126,7 @@ s32 func_82F06E50(s32 arg0, GraphNode* arg1) {
             gSPSegment(gDisplayListHead++, 0x0E, Memmap_GetSegmentVaddr(D_82F13F2C[D_82F20A88[idx].unk_002]));
             gSPDisplayList(gDisplayListHead++, arg1->unk_14);
         }
-        func_80015684();
+        Renderer_ResetMaterial();
     }
     return 0;
 }

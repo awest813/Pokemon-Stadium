@@ -233,7 +233,7 @@ s32 func_82E00274(s32 arg0, unk_func_80011B94* arg1) {
         gSPSegment(gDisplayListHead++, 0x0F, Memmap_GetSegmentVaddr(D_82E01170[temp_a3]));
         gSPDisplayList(gDisplayListHead++, D_82E01480);
 
-        func_80015684();
+        Renderer_ResetMaterial();
     }
     return 0;
 }
@@ -255,7 +255,7 @@ s32 func_82E0036C(s32 arg0, unk_func_80011B94* arg1) {
         gSPSegment(gDisplayListHead++, 0x0F, Memmap_GetSegmentVaddr(D_3024000));
         gSPDisplayList(gDisplayListHead++, D_82E018B8);
 
-        func_80015684();
+        Renderer_ResetMaterial();
     }
     return 0;
 }

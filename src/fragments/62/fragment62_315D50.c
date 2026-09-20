@@ -4618,7 +4618,14 @@ void func_8432BF88(unk_D_84390010* arg0, s32 arg1) {
     }
 }
 
-void func_8432C0D0(s16 arg0) {
+/*
+ * BattleEvent_ExecOpenOps
+ * Original symbol: func_8432C0D0
+ *
+ * Verified:
+ *     Runs D_84386480[id] with D_843902E4, then again with D_843902E6 if != 0xFF.
+ */
+void BattleEvent_ExecOpenOps(s16 arg0) {
     D_843902E2 = D_843902E4;
     D_84386480[arg0]();
     if (D_843902E6 != 0xFF) {
@@ -4627,12 +4634,26 @@ void func_8432C0D0(s16 arg0) {
     }
 }
 
-void func_8432C14C(s16 arg0) {
+/*
+ * BattleEvent_ExecCloseOps
+ * Original symbol: func_8432C14C
+ *
+ * Verified:
+ *     Runs D_843866C4[id] with D_843902E4 only.
+ */
+void BattleEvent_ExecCloseOps(s16 arg0) {
     D_843902E2 = D_843902E4;
     D_843866C4[arg0]();
 }
 
-void func_8432C194(func_D_84390300 arg0, func_D_84390320 arg1) {
+/*
+ * BattleEvent_PushPair
+ * Original symbol: func_8432C194
+ *
+ * Verified:
+ *     Appends an update/draw callback pair into D_84390300/D_84390320 (8 slots).
+ */
+void BattleEvent_PushPair(func_D_84390300 arg0, func_D_84390320 arg1) {
     if (D_843902FC >= 8) {
         D_843902FC = 0;
     }
@@ -4644,7 +4665,17 @@ void func_8432C194(func_D_84390300 arg0, func_D_84390320 arg1) {
     D_843902FC++;
 }
 
-void func_8432C1E0(s32 arg0, s32 arg1, s32 arg2) {
+/*
+ * BattleEvent_PlayScript
+ * Original symbol: func_8432C1E0
+ *
+ * Verified:
+ *     Walks a NUL-terminated opcode list for script id arg0.
+ *     arg2 == 1: open tables (D_84386E08[][0/1], D_84386D44, D_84386DBC, D_84386E00)
+ *     else: close tables (D_84386E08[][2], D_84386DEC).
+ *     Each byte: ExecOpen/CloseOps, a side-effect table, then PushPair.
+ */
+void BattleEvent_PlayScript(s32 arg0, s32 arg1, s32 arg2) {
     u8* sp2C;
 
     D_843902E0 = arg1;
@@ -4673,9 +4704,9 @@ void func_8432C1E0(s32 arg0, s32 arg1, s32 arg2) {
         }
 
         while (*sp2C != 0) {
-            func_8432C0D0(*sp2C);
+            BattleEvent_ExecOpenOps(*sp2C);
             D_84388280[*sp2C]();
-            func_8432C194(D_84388668[*sp2C], D_84388A50[*sp2C]);
+            BattleEvent_PushPair(D_84388668[*sp2C], D_84388A50[*sp2C]);
             sp2C++;
         }
     } else {
@@ -4690,9 +4721,9 @@ void func_8432C1E0(s32 arg0, s32 arg1, s32 arg2) {
         }
 
         while (*sp2C != 0) {
-            func_8432C14C(*sp2C);
+            BattleEvent_ExecCloseOps(*sp2C);
             D_843884D8[*sp2C]();
-            func_8432C194(D_843888C0[*sp2C], D_84388CA8[*sp2C]);
+            BattleEvent_PushPair(D_843888C0[*sp2C], D_84388CA8[*sp2C]);
             sp2C++;
         }
     }
@@ -4704,27 +4735,27 @@ void func_8432C1E0(s32 arg0, s32 arg1, s32 arg2) {
  *
  * Verified:
  *     Drains four pending action queues (D_843902B0 / C8 / D4 / C0) via
- *     func_8432C1E0, then clears each count.
+ *     BattleEvent_PlayScript, then clears each count.
  */
 void BattleScene_FlushQueuedActions(void) {
     if (D_843902B0 != 0) {
         func_8432EB44();
-        func_8432C1E0(D_843902AC, D_843902B8, D_843902B0);
+        BattleEvent_PlayScript(D_843902AC, D_843902B8, D_843902B0);
         D_843902B0 = 0;
     }
 
     if (D_843902C8 != 0) {
-        func_8432C1E0(D_843902CC, D_843902D0, D_843902C8);
+        BattleEvent_PlayScript(D_843902CC, D_843902D0, D_843902C8);
         D_843902C8 = 0;
     }
 
     if (D_843902D4 != 0) {
-        func_8432C1E0(D_843902D8, D_843902DC, D_843902D4);
+        BattleEvent_PlayScript(D_843902D8, D_843902DC, D_843902D4);
         D_843902D4 = 0;
     }
 
     if (D_843902C0 != 0) {
-        func_8432C1E0(D_843902C4, 4, D_843902C0);
+        BattleEvent_PlayScript(D_843902C4, 4, D_843902C0);
         D_843902C0 = 0;
     }
 }
@@ -4744,28 +4775,36 @@ void BattleScene_UpdateFrame(UNUSED unk_D_86002F34_00C* arg0) {
     func_843592E0();
 }
 
-void func_8432C504(u8 arg0) {
+void BattleEvent_SetScriptMode(u8 arg0) {
     D_843902B8 = arg0;
 }
 
-u8 func_8432C518(void) {
+u8 BattleEvent_GetScriptMode(void) {
     return D_843902E0;
 }
 
-void func_8432C524(u8 arg0) {
+void BattleEvent_SetAuxScriptMode(u8 arg0) {
     D_843902C4 = arg0;
 }
 
-u8 func_8432C538(void) {
+u8 BattleEvent_GetAuxScriptMode(void) {
     return D_843902C4;
 }
 
-s16 func_8432C544(void) {
+s16 BattleEvent_GetQueuedScriptId(void) {
     return D_843902AC;
 }
 
-void func_8432C550(s32 arg0, unk_D_84390010* arg1, unk_D_84390010* arg2, s16 arg3, s16 arg4) {
-    func_8432C504(0);
+/*
+ * BattleEvent_QueueOpen
+ * Original symbol: func_8432C550
+ *
+ * Verified:
+ *     Primary queue: script id arg0, mode 0, open path (count=1), two actors + params.
+ *     Flushed next BattleScene_UpdateFrame via BattleEvent_PlayScript.
+ */
+void BattleEvent_QueueOpen(s32 arg0, unk_D_84390010* arg1, unk_D_84390010* arg2, s16 arg3, s16 arg4) {
+    BattleEvent_SetScriptMode(0);
     D_843902B0 = 1;
     D_843902AC = arg0;
     D_843902A4 = 0;
@@ -4776,28 +4815,28 @@ void func_8432C550(s32 arg0, unk_D_84390010* arg1, unk_D_84390010* arg2, s16 arg
     D_843902F0 = arg2;
 }
 
-void func_8432C5D4(s32 arg0, unk_D_84390010* arg1, unk_D_84390010* arg2, s16 arg3, s16 arg4) {
-    func_8432C550(arg0, arg1, arg2, arg3, arg4);
+void BattleEvent_QueueOpen0(s32 arg0, unk_D_84390010* arg1, unk_D_84390010* arg2, s16 arg3, s16 arg4) {
+    BattleEvent_QueueOpen(arg0, arg1, arg2, arg3, arg4);
 }
 
-void func_8432C604(s32 arg0, unk_D_84390010* arg1, unk_D_84390010* arg2, s16 arg3, s16 arg4) {
-    func_8432C550(arg0, arg1, arg2, arg3, arg4);
-    func_8432C504(2);
+void BattleEvent_QueueClose2(s32 arg0, unk_D_84390010* arg1, unk_D_84390010* arg2, s16 arg3, s16 arg4) {
+    BattleEvent_QueueOpen(arg0, arg1, arg2, arg3, arg4);
+    BattleEvent_SetScriptMode(2);
     D_843902E8 = arg2;
     D_843902B0 = 2;
 }
 
-void func_8432C654(s32 arg0, unk_D_84390010* arg1, unk_D_84390010* arg2, s16 arg3, s16 arg4) {
-    func_8432C550(arg0, arg1, arg2, arg3, arg4);
-    func_8432C504(1);
+void BattleEvent_QueueOpen1(s32 arg0, unk_D_84390010* arg1, unk_D_84390010* arg2, s16 arg3, s16 arg4) {
+    BattleEvent_QueueOpen(arg0, arg1, arg2, arg3, arg4);
+    BattleEvent_SetScriptMode(1);
 }
 
-void func_8432C68C(s32 arg0, unk_D_84390010* arg1, unk_D_84390010* arg2, s16 arg3, s16 arg4) {
-    func_8432C550(arg0, arg1, arg2, arg3, arg4);
-    func_8432C504(3);
+void BattleEvent_QueueOpen3(s32 arg0, unk_D_84390010* arg1, unk_D_84390010* arg2, s16 arg3, s16 arg4) {
+    BattleEvent_QueueOpen(arg0, arg1, arg2, arg3, arg4);
+    BattleEvent_SetScriptMode(3);
 }
 
-void func_8432C6C4(s32 arg0, unk_D_84390010* arg1) {
+void BattleEvent_QueueClose6(s32 arg0, unk_D_84390010* arg1) {
     D_843902C8 = 2;
     D_843902CC = arg0;
     D_843902D0 = 6;
@@ -4808,17 +4847,17 @@ void func_8432C6C4(s32 arg0, unk_D_84390010* arg1) {
     D_843902F0 = arg1;
 }
 
-void func_8432C714(s32 arg0, unk_D_84390010* arg1) {
-    func_8432C6C4(arg0, arg1);
+void BattleEvent_QueueCloseAlt(s32 arg0, unk_D_84390010* arg1) {
+    BattleEvent_QueueClose6(arg0, arg1);
     D_843902C8 = 1;
     D_843902D0 = 5;
 }
 
-void func_8432C748(s32 arg0, unk_D_84390010* arg1) {
-    func_8432C6C4(arg0, arg1);
+void BattleEvent_QueueCloseDup(s32 arg0, unk_D_84390010* arg1) {
+    BattleEvent_QueueClose6(arg0, arg1);
 }
 
-void func_8432C768(s32 arg0) {
+void BattleEvent_QueueExtra(s32 arg0) {
     D_843902D4 = 1;
     D_843902DC = 9;
     D_843902D8 = arg0;
@@ -4826,9 +4865,9 @@ void func_8432C768(s32 arg0) {
     D_843902E6 = 0xFF;
 }
 
-void func_8432C7A0(u8 arg0, unk_D_84390010* arg1) {
+void BattleEvent_QueueAux(u8 arg0, unk_D_84390010* arg1) {
     D_843902C0 = 1;
-    func_8432C524(arg0);
+    BattleEvent_SetAuxScriptMode(arg0);
     D_843902E8 = arg1;
     D_843902E4 = 0xFF;
     D_843902E6 = 0xFF;

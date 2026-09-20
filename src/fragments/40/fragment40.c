@@ -176,7 +176,7 @@ s32 func_83100180(s32 arg0, UNUSED GraphNode* arg1) {
             gSPSegment(gDisplayListHead++, 0x0F, Memmap_GetSegmentVaddr(D_3000000));
             gSPDisplayList(gDisplayListHead++, D_83101C60);
 
-            func_80015684();
+            Renderer_ResetMaterial();
             break;
     }
 
@@ -254,7 +254,7 @@ s32 func_83100578(s32 arg0, GraphNode* arg1) {
             gDPSetEnvColor(gDisplayListHead++, ptr->unk_178, ptr->unk_17A, ptr->unk_17C, 0xFF);
             gSPDisplayList(gDisplayListHead++, D_83101D80);
 
-            func_80015684();
+            Renderer_ResetMaterial();
             break;
     }
     return 0;

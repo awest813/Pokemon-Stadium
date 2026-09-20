@@ -1425,7 +1425,7 @@ void func_84343988(void) {
     func_8432EC28(0, func_8434171C, &D_8140E460, 0x1E, 1, 0xB, 0, 0x1E, 0);
     func_8432EB2C(0xF);
 
-    switch (func_8432C544()) {
+    switch (BattleEvent_GetQueuedScriptId()) {
         case 0x70:
             func_8432ECA0(0, 0x10, 8, func_8435226C, &D_843861D0[0x44], 0, 4, 0xB, 0, 0x18, 5);
             break;
@@ -1449,7 +1449,7 @@ void func_84343988(void) {
 void func_84343B9C(Gfx* arg0, s32 arg1, u16 arg2) {
     func_84340DC0();
 
-    switch (func_8432C544()) {
+    switch (BattleEvent_GetQueuedScriptId()) {
         case 0x70:
             gDPPipeSync(arg0++);
             gDPSetPrimColor(arg0++, 0, 0x80, 255, 255, 255, 255);
@@ -1577,7 +1577,7 @@ void func_8434411C(unk_D_8140E720* arg0) {
     u16 sp24;
     u16 sp22;
 
-    sp26 = func_8432C544();
+    sp26 = BattleEvent_GetQueuedScriptId();
     sp24 = 0x19;
     sp22 = 0xA;
     func_8140BECC(arg0, 7);
@@ -2081,7 +2081,7 @@ void func_84345838(unk_D_8140E720* arg0) {
     s16 sp26 = func_8140C058(arg0);
     u16 sp24;
 
-    switch (func_8432C544()) {
+    switch (BattleEvent_GetQueuedScriptId()) {
         case 0x47:
             sp24 = 0x18;
             break;
@@ -2171,7 +2171,7 @@ void func_84345B28(void) {
 }
 
 void func_84345B84(void) {
-    switch (func_8432C544()) {
+    switch (BattleEvent_GetQueuedScriptId()) {
         case 0x8D:
             func_8432F638(0, 0xC, 0x41, 2, 0xC8, 0x10);
             break;
@@ -3675,7 +3675,7 @@ void func_8434A18C(s32 arg0, arg1_func_84344CE8* arg1) {
 s16 func_8434A1D4(void) {
     s16 sp1E;
 
-    switch (func_8432C544()) {
+    switch (BattleEvent_GetQueuedScriptId()) {
         case 0x7C:
             sp1E = 0;
             break;
@@ -3699,7 +3699,7 @@ s16 func_8434A1D4(void) {
 s16 func_8434A244(void) {
     s16 sp1E;
 
-    switch (func_8432C544()) {
+    switch (BattleEvent_GetQueuedScriptId()) {
         case 0x7C:
             sp1E = 0x12;
             break;
@@ -3723,7 +3723,7 @@ s16 func_8434A244(void) {
 s16 func_8434A2B4(void) {
     s16 sp1E;
 
-    switch (func_8432C544()) {
+    switch (BattleEvent_GetQueuedScriptId()) {
         case 0x7C:
             sp1E = 8;
             break;
@@ -3838,7 +3838,7 @@ void func_8434A898(void) {
     UNUSED s16 pad;
     s16 sp34;
 
-    switch (func_8432C544()) {
+    switch (BattleEvent_GetQueuedScriptId()) {
         case 0x59:
             sp34 = 0x10;
             break;
@@ -4332,7 +4332,7 @@ void func_8434BCD4(void) {
 }
 
 void func_8434BF2C(void) {
-    switch (func_8432C544()) {
+    switch (BattleEvent_GetQueuedScriptId()) {
         case 0x8D:
             func_8432ED0C(0, 0x10, 6);
             func_8432EC28(0, func_84341860, &D_8140E460, 0x80, 1, 0xC, 0xD, 0x1A, 0x20);

@@ -446,7 +446,7 @@ void func_8432E4B0(unk_D_8140E724* arg0) {
             break;
 
         case 25:
-            func_8432C768(arg0->unk_19);
+            BattleEvent_QueueExtra(arg0->unk_19);
             break;
 
         case 26:
@@ -653,8 +653,8 @@ unk_D_8140E724* func_8432EB64(s32 arg0, s32 arg1, s8 arg2, func_unk_D_8140E724 a
         sp1C->unk_19 = arg9;
         sp1C->unk_1A = argB;
         sp1C->unk_1B = argA;
-        sp1C->unk_17 = func_8432C518();
-        sp1C->unk_18 = func_8432C538();
+        sp1C->unk_17 = BattleEvent_GetScriptMode();
+        sp1C->unk_18 = BattleEvent_GetAuxScriptMode();
     }
     return sp1C;
 }

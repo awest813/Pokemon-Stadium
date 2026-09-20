@@ -381,7 +381,7 @@ s32 func_84B07EB0(s32 arg0, unk_func_80011B94* arg1) {
         gSPSegment(gDisplayListHead++, 0x0F, (u32)var_a3 & 0x1FFFFFFF);
         gSPDisplayList(gDisplayListHead++, arg1->unk_00.unk_14);
 
-        func_80015684();
+        Renderer_ResetMaterial();
     }
     return 0;
 }
@@ -405,7 +405,7 @@ s32 func_84B07F78(s32 arg0, unk_func_80011B94* arg1) {
         gSPSegment(gDisplayListHead++, 0x0E, (u32)Memmap_GetSegmentVaddr(var_a3) & 0x1FFFFFFF);
         gSPDisplayList(gDisplayListHead++, arg1->unk_00.unk_14);
 
-        func_80015684();
+        Renderer_ResetMaterial();
 
         if (temp_t1->unk_2C[temp_t2 - 1] != 0) {
             arg1->unk_00.unk_08->unk_01 |= 1;
@@ -435,7 +435,7 @@ s32 func_84B080F4(s32 arg0, unk_func_80011B94* arg1) {
         gSPSegment(gDisplayListHead++, 0x0E, (u32)Memmap_GetSegmentVaddr(var_a0) & 0x1FFFFFFF);
         gSPDisplayList(gDisplayListHead++, arg1->unk_00.unk_14);
 
-        func_80015684();
+        Renderer_ResetMaterial();
     }
     return 0;
 }
@@ -466,7 +466,7 @@ s32 func_84B08230(s32 arg0, unk_func_80011B94* arg1) {
         gSPSegment(gDisplayListHead++, 0x0E, (u32)Memmap_GetSegmentVaddr(var_a3) & 0x1FFFFFFF);
         gSPDisplayList(gDisplayListHead++, arg1->unk_00.unk_14);
 
-        func_80015684();
+        Renderer_ResetMaterial();
 
         if (temp_t1->unk_2C[temp_a1] != 0) {
             arg1->unk_00.unk_08->unk_01 |= 1;
@@ -503,7 +503,7 @@ s32 func_84B083D8(s32 arg0, unk_func_80011B94* arg1) {
         gSPSegment(gDisplayListHead++, 0x0E, (u32)Memmap_GetSegmentVaddr(var_a0) & 0x1FFFFFFF);
         gSPDisplayList(gDisplayListHead++, arg1->unk_00.unk_14);
 
-        func_80015684();
+        Renderer_ResetMaterial();
     }
     return 0;
 }

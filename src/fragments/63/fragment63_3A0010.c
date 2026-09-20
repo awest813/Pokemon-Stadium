@@ -134,7 +134,7 @@ s32 func_84B0BF10(s32 arg0, unk_func_80011B94* arg1) {
         gSPSegment(gDisplayListHead++, 0x0F, (u32)Memmap_GetSegmentVaddr(var_a0) & 0x1FFFFFFF);
         gSPDisplayList(gDisplayListHead++, arg1->unk_00.unk_14);
 
-        func_80015684();
+        Renderer_ResetMaterial();
     }
     return 0;
 }
@@ -147,7 +147,7 @@ s32 func_84B0BFE4(s32 arg0, unk_func_80011B94* arg1) {
         gSPSegment(gDisplayListHead++, 0x0F, (u32)Memmap_GetSegmentVaddr(D_3020800) & 0x1FFFFFFF);
         gSPDisplayList(gDisplayListHead++, arg1->unk_00.unk_14);
 
-        func_80015684();
+        Renderer_ResetMaterial();
     }
     return 0;
 }
@@ -163,7 +163,7 @@ s32 func_84B0C094(s32 arg0, unk_func_80011B94* arg1) {
         gDPSetEnvColor(gDisplayListHead++, temp_a0->unk_08.r, temp_a0->unk_08.g, temp_a0->unk_08.b, 255);
         gSPDisplayList(gDisplayListHead++, arg1->unk_00.unk_14);
 
-        func_80015684();
+        Renderer_ResetMaterial();
     }
     return 0;
 }
@@ -208,7 +208,7 @@ s32 func_84B0C3A4(s32 arg0, unk_func_80011B94* arg1) {
         gDPSetEnvColor(gDisplayListHead++, temp_v1->unk_0A.r, temp_v1->unk_0A.g, temp_v1->unk_0A.b, temp_v1->unk_0A.a);
         gSPDisplayList(gDisplayListHead++, arg1->unk_00.unk_14);
 
-        func_80015684();
+        Renderer_ResetMaterial();
     }
     return 0;
 }

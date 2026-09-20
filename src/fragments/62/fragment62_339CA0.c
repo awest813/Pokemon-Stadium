@@ -1778,7 +1778,7 @@ void func_8435375C(unk_D_8140E720* arg0) {
 void func_84353894(unk_D_8140E720* arg0) {
     s16 sp1E;
 
-    switch (func_8432C544()) {
+    switch (BattleEvent_GetQueuedScriptId()) {
         case 0x4D:
             sp1E = 0x43;
             break;
@@ -2969,7 +2969,7 @@ void func_84357BA8(void) {
 }
 
 void func_84357CC8(void) {
-    switch (func_8432C544()) {
+    switch (BattleEvent_GetQueuedScriptId()) {
         case 0x4D:
             func_8432F344(0, 0x64, 0x3E, 0, 0xA0, 4);
             break;

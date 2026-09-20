@@ -267,7 +267,7 @@ s32 func_83800900(s32 arg0, GraphNode* arg1) {
         gSPSegment(gDisplayListHead++, 0x0E, Memmap_GetSegmentVaddr(var_a3));
         gSPDisplayList(gDisplayListHead++, arg1->unk_14);
 
-        func_80015684();
+        Renderer_ResetMaterial();
     }
     return 0;
 }

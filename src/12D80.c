@@ -1044,7 +1044,7 @@ void GraphNode_ProcessGfx(GraphNode* arg0) {
  * SM64 analogue: geo_process_generated_list
  *
  * Verified:
- *     Builds a list through func_80016364 using D_8006F0A0 slots and the
+ *     Builds a list through Renderer_SetPendingMaterial using D_8006F0A0 slots and the
  *     current object's unk_03C color scale. Requires a translucent parent.
  */
 void GraphNode_ProcessGeneratedList(GraphNode* arg0) {
@@ -1079,7 +1079,7 @@ void GraphNode_ProcessGeneratedList(GraphNode* arg0) {
     }
 
     func_800176DC(&sp3C, D_8006F0A0->unk_18, arg->unk_20);
-    func_80016364(arg->unk_22, sp44, sp3C, sp38, sp34);
+    Renderer_SetPendingMaterial(arg->unk_22, sp44, sp3C, sp38, sp34);
     SceneGraph_HandleCallbackAndVisitChildren(arg0);
 }
 
@@ -1338,7 +1338,15 @@ Vec3f* SceneGraph_FindObjectPoint(unk_D_86002F58_004_000* arg0, s16 arg1, Vec3f*
     return NULL;
 }
 
-void func_80015400(Gfx* arg0, arg1_func_81407874_014_000_010* arg1) {
+/*
+ * Renderer_WriteCombineMode
+ * Original symbol: func_80015400
+ * OoT analogue: Gfx_SetupDL combine write
+ *
+ * Verified:
+ *     Emits gDPSetCombine from a 16-field CC table entry.
+ */
+void Renderer_WriteCombineMode(Gfx* arg0, arg1_func_81407874_014_000_010* arg1) {
     gDPSetCombine(arg0++,
                   GCCc0w0(arg1->unk_00, arg1->unk_02, arg1->unk_04, arg1->unk_06) | GCCc1w0(arg1->unk_08, arg1->unk_0A),
 
@@ -1346,7 +1354,14 @@ void func_80015400(Gfx* arg0, arg1_func_81407874_014_000_010* arg1) {
                       GCCc1w1(arg1->unk_09, arg1->unk_0C, arg1->unk_0E, arg1->unk_0B, arg1->unk_0D, arg1->unk_0F));
 }
 
-void func_8001550C(void) {
+/*
+ * Renderer_PipeSyncIfNeeded
+ * Original symbol: func_8001550C
+ *
+ * Verified:
+ *     One gDPPipeSync per dirty material batch (D_800ABB08 gate).
+ */
+void Renderer_PipeSyncIfNeeded(void) {
     if (D_800ABB08 == 0) {
         D_800ABB08 = 1;
 
@@ -1354,7 +1369,14 @@ void func_8001550C(void) {
     }
 }
 
-void func_8001554C(void) {
+/*
+ * Renderer_ApplyFogRenderMode
+ * Original symbol: func_8001554C
+ *
+ * Verified:
+ *     Sets fog color from the scene node and a layer render-mode from D_8006F124.
+ */
+void Renderer_ApplyFogRenderMode(void) {
     s32 var_v0 = D_8006F124[D_800ABB00][D_800ABCB8->unk_24];
 
     D_800ABB08 = 1;
@@ -1376,7 +1398,14 @@ void func_8001554C(void) {
     }
 }
 
-void func_80015684(void) {
+/*
+ * Renderer_ResetMaterial
+ * Original symbol: func_80015684
+ *
+ * Verified:
+ *     Default prim/combine/geometry for the current layer bucket.
+ */
+void Renderer_ResetMaterial(void) {
     Color_RGBA8_u32 sp1C;
 
     sp1C.rgba = D_800ABCB8->unk_10.rgba;
@@ -1392,7 +1421,7 @@ void func_80015684(void) {
     gDPSetTextureLUT(gDisplayListHead++, G_TT_NONE);
     gSPTexture(gDisplayListHead++, 0xFFFF, 0xFFFF, 0, G_TX_RENDERTILE, G_OFF);
 
-    func_80015400(gDisplayListHead++, D_8006F1B4[D_800ABCB8->unk_25]);
+    Renderer_WriteCombineMode(gDisplayListHead++, D_8006F1B4[D_800ABCB8->unk_25]);
 
     gSPSetGeometryMode(gDisplayListHead++, G_SHADE | G_CULL_BACK | G_SHADING_SMOOTH);
     gSPClearGeometryMode(gDisplayListHead++, G_FOG | G_TEXTURE_GEN);
@@ -1404,9 +1433,9 @@ void func_80015684(void) {
     }
 }
 
-void func_8001587C(unk_D_800ABB10* arg0) {
+void Renderer_SetFogColorIfChanged(unk_D_800ABB10* arg0) {
     if (arg0->unk_08.rgba != D_800ABCB8->unk_14.rgba) {
-        func_8001550C();
+        Renderer_PipeSyncIfNeeded();
 
         gDPSetColor(gDisplayListHead++, G_SETFOGCOLOR, arg0->unk_08.rgba);
         gDPSetRenderMode(gDisplayListHead++, D_8006F124[D_800ABB00][D_800ABCB8->unk_24], 0xC4000000);
@@ -1415,15 +1444,15 @@ void func_8001587C(unk_D_800ABB10* arg0) {
     }
 }
 
-void func_80015948(UNUSED unk_D_800ABB10* arg0) {
+void Renderer_RestoreFogRenderMode(UNUSED unk_D_800ABB10* arg0) {
     if (D_800ABCB8->unk_14.rgba & 0xFF) {
-        func_8001554C();
+        Renderer_ApplyFogRenderMode();
     }
 }
 
-void func_80015984(unk_D_800ABB10* arg0) {
+void Renderer_SetPrimColorIfChanged(unk_D_800ABB10* arg0) {
     if ((arg0->unk_04.rgba != D_800ABCB8->unk_10.rgba) || (arg0->unk_01 != D_800ABCB8->unk_26)) {
-        func_8001550C();
+        Renderer_PipeSyncIfNeeded();
 
         gDPSetPrimColor(gDisplayListHead++, 0, arg0->unk_01, arg0->unk_04.r, arg0->unk_04.g, arg0->unk_04.b,
                         arg0->unk_04.a);
@@ -1433,15 +1462,15 @@ void func_80015984(unk_D_800ABB10* arg0) {
     }
 }
 
-void func_80015A44(unk_D_800ABB10* arg0) {
+void Renderer_SetCombineIfChanged(unk_D_800ABB10* arg0) {
     if (arg0->unk_00 != D_800ABCB8->unk_25) {
-        func_8001550C();
-        func_80015400(gDisplayListHead++, D_8006F1B4[arg0->unk_00]);
+        Renderer_PipeSyncIfNeeded();
+        Renderer_WriteCombineMode(gDisplayListHead++, D_8006F1B4[arg0->unk_00]);
         D_800ABCB8->unk_25 = arg0->unk_00;
     }
 }
 
-void func_80015AC4(UNUSED unk_D_800ABB10* arg0) {
+void Renderer_ClearTexture(UNUSED unk_D_800ABB10* arg0) {
     if (D_800ABCB8->unk_18 != NULL) {
         gSPTexture(gDisplayListHead++, 0xFFFF, 0xFFFF, 0, G_TX_RENDERTILE, G_OFF);
     }
@@ -1451,7 +1480,7 @@ void func_80015AC4(UNUSED unk_D_800ABB10* arg0) {
     D_800ABCB8->unk_20 = NULL;
 }
 
-void func_80015B20(unk_D_800ABB10* arg0) {
+void Renderer_BindTextureIfChanged(unk_D_800ABB10* arg0) {
     unk_D_86002F34_alt11_018* temp_t0;
     s32 var_a3;
 
@@ -1495,7 +1524,7 @@ void func_80015B20(unk_D_800ABB10* arg0) {
     D_800ABCB8->unk_20 = arg0->unk_14;
 }
 
-void func_80015DD8(UNUSED unk_D_800ABB10* arg0) {
+void Renderer_EnableTexGen(UNUSED unk_D_800ABB10* arg0) {
     if (D_800ABCB8->unk_27 == 0) {
         gDPLoadTextureBlock(gDisplayListHead++, D_1001800, G_IM_FMT_RGBA, G_IM_SIZ_16b, 32, 32, 0,
                             G_TX_NOMIRROR | G_TX_WRAP, G_TX_NOMIRROR | G_TX_WRAP, 5, 5, 1, 1);
@@ -1509,7 +1538,15 @@ void func_80015DD8(UNUSED unk_D_800ABB10* arg0) {
     }
 }
 
-void func_80015F64(s16 arg0) {
+/*
+ * Renderer_SetLayer
+ * Original symbol: func_80015F64
+ * SM64 analogue: geo_append_display_list layer switch
+ *
+ * Verified:
+ *     Branches the live DL into D_800ABB28[arg0] (master-list buckets).
+ */
+void Renderer_SetLayer(s16 arg0) {
     if (arg0 == D_800ABCBC) {
         return;
     }
@@ -1528,7 +1565,7 @@ void func_80015F64(s16 arg0) {
     }
 }
 
-void func_80016010(s16 arg0) {
+void Renderer_SetTexGenFromLayer(s16 arg0) {
     if (((arg0 > 0) && (arg0 < 4)) || (arg0 == 0x84) || (arg0 == 6)) {
         D_800ABB10.unk_03 = D_800ABB10.unk_02;
     } else {
@@ -1536,7 +1573,7 @@ void func_80016010(s16 arg0) {
     }
 }
 
-s16 func_80016060(s16 arg0) {
+s16 Renderer_MapLayerIndex(s16 arg0) {
     s16 var_v1 = arg0 & 0xF;
 
     if (D_800ABB10.unk_01 < 0xFF) {
@@ -1561,37 +1598,37 @@ s16 func_80016060(s16 arg0) {
 
 void Renderer_SetMatrix(s16 arg0, MtxF* arg1) {
     if ((D_8006F120 != 0) && !(D_800ABB04 & 2) && (D_800ABB10.unk_01 > 0)) {
-        func_80016010(arg0);
-        func_80015F64(func_80016060(arg0));
+        Renderer_SetTexGenFromLayer(arg0);
+        Renderer_SetLayer(Renderer_MapLayerIndex(arg0));
         D_800ABB08 = 0;
 
         if (D_800ABCB8->unk_00 == 0) {
-            func_8001554C();
-            func_80015684();
+            Renderer_ApplyFogRenderMode();
+            Renderer_ResetMaterial();
             D_800ABCB8->unk_00 = 1;
         }
 
         if (D_800ABB10.unk_08.rgba & 0xFF) {
-            func_8001587C(&D_800ABB10);
+            Renderer_SetFogColorIfChanged(&D_800ABB10);
         } else {
-            func_80015948(&D_800ABB10);
+            Renderer_RestoreFogRenderMode(&D_800ABB10);
         }
 
         if (D_800ABB10.unk_03 != 0) {
-            func_80015DD8(&D_800ABB10);
+            Renderer_EnableTexGen(&D_800ABB10);
         } else {
             if (D_800ABCB8->unk_27 == 1) {
-                func_80015684();
+                Renderer_ResetMaterial();
             }
 
             if (D_800ABB10.unk_0C != 0) {
-                func_80015B20(&D_800ABB10);
+                Renderer_BindTextureIfChanged(&D_800ABB10);
             } else {
-                func_80015AC4(&D_800ABB10);
+                Renderer_ClearTexture(&D_800ABB10);
             }
 
-            func_80015984(&D_800ABB10);
-            func_80015A44(&D_800ABB10);
+            Renderer_SetPrimColorIfChanged(&D_800ABB10);
+            Renderer_SetCombineIfChanged(&D_800ABB10);
         }
 
         if (arg1 != D_800ABCB8->unk_0C) {
@@ -1612,7 +1649,7 @@ void Renderer_SetDisplayList(Gfx* arg0, s32 arg1) {
         }
 
         if (arg1 != 0) {
-            func_80015684();
+            Renderer_ResetMaterial();
         }
     }
 }
@@ -1623,7 +1660,14 @@ void Renderer_SetColor(Color_RGBA8_u32 arg0, u8 arg1, u32 arg2) {
     D_800ABB10.unk_02 = arg2;
 }
 
-void func_80016364(s32 arg0, Color_RGBA8_u32 arg1, unk_D_86002F34_alt11_018* arg2, unk_D_86002F34_alt11_018* arg3,
+/*
+ * Renderer_SetPendingMaterial
+ * Original symbol: func_80016364
+ *
+ * Verified:
+ *     Fills D_800ABB10; Renderer_SetMatrix later applies texture/combine/prim.
+ */
+void Renderer_SetPendingMaterial(s32 arg0, Color_RGBA8_u32 arg1, unk_D_86002F34_alt11_018* arg2, unk_D_86002F34_alt11_018* arg3,
                    s32 arg4) {
     D_800ABB10.unk_00 = arg0;
     D_800ABB10.unk_04.rgba = arg1.rgba;
@@ -1691,7 +1735,7 @@ void Renderer_ResetViewport(void) {
     Gfx* temp_t0;
     s32 temp_v0;
 
-    func_80015F64(9);
+    Renderer_SetLayer(9);
 
     if (D_800ABB28[0].unk_08 != NULL) {
         while (sp1C < 9) {
@@ -1708,7 +1752,7 @@ void Renderer_ResetViewport(void) {
         }
     }
 
-    func_80015684();
+    Renderer_ResetMaterial();
 
     if (D_800ABB00 & 1) {
         gSPClearGeometryMode(gDisplayListHead++, G_ZBUFFER);

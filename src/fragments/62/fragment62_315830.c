@@ -28,7 +28,7 @@ void func_8432AF70(unk_D_84390010* arg0) {
         func_80017804(&arg0->unk_000, 3);
         arg0->unk_000.unk_000.unk_02 &= ~0x20;
         func_843061EC(arg0, 2);
-        func_8432C7A0(1, arg0);
+        BattleEvent_QueueAux(1, arg0);
         func_8432BF88(arg0, 0x13);
     }
 }
@@ -77,7 +77,7 @@ void func_8432B228(unk_D_84390010* arg0) {
     if ((D_84390240.unk_00->unk_38 != 0xB) || (D_84390240.unk_00->unk_20 >= 6)) {
         if ((sp2C->unk_05 & 7) && (sp28->unk_15 & 7) && !(arg0->unk_654.unk_34 & 1)) {
             func_84305A74(arg0, 0xAF, 2);
-            func_8432C7A0(3, arg0);
+            BattleEvent_QueueAux(3, arg0);
             func_8432BF88(arg0, 0x32);
             func_843061EC(arg0, 1);
         }

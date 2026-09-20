@@ -147,7 +147,7 @@ s32 func_84B06E08(s32 arg0, unk_func_80011B94* arg1) {
         gSPSegment(gDisplayListHead++, 0x0F, (u32)var_a3 & 0x1FFFFFFF);
         gSPDisplayList(gDisplayListHead++, arg1->unk_00.unk_14);
 
-        func_80015684();
+        Renderer_ResetMaterial();
     }
     return 0;
 }

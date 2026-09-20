@@ -712,7 +712,7 @@ s32 func_84101120(s32 arg0, unk_func_80011B94* arg1) {
         } else {
             gSPDisplayList(gDisplayListHead++, D_84103078);
         }
-        func_80015684();
+        Renderer_ResetMaterial();
     }
     return 0;
 }

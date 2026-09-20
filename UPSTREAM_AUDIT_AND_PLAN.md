@@ -139,15 +139,14 @@ Pret’s recent style is: match a whole file’s remaining `GLOBAL_ASM`, then ma
 
 ```text
 Done on this branch (no US 1.0 ROM, matching make still blocked):
-1) tools/sync_promoted_symbol_addrs.py --write (plus manual orig: for new names).
-2) BattleScene overlay: OverlayEntry / Setup / Tick / FrameLoop / SubstateDispatch.
-3) 12D80 D_8006F0A4 filled using SM64 geo_process_* analogues (object, gfx,
-   generated list, shadow, switch, …) + SceneGraph_ProcessRoot.
+1) symbol_addrs sync + BattleScene overlay tick/entry.
+2) 12D80 D_8006F0A4 SM64 geo_process_* names + SceneGraph_ProcessRoot.
+3) Renderer_* material/layer cache (OoT Gfx_SetupDL / SM64 master-list).
+4) BattleEvent_PlayScript / QueueOpen* / QueueClose* behind FlushQueuedActions.
 
 Next:
 - Matching make with US 1.0 baserom.
 - Recover C (or GLOBAL_ASM) for SceneGraph_HandleCallbackAndVisitChildren (0x80014124).
-- Remaining 12D80 helpers after ProcessRoot (func_80015400+ RDP/material).
-- Remaining func_8432xxxx queues behind BattleScene_FlushQueuedActions.
-- Do not invent move-effect names.
+- Remaining 12D80 stubs func_8001638C / func_8001660C (no C body in this TU).
+- BattleEvent opcode tables D_84386480 / D_84386E08 — do not invent move names.
 ```
