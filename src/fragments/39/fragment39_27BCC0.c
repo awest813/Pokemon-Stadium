@@ -817,7 +817,7 @@ s32 func_82500020(s32 arg0, GraphNode* arg1) {
         gSPDisplayList(gDisplayListHead++, D_82506A30);
         gSPDisplayList(gDisplayListHead++, var_a3);
 
-        func_80015684();
+        Renderer_ResetMaterial();
     }
     return 0;
 }
@@ -849,7 +849,7 @@ s32 func_825001B4(s32 arg0, GraphNode* arg1) {
             gSPDisplayList(gDisplayListHead++, D_82507828);
             gSPDisplayList(gDisplayListHead++, var_a3);
         }
-        func_80015684();
+        Renderer_ResetMaterial();
     }
 
     return 0;
@@ -861,7 +861,7 @@ s32 func_82500388(s32 arg0, GraphNode* arg1) {
         gSPSegment(gDisplayListHead++, 0x0F, (u32)D_8250A238->unk_38->img_p & 0x1FFFFFFF);
         gSPDisplayList(gDisplayListHead++, D_82508100);
 
-        func_80015684();
+        Renderer_ResetMaterial();
     }
     return 0;
 }
@@ -919,7 +919,7 @@ s32 func_8250042C(s32 arg0, GraphNode* arg1) {
             gSP2Triangles(gDisplayListHead++, 0, 1, 2, 0, 0, 2, 3, 0);
         }
 
-        func_80015684();
+        Renderer_ResetMaterial();
     }
     return 0;
 }
@@ -1026,7 +1026,7 @@ s32 func_82500BD8(s32 arg0, GraphNode* arg1) {
             gDPSetEnvColor(gDisplayListHead++, 255, 255, 255, D_8006F09C->unk_01D);
             gSPDisplayList(gDisplayListHead++, D_82508770);
 
-            func_80015684();
+            Renderer_ResetMaterial();
             break;
     }
     return 0;
@@ -1988,7 +1988,7 @@ void func_82502F44(void) {
     func_82502BB0();
     Stage_ActivateFramebuffer();
     func_8001D924(D_8250A268);
-    func_80015094(D_8250A270);
+    SceneGraph_ProcessRoot(D_8250A270);
     func_825054F4();
     func_82505C10();
     func_82502C78();

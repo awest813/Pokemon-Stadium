@@ -9,7 +9,7 @@
  *     Handles move accuracy, immunity, damage application, and status interrupts.
  *
  * Evidence:
- *     - Orchestrates the primary turn dispatcher (BattleTurn_MainDispatcher)
+ *     - Orchestrates BattleScene_Main / BattleTurn_Execute / BattleTurn_BuildOrder
  *     - Interacts with the global BattleContext struct
  *     - Executes the 'Attack Phase' logic including multi-hit and charging moves
  *

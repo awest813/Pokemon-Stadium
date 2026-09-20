@@ -206,8 +206,8 @@ void JigglypuffMinigame_UpdateAndDraw(s32 arg0) {
     Stage_ActivateFramebuffer();
     GFX_ClearScreen(&gDisplayListHead, 0x53D);
     GFX_ClearDepth(&gDisplayListHead, 0, 0, 0x140, 0xF0);
-    func_80015348();
-    func_80015094(D_86301714);
+    SceneGraph_IncrementAnimFrame();
+    SceneGraph_ProcessRoot(D_86301714);
     func_86300238(arg0);
     func_87804FD4();
     Stage_AdvanceFrame();

@@ -255,7 +255,7 @@ s32 func_84204070(s32 arg0, unk_func_80011B94* arg1) {
         gSPSegment(gDisplayListHead++, 0x0E, Memmap_GetSegmentVaddr(var_a3));
         gSPDisplayList(gDisplayListHead++, arg1->unk_00.unk_14);
 
-        func_80015684();
+        Renderer_ResetMaterial();
     }
 
     return 0;
@@ -358,7 +358,7 @@ void func_84204760(s32 arg0) {
     if (D_8423E56C != 0) {
         temp_s0 = (0x38 - D_8423E574) / 2;
         sp32 = (0x28 - D_8423E576) / 2;
-        func_80015094(D_8423D400);
+        SceneGraph_ProcessRoot(D_8423D400);
         func_84204210();
 
         if (D_8423E574 > 0) {

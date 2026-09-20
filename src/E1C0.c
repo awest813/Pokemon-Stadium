@@ -9,9 +9,9 @@
 #include "util.h"
 #include "src/fragments/1/fragment1.h"
 
-extern GBMainCtx* D_800AA660;
-extern GBSecondaryCtx* D_800AA664;
-extern char D_800AA668;
+GBMainCtx* D_800AA660;
+GBSecondaryCtx* D_800AA664;
+static char D_800AA668;
 
 extern u8 D_81200000[];
 
@@ -60,8 +60,8 @@ void GBTower_Start(GBTowerState* arg0) {
     FRAGMENT_LOAD(fragment1);
     temp_v0 = ASSET_LOAD2(fonts, 1, 1);
 
-    D_800AA660->font1 = func_8000484C(temp_v0, 0);
-    D_800AA660->font2 = func_8000484C(temp_v0, 1);
+    D_800AA660->font1 = Archive_GetFile(temp_v0, 0);
+    D_800AA660->font2 = Archive_GetFile(temp_v0, 1);
     D_800AA660->unk_2204 = *arg0;
     osCreateMesgQueue(&D_800AA660->queue2, &D_800AA660->mesg, 1);
     osCreateThread(&D_800AA664->thread, 10, GBThread_Secondary, NULL, (u32)D_800AA664 + 0x21E0, 0x11);

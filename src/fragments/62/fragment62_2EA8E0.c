@@ -10,11 +10,12 @@
  *
  * Evidence:
  *     - Entry point called by core game dispatcher (src/29BA0.c)
- *     - Transitions into scene-local state machine (func_8432D0D8, etc.)
+ *     - Transitions into scene-local state machine (BattleScene_SubstateDispatch, etc.)
  *     - Direct access to BattleContext struct (D_800AE540)
  *
  * Verified:
- *     - This file contains the BattleScene_Run entry point.
+ *     - This file contains BattleScene_OverlayEntry, BattleScene_Tick, and
+ *       the geo callback BattleScene_Run.
  *     - It is loaded via the fragment relocation system.
  *
  * Likely:
@@ -93,31 +94,14 @@ static u32 D_84384514[] = {
  * BattleScene_Run
  * Original symbol: func_84300020
  *
- * Summary:
- *     Main per-scene orchestrator for logic execution within the battle engine.
- *
- * Callers:
- *     - GameState_Stadium (src/29BA0.c)
- *     - GameState_FreeBattle (src/29BA0.c)
- *     - GameState_GymLeaderCastle (src/29BA0.c)
- *
- * Arguments:
- *     arg0 / a0:
- *         Wait/Render mode? (Observed values: 0, 1, 2)
- *     arg1 / a1:
- *         GraphNode pointer (usually current scene root)
- *
- * Returns:
- *     v0:
- *         Always returns 1 in observed paths.
- *
- * Verified behavior:
- *     - Branches on arg0 == 2 to trigger a specific substate (5) in func_8432D0D8.
- *     - Sets unk_D_8438E798 to global battle scenes pointer.
+ * Verified:
+ *     Geo-layout callback (command 0x08 in D_84384364), not the overlay entry.
+ *     arg0 == 2 (render context) runs BattleScene_SubstateDispatch(5).
+ *     Overlay entry is BattleScene_OverlayEntry (func_84301A2C).
  */
 s32 BattleScene_Run(s32 arg0, GraphNode* arg1) {
     if (arg0 == 2) {
-        func_8432D0D8(5, &D_8438E440);
+        BattleScene_SubstateDispatch(5, &D_8438E440);
     }
     return 0;
 }
@@ -253,7 +237,7 @@ void func_84300750(GraphNode* arg0, ColorBuffer* arg1) {
 
         ColorBuffer_Activate(&gDisplayListHead, arg1);
         GFX_ClearScreen(&gDisplayListHead, 0x10D);
-        func_80015094(arg0);
+        SceneGraph_ProcessRoot(arg0);
 
         sp2C->unk_00.unk_01 &= ~0x10;
 
@@ -375,20 +359,28 @@ void func_84300E78(void) {
 void func_84300E80(void) {
 }
 
-s32 func_84300E88(s32 arg0) {
+/*
+ * BattleScene_Tick
+ * Original symbol: func_84300E88
+ *
+ * Verified:
+ *     One simulation+draw frame: increment anim frame, actor/camera updates,
+ *     BattleScene_SubstateDispatch(2), then SceneGraph_ProcessRoot.
+ */
+s32 BattleScene_Tick(s32 arg0) {
     s32 sp1C;
 
-    func_80015348();
+    SceneGraph_IncrementAnimFrame();
     func_80032570();
     func_84307394(2, D_8438E798);
     func_84307A50(2, &D_8438E598, &D_8438E688);
     sp1C = func_8432AEE4(2, &D_8438E440);
-    func_8432D0D8(2, &D_8438E440);
+    BattleScene_SubstateDispatch(2, &D_8438E440);
     func_84300750(D_8438E788, D_8438E790);
     func_84300750(D_8438E78C, D_8438E794);
     Stage_ActivateFramebuffer();
     func_84300340();
-    func_80015094(D_8438E784);
+    SceneGraph_ProcessRoot(D_8438E784);
     func_84307394(5, D_8438E798);
     func_84300B34(D_8438E788, D_8438E790);
     func_84300B34(D_8438E78C, D_8438E794);
@@ -405,16 +397,24 @@ s32 func_84300E88(s32 arg0) {
     return sp1C;
 }
 
-s32 func_84300FBC(s32 arg0) {
+/*
+ * BattleScene_TickHeld
+ * Original symbol: func_84300FBC
+ *
+ * Verified:
+ *     Held/debug step: A runs BattleScene_Tick, otherwise draw-only;
+ *     START clears D_8438E79C.
+ */
+s32 BattleScene_TickHeld(s32 arg0) {
     s32 sp1C = 0;
 
     if ((arg0 == 0) && BTN_IS_PRESSED(gPlayer1Controller, BTN_A)) {
-        sp1C = func_84300E88(arg0);
+        sp1C = BattleScene_Tick(arg0);
     } else {
         func_80032570();
         Stage_ActivateFramebuffer();
         func_84300340();
-        func_80015094(D_8438E784);
+        SceneGraph_ProcessRoot(D_8438E784);
         func_84307394(5, D_8438E798);
         func_84300B34(D_8438E788, D_8438E790);
         func_84300B34(D_8438E78C, D_8438E794);
@@ -434,7 +434,15 @@ void func_84301094(void) {
     }
 }
 
-s32 func_843010EC(s32 arg0) {
+/*
+ * BattleScene_FrameLoop
+ * Original symbol: func_843010EC
+ *
+ * Verified:
+ *     Per-frame callback for Stage_RunFadeLoop. Reads controllers, then
+ *     BattleScene_Tick or BattleScene_TickHeld from D_8438E79C.
+ */
+s32 BattleScene_FrameLoop(s32 arg0) {
     s32 sp1C = 0;
 
     Cont_StartReadInputs();
@@ -447,11 +455,11 @@ s32 func_843010EC(s32 arg0) {
 
     switch (D_8438E79C) {
         case 0:
-            sp1C = func_84300E88(arg0);
+            sp1C = BattleScene_Tick(arg0);
             break;
 
         case 1:
-            sp1C = func_84300FBC(arg0);
+            sp1C = BattleScene_TickHeld(arg0);
             break;
     }
 
@@ -539,7 +547,15 @@ void func_843013E4(unk_D_800AE540_1194* arg0, unk_D_86002F30* arg1) {
     func_8001C07C(arg0);
 }
 
-void func_84301430(RenderContext* arg0) {
+/*
+ * BattleScene_Setup
+ * Original symbol: func_84301430
+ *
+ * Verified:
+ *     Allocates battle color buffers, loads fragment 31 + UI assets, builds
+ *     geo layouts, then BattleScene_SubstateDispatch(0) and (3).
+ */
+void BattleScene_Setup(RenderContext* arg0) {
     MemoryBlock* sp44;
     u32* temp_v0_4;
     FragmentEntry sp3C;
@@ -612,7 +628,7 @@ void func_84301430(RenderContext* arg0) {
     func_84307394(0, D_8438E798);
     func_84307A50(0, &D_8438E598, &D_8438E688);
     func_8432AEE4(0, &D_8438E440);
-    func_8432D0D8(0, &D_8438E440);
+    BattleScene_SubstateDispatch(0, &D_8438E440);
 
     sp44 = func_80002D10(main_pool_get_available(), 0);
     D_8438E784 = process_geo_layout(sp44, D_84384364);
@@ -650,7 +666,7 @@ void func_84301430(RenderContext* arg0) {
     func_84307394(3, D_8438E798);
     func_84307A50(3, &D_8438E598, &D_8438E688);
     func_8432AEE4(3, &D_8438E440);
-    func_8432D0D8(3, &D_8438E440);
+    BattleScene_SubstateDispatch(3, &D_8438E440);
 
     D_8438E7A0 = 1;
     D_8438E79C = 0;
@@ -659,7 +675,15 @@ void func_84301430(RenderContext* arg0) {
 void func_84301A24(void) {
 }
 
-s32 func_84301A2C(s32 arg0, unk_D_800AE540* arg1) {
+/*
+ * BattleScene_OverlayEntry
+ * Original symbol: func_84301A2C
+ *
+ * Verified:
+ *     Fragment 62 entry (FRAGMENT_LOAD_AND_CALL). Pushes 'BATL', inits DL
+ *     buffer, BattleScene_Setup, then Stage_RunFadeLoop(BattleScene_FrameLoop).
+ */
+s32 BattleScene_OverlayEntry(s32 arg0, unk_D_800AE540* arg1) {
     RenderContext* sp24;
 
     D_8438E798 = D_800AE540.unk_1194;
@@ -669,10 +693,10 @@ s32 func_84301A2C(s32 arg0, unk_D_800AE540* arg1) {
 
     DLBuf_Init(0x20000, 0);
     sp24 = Stage_CreateRenderContext(0, 1, 3, 1, 2, 1);
-    func_84301430(sp24);
+    BattleScene_Setup(sp24);
     Stage_SetRenderContext(sp24);
     Stage_AdvanceFrames(1);
-    Stage_RunFadeLoop(func_843010EC, 0x20, 0x10);
+    Stage_RunFadeLoop(BattleScene_FrameLoop, 0x20, 0x10);
     Stage_AdvanceFrames(2);
     Stage_FreeRenderContext();
     DLBuf_Free();

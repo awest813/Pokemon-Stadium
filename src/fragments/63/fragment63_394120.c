@@ -140,7 +140,7 @@ char* func_84B003AC(char* arg0, s32 arg1, u32 arg2) {
 s32 func_84B003D4(s32 arg0, unk_D_86002F34_alt8* arg1) {
     if (arg0 == 5) {
         func_84B0345C(arg1->unk_00.unk_14);
-        func_80015684();
+        Renderer_ResetMaterial();
     }
 }
 
@@ -319,7 +319,7 @@ void func_84B01474(s16 arg0) {
 void func_84B014DC(void) {
     Stage_ActivateFramebuffer();
     GFX_ClearScreen(&gDisplayListHead, 1);
-    func_80015094(D_84B1A598.unk_0004);
+    SceneGraph_ProcessRoot(D_84B1A598.unk_0004);
     func_84B0F464(&D_84B26640.unk_1C);
     func_84B0F464(&D_84B26640.unk_28);
     Stage_AdvanceFrame();

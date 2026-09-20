@@ -2338,11 +2338,11 @@ void checkCollitionWithDigletts(MiniActor* ekans, s32 nPlayer) {
     Vec3f tempEkansHitboxPos;
 
     ekans->ekansAbbleToHoop = false;
-    func_80015390(&ekans->unk_000, 0xA, &tempEkansHitboxPos);
+    SceneGraph_FindObjectPoint(&ekans->unk_000, 0xA, &tempEkansHitboxPos);
     if ((ekans->ekansIsMidAir) && (ekans->midAirState < 2)) {
         for (i = 0; i < 3; i++) {
             if ((activeDigletts[i].unk_06 != 0) && (activeDigletts[i].gotHoop == false)) {
-                func_80015390(&miniDigletts[activeDigletts[i].diglettId].unk_000, 0xA, &tempDiglettHitboxPos);
+                SceneGraph_FindObjectPoint(&miniDigletts[activeDigletts[i].diglettId].unk_000, 0xA, &tempDiglettHitboxPos);
                 distance2d = func_81400EF0(tempEkansHitboxPos, tempDiglettHitboxPos);
 
                 xDist = tempEkansHitboxPos.x - tempDiglettHitboxPos.x;
@@ -2382,9 +2382,9 @@ void func_86C01AF8(void) {
                 if ((miniEkanses[j].ekansAbbleToHoop) && (idx == miniEkanses[j].collidingActorId)) {
                     diglett = &miniDigletts[activeDigletts[idx].diglettId];
 
-                    func_80015390(&ekans->unk_000, 0xA, &sp7C);
-                    func_80015390(&miniEkanses[j].unk_000, 0xA, &sp70);
-                    func_80015390(&diglett->unk_000, 0xA, &sp88);
+                    SceneGraph_FindObjectPoint(&ekans->unk_000, 0xA, &sp7C);
+                    SceneGraph_FindObjectPoint(&miniEkanses[j].unk_000, 0xA, &sp70);
+                    SceneGraph_FindObjectPoint(&diglett->unk_000, 0xA, &sp88);
 
                     if (func_81400E8C(sp7C, sp88) > func_81400E8C(sp70, sp88)) {
                         ekans->ekansAbbleToHoop = false;
@@ -2416,13 +2416,13 @@ void func_86C01D2C(MiniActor* ekans, s32 nPlayer) {
         return;
     }
 
-    func_80015390(&ekans->unk_000, 0xA, &ekansColl);
+    SceneGraph_FindObjectPoint(&ekans->unk_000, 0xA, &ekansColl);
 
     idx = ekans->collidingActorId;
     activeDiglett = &activeDigletts[idx];
     diglett = &miniDigletts[activeDiglett->diglettId];
 
-    func_80015390(&diglett->unk_000, 0xA, &diglettColl);
+    SceneGraph_FindObjectPoint(&diglett->unk_000, 0xA, &diglettColl);
 
     xDist = ekansColl.x - diglettColl.x;
     zDist = ekansColl.z - diglettColl.z;
@@ -3313,7 +3313,7 @@ void func_86C03ED4(void) {
             gSPDisplayList(gDisplayListHead++, D_8140DD58);
 
             func_81405B70(playerColors[i].r, playerColors[i].g, playerColors[i].b, (ekans->unk_000.unk_01D / 2) & 0xFF);
-            func_80015390(&ekans->unk_000, 0xA, &sp7C);
+            SceneGraph_FindObjectPoint(&ekans->unk_000, 0xA, &sp7C);
 
             sp7C.y = 5.0f;
 
@@ -3329,10 +3329,10 @@ void func_86C040B4(s32 arg0) {
     GFX_ClearScreen(&gDisplayListHead, 0xA6BF);
 
     if (D_8780FC94 == 0) {
-        func_80015348();
+        SceneGraph_IncrementAnimFrame();
     }
 
-    func_80015094(&D_87906050->unk_00);
+    SceneGraph_ProcessRoot(&D_87906050->unk_00);
     func_87901C98();
     func_86C03ED4();
 

@@ -4,7 +4,7 @@
 #include "src/dma.h"
 #include "src/dp_intro.h"
 #include "src/util.h"
-#include "lib/ultralib/include/PR/leo.h"
+#include <PR/leo.h>
 
 typedef enum {
     JPEG_MARKER_START_OF_FRAME = 0xC0,
@@ -25,7 +25,7 @@ s32 JpegStream_ReadU16(u8* arg0) {
     return ((arg0[0] << 8) | arg0[1]) & 0xFFFF;
 }
 
-void JpegStream_ParseMarkers(unk_JPEG_Decompress_sp300* arg0, u8* arg1) {
+void JpegStream_ParseMarkers(unk_func_80003680_sp300* arg0, u8* arg1) {
     s32 temp_v0_2;
     s32 var_s2;
     s32 var_v0;
@@ -98,7 +98,7 @@ void JpegStream_ParseMarkers(unk_JPEG_Decompress_sp300* arg0, u8* arg1) {
 extern u64 njpgdspMainTextStart[];
 extern u64 njpgdspMainDataStart[];
 
-void RSPTask_InitJpeg(RSPTask* arg0, unk_JPEG_Decompress_sp90* arg1) {
+void RSPTask_InitJpeg(RSPTask* arg0, unk_func_80003680_sp90* arg1) {
     arg0->task.t.type = 4;
     arg0->task.t.flags = 0;
     arg0->task.t.ucode_boot = rspbootTextStart;
@@ -119,18 +119,18 @@ void RSPTask_InitJpeg(RSPTask* arg0, unk_JPEG_Decompress_sp90* arg1) {
     osCreateMesgQueue(&arg0->queue, &arg0->mesg, 1);
 }
 
-void Jpeg_SetHuffmanData(unk_JPEG_Decompress_sp27* arg0, JpegHuffmanTable* arg1, unk_JPEG_Decompress_sp300* arg2) {
-    arg0->unk_00 = arg2->start_of_scan;
-    arg0->unk_04 = arg2->unk_00;
-    arg0->unk_05 = 2;
-    arg0->unk_08 = &arg1[0];
-    arg0->unk_0C = &arg1[2];
-    arg0->unk_10 = &arg1[1];
-    arg0->unk_14 = &arg1[3];
-    arg0->unk_18 = arg2->unk_01;
+void Jpeg_SetHuffmanData(JpegDecoder* decoder, JpegHuffmanTable* hTable, unk_func_80003680_sp300* arg2) {
+    decoder->imageData = arg2->start_of_scan;
+    decoder->mode = arg2->unk_00;
+    decoder->unk_05 = 2;
+    decoder->hTablePtrs[0] = &hTable[0];
+    decoder->hTablePtrs[1] = &hTable[2];
+    decoder->hTablePtrs[2] = &hTable[1];
+    decoder->hTablePtrs[3] = &hTable[3];
+    decoder->unk_18 = arg2->unk_01;
 }
 
-void Jpeg_SetQuantizationData(unk_JPEG_Decompress_sp90* arg0, u8(arg1)[2][0x80], unk_JPEG_Decompress_sp300* arg2) {
+void Jpeg_SetQuantizationData(unk_func_80003680_sp90* arg0, u8(arg1)[2][0x80], unk_func_80003680_sp300* arg2) {
     arg0->unk_00 = 0;
     arg0->unk_08 = arg2->unk_00;
     arg0->unk_04 = 1;
@@ -141,14 +141,14 @@ void Jpeg_SetQuantizationData(unk_JPEG_Decompress_sp90* arg0, u8(arg1)[2][0x80],
 
 s32 JPEG_Decompress(u32 addr, s32 arg1, u8* arg2) {
     RSPTask sp318;
-    unk_JPEG_Decompress_sp300 sp300;
+    unk_func_80003680_sp300 sp300;
     u8 sp200[2][0x80];
     JpegHuffmanTable spB0[4];
     u16* temp_s0;
     u8* temp_s3;
-    unk_JPEG_Decompress_sp90 sp90;
-    unk_JPEG_Decompress_sp27 sp74;
-    unk_JPEG_Decompress_sp60 sp60;
+    unk_func_80003680_sp90 sp90;
+    JpegDecoder sp74;
+    JpegDecoderState sp60;
     u32 var_s1;
     s32 i;
     s32 j;
@@ -177,7 +177,7 @@ s32 JPEG_Decompress(u32 addr, s32 arg1, u8* arg2) {
                 return 0;
             }
 
-            if (func_8000C280(&sp74, addr, 1, var_s4, &sp60) != 0) {
+            if (JpegDecoder_Decode(&sp74, addr, 1, var_s4, &sp60) != 0) {
                 return 0;
             }
 
@@ -360,24 +360,24 @@ void* ROM_LoadAndDecompress(u8* romStart, u8* romEnd, s32 arg2, s32 arg3) {
     addr = main_pool_alloc(0x18, side);
 
     if (addr != NULL) {
-        func_80003B30(addr, romStart, romStart + 0x18, arg3);
+        ROM_LoadDirect(addr, romStart, romStart + 0x18, arg3);
         if ((addr[0] == 'PERS') && (addr[1] == '-SZP')) {
             newaddr = main_pool_alloc(ALIGN16(romEnd - romStart), side);
             if (newaddr != NULL) {
-                func_80003B30(newaddr, romStart, romEnd, arg3);
+                ROM_LoadDirect(newaddr, romStart, romEnd, arg3);
                 ret = SZP_AllocAndDecompress(newaddr, newaddr, arg2);
             }
         } else if ((addr[0] == 'PRES') && (addr[1] == 'JPEG')) {
             newaddr = main_pool_alloc(ALIGN16(romEnd - romStart), side);
             if (newaddr != NULL) {
-                func_80003B30(newaddr, romStart, romEnd, arg3);
+                ROM_LoadDirect(newaddr, romStart, romEnd, arg3);
                 ret = Jpeg_AllocAndDecompress(newaddr, newaddr, arg2);
             }
         } else {
             newaddr = main_pool_alloc(ALIGN16(romEnd - romStart), arg2);
             ret = newaddr;
             if (newaddr != NULL) {
-                func_80003B30(ret, romStart, romEnd, arg3);
+                ROM_LoadDirect(ret, romStart, romEnd, arg3);
             }
         }
         main_pool_try_free(addr);
@@ -522,7 +522,7 @@ void Fragment_RelocateAndInit(s32 arg0, Fragment* addr) {
     }
 }
 
-void* Memmap_LoadAndInitFragment(s32 arg0, u8* romStart, u8* romEnd) {
+ret_func_80004454 Memmap_LoadAndInitFragment(s32 arg0, u8* romStart, u8* romEnd) {
     void* addr = ROM_LoadAndDecompress(romStart, romEnd, 0, 0);
 
     if (addr != NULL) {

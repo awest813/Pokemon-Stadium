@@ -661,10 +661,10 @@ void func_86401A9C(s32 arg0) {
     GFX_ClearScreen(&gDisplayListHead, 0xA6BF);
 
     if (D_8780FC94 == 0) {
-        func_80015348();
+        SceneGraph_IncrementAnimFrame();
     }
 
-    func_80015094(D_87B000E8);
+    SceneGraph_ProcessRoot(D_87B000E8);
 
     if (D_8780FC98 == 0) {
         func_86401544(arg0);

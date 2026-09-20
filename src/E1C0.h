@@ -8,6 +8,8 @@ typedef struct GBSecondaryCtx {
   /* 0x01B0 */ char unk01B0[0x2030];
 } GBSecondaryCtx; // size = 0x21E0
 
+extern GBMainCtx* D_800AA660;
+
 void GBTower_Start(GBTowerState* arg0);
 OSMesg* GBTower_WaitResult(void);
 void GBTower_Teardown(GBTowerState* arg0);

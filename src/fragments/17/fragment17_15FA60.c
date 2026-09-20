@@ -473,10 +473,10 @@ void func_86B01004(void) {
 void DemoCutscene_UpdateAndDraw(void) {
     Stage_ActivateFramebuffer();
     GFX_ClearScreen(&gDisplayListHead, 1);
-    func_80015348();
+    SceneGraph_IncrementAnimFrame();
     func_86B007EC();
     func_86B01C00(D_86B0E5E8);
-    func_80015094(D_86B0E5D0);
+    SceneGraph_ProcessRoot(D_86B0E5D0);
     func_86B00794();
     func_86B02348();
     Stage_AdvanceFrame();

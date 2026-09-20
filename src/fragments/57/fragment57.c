@@ -1178,7 +1178,7 @@ s32 func_82D01758(s32 arg0, unk_func_80011B94* arg1) {
         gSPSegment(gDisplayListHead++, 0x0F, (u32)D_82D0ABB8[var_a3]->img_p & 0x1FFFFFFF);
         gSPDisplayList(gDisplayListHead++, D_82D07348);
 
-        func_80015684();
+        Renderer_ResetMaterial();
     }
     return 0;
 }
@@ -1190,7 +1190,7 @@ s32 func_82D0180C(s32 arg0, unk_func_80011B94* arg1) {
         gSPSegment(gDisplayListHead++, 0x0F, (u32)D_82D0ABC8[0].img_p & 0x1FFFFFFF);
         gSPDisplayList(gDisplayListHead++, D_82D07E48);
 
-        func_80015684();
+        Renderer_ResetMaterial();
     }
     return 0;
 }
@@ -1202,7 +1202,7 @@ s32 func_82D018AC(s32 arg0, unk_func_80011B94* arg1) {
         gSPSegment(gDisplayListHead++, 0x0F, (u32)D_82D0ABCC->img_p & 0x1FFFFFFF);
         gSPDisplayList(gDisplayListHead++, D_82D08740);
 
-        func_80015684();
+        Renderer_ResetMaterial();
     }
     return 0;
 }
@@ -1510,7 +1510,7 @@ void func_82D02ED0(s32 arg0, s16 arg1) {
     Stage_ActivateFramebuffer();
     func_82D00088();
     func_82D01AB4(arg1);
-    func_80015094(D_82D09FF0);
+    SceneGraph_ProcessRoot(D_82D09FF0);
     func_82D0194C(sp1C);
     Stage_AdvanceFrame();
 }
@@ -2046,7 +2046,7 @@ s32 func_82D04D50(s32 arg0, UNUSED unk_func_80011B94* arg1) {
 
         gSPDisplayList(gDisplayListHead++, D_82D09EF8[var_a3]);
 
-        func_80015684();
+        Renderer_ResetMaterial();
     }
     return 0;
 }
@@ -2293,7 +2293,7 @@ void func_82D053F4(s32 arg0, s32 arg1) {
 
     Stage_ActivateFramebuffer();
     func_82D00088();
-    func_80015094(D_82D09FF0);
+    SceneGraph_ProcessRoot(D_82D09FF0);
     func_82D04FA0(arg0, sp30);
     func_82D05258(arg0, sp30);
 

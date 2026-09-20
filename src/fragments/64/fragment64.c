@@ -1088,7 +1088,7 @@ s32 func_84802C40(s32 arg0) {
     Cont_ReadInputs();
     func_8001F730();
     func_84802350();
-    func_80015348();
+    SceneGraph_IncrementAnimFrame();
     Stage_ActivateFramebuffer();
 
     if (D_84803798 != 0) {

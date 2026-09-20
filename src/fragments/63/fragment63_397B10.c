@@ -623,7 +623,7 @@ s32 func_84B03A10(s32 arg0, unk_func_80011B94* arg1) {
         gSPSegment(gDisplayListHead++, 0x0F, (u32)temp_a0->unk_0C & 0x1FFFFFFF);
         gSPDisplayList(gDisplayListHead++, arg1->unk_00.unk_14);
 
-        func_80015684();
+        Renderer_ResetMaterial();
     }
     return 0;
 }
@@ -638,7 +638,7 @@ s32 func_84B03AB4(s32 arg0, unk_func_80011B94* arg1) {
         gSPSegment(gDisplayListHead++, 0x0F, (u32)temp_a0->unk_10[0] & 0x1FFFFFFF);
         gSPDisplayList(gDisplayListHead++, arg1->unk_00.unk_14);
 
-        func_80015684();
+        Renderer_ResetMaterial();
     }
     return 0;
 }
@@ -654,7 +654,7 @@ s32 func_84B03B58(s32 arg0, unk_func_80011B94* arg1) {
         gSPSegment(gDisplayListHead++, 0x0E, (u32)temp_a0->unk_10[3] & 0x1FFFFFFF);
         gSPDisplayList(gDisplayListHead++, arg1->unk_00.unk_14);
 
-        func_80015684();
+        Renderer_ResetMaterial();
     }
     return 0;
 }
@@ -669,7 +669,7 @@ s32 func_84B03C20(s32 arg0, unk_func_80011B94* arg1) {
         gSPSegment(gDisplayListHead++, 0x0F, (u32)temp_a0->unk_10[1] & 0x1FFFFFFF);
         gSPDisplayList(gDisplayListHead++, arg1->unk_00.unk_14);
 
-        func_80015684();
+        Renderer_ResetMaterial();
     }
     return 0;
 }
@@ -1276,7 +1276,7 @@ s32 func_84B05760(s32 arg0, unk_func_80011B94* arg1) {
         gSPSegment(gDisplayListHead++, 0x0F, (u32)temp_a0->unk_10[tmp2] & 0x1FFFFFFF);
         gSPDisplayList(gDisplayListHead++, D_84B113C0);
 
-        func_80015684();
+        Renderer_ResetMaterial();
     }
     return 0;
 }
@@ -1307,7 +1307,7 @@ s32 func_84B05844(s32 arg0, unk_func_80011B94* arg1) {
             gDPSetEnvColor(gDisplayListHead++, 200, 30, 30, var_t1);
             gSPDisplayList(gDisplayListHead++, D_84B114F8);
 
-            func_80015684();
+            Renderer_ResetMaterial();
             D_84B11C18 += 0x800;
         }
     }
@@ -1327,7 +1327,7 @@ s32 func_84B05A2C(s32 arg0, unk_func_80011B94* arg1) {
         gSPSegment(gDisplayListHead++, 0x0F, (u32)temp_a0->unk_30[tmp]->img_p & 0x1FFFFFFF);
         gSPDisplayList(gDisplayListHead++, arg1->unk_00.unk_14);
 
-        func_80015684();
+        Renderer_ResetMaterial();
     }
     return 0;
 }
@@ -1357,7 +1357,7 @@ s32 func_84B05B04(s32 arg0, unk_func_80011B94* arg1) {
             gDPSetEnvColor(gDisplayListHead++, 200, 30, 30, var_t1);
             gSPDisplayList(gDisplayListHead++, arg1->unk_00.unk_14);
 
-            func_80015684();
+            Renderer_ResetMaterial();
             D_84B11C1C += 0x800;
         }
     }

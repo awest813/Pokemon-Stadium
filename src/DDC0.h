@@ -16,7 +16,7 @@ void Audio_StopAll(void);
 void Audio_Disable(void);
 void Audio_Enable(void);
 void AudioThread_Main(void*);
-void Audio_Init(void);
+void Audio_StartThread(void);
 
 
 #endif // _DDC0_H_

@@ -994,8 +994,8 @@ void SnapMode_UpdateAndDraw(void) {
         GFX_ClearScreen(&gDisplayListHead, 0xA6BF);
     }
 
-    func_80015348();
-    func_80015094(D_87906050);
+    SceneGraph_IncrementAnimFrame();
+    SceneGraph_ProcessRoot(D_87906050);
     func_86908668();
     func_86907B78();
     func_86907D94();

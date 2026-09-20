@@ -141,8 +141,8 @@ static s16 D_86203E44;
 static u16 D_86203E46;
 static s32 D_86203E48;
 static s16 D_86203E4C;
-static RattataPlayerState D_86203E50[4];
-static RattataPlayerState* D_86204590;
+static unk_D_86203E50 D_86203E50[4];
+static unk_D_86203E50* D_86204590;
 static unk_D_86002F58_004_000* D_86204594;
 static unk_D_86002F58_004_000 D_86204598;
 static s16 D_86204700;
@@ -156,14 +156,14 @@ static unk_D_800AC870* D_86204714;
 static s16 D_86204718;
 static s16 D_8620471A;
 static s16 D_8620471C;
-static RattataHurdle D_86204720[4][10];
-static RattataHurdle* D_86208280;
+static unk_D_86204720 D_86204720[4][10];
+static unk_D_86204720* D_86208280;
 static s32 D_86208288[4];
 static s32 D_86208298;
 static s16 D_8620829C;
 u32 D_862082A0[4];
 
-void func_86200020(RattataPlayerState* arg0) {
+void func_86200020(unk_D_86203E50* arg0) {
     arg0->unk_002 = D_8780FA38 + 1;
 }
 
@@ -233,11 +233,11 @@ void func_862002F4(void) {
                 if (D_86204590->unk_002 > 0) {
                     temp_s0 = &D_86203CEC[D_86204590->unk_002 - 1];
 
-                    if (Minigame_Random(0x64) < temp_s0->unk_04) {
+                    if (func_878001E8(0x64) < temp_s0->unk_04) {
                         D_86204590->unk_170 |= 0x8000;
                     }
 
-                    if (Minigame_Random(0x64) < temp_s0->unk_06) {
+                    if (func_878001E8(0x64) < temp_s0->unk_06) {
                         temp_fv0 = D_86204590->unk_1A8;
                         temp_fv1 = D_86204590->unk_1A4;
                         if (((temp_fv0 + 10.0f) < temp_fv1) && (temp_fv1 < (temp_fv0 + 20.0f))) {
@@ -474,14 +474,14 @@ void RattataMinigame_Update(s32 arg0) {
     }
 
     Stage_ActivateFramebuffer();
-    GFX_ClearScreen(&gDisplayListHead, 1);
+    func_8000699C(&gDisplayListHead, 1);
 
     if (D_8780FC94 == 0) {
-        func_80015348();
+        SceneGraph_IncrementAnimFrame();
     }
 
     func_878025D0();
-    func_80015094(D_86203E38);
+    SceneGraph_ProcessRoot(D_86203E38);
     gDisplayListHead = func_87A0002C(gDisplayListHead);
     func_86200034();
 
@@ -490,7 +490,7 @@ void RattataMinigame_Update(s32 arg0) {
     }
 
     if (D_86204718 == 0) {
-        Minigame_AdvanceFrame();
+        func_87804FD4();
     } else {
         func_8780005C();
     }
@@ -512,7 +512,7 @@ s32 RattataMinigame_StartScreen(void) {
         func_8001BD04(D_86204594, 0);
         func_80017788(D_86204594);
         D_86204594->unk_040.unk_0C = 0x10000;
-        D_86204594->unk_040.unk_08 = Minigame_Random(0x14) << 0x10;
+        D_86204594->unk_040.unk_08 = func_878001E8(0x14) << 0x10;
     }
 
     for (i = 0; i < 4; i++) {
@@ -606,14 +606,14 @@ void func_862013C0(void) {
     }
 }
 
-void func_862015A0(RattataPlayerState* arg0) {
+void func_862015A0(unk_D_86203E50* arg0) {
     f32 temp_fv0 = arg0->unk_178 - 30.0f;
 
     arg0->unk_008.unk_024.z = temp_fv0;
     arg0->unk_194 = temp_fv0 / 3.0f;
 }
 
-void func_862015C8(RattataPlayerState* arg0) {
+void func_862015C8(unk_D_86203E50* arg0) {
     arg0->unk_19C = 0;
     arg0->unk_180 = 30.0f;
     arg0->unk_184 = 30.0f;
@@ -626,7 +626,7 @@ void func_862015C8(RattataPlayerState* arg0) {
     arg0->unk_190 = 0.0f - arg0->unk_194;
 }
 
-s32 func_86201640(RattataPlayerState* arg0, RattataHurdle* arg1) {
+s32 func_86201640(unk_D_86203E50* arg0, unk_D_86204720* arg1) {
     f32 temp_fv0;
     f32 temp_fv1;
 
@@ -660,11 +660,11 @@ s32 func_86201640(RattataPlayerState* arg0, RattataHurdle* arg1) {
     return -1;
 }
 
-void func_86201770(RattataPlayerState* arg0) {
+void func_86201770(unk_D_86203E50* arg0) {
     arg0->unk_008.unk_040.unk_0C = (arg0->unk_178 * 196608.0f) / arg0->unk_180;
 }
 
-void func_86201814(RattataPlayerState* arg0, s32 arg1) {
+void func_86201814(unk_D_86203E50* arg0, s32 arg1) {
     unk_D_86002F58_004_000* temp_s0 = &arg0->unk_008;
 
     switch (arg1) {
@@ -696,26 +696,26 @@ void func_86201814(RattataPlayerState* arg0, s32 arg1) {
     }
 }
 
-void func_86201900(RattataPlayerState* arg0) {
+void func_86201900(unk_D_86203E50* arg0) {
     s32 i;
-    f32 sp64;
     f32 temp_fs1;
     u32 temp_v0;
     unk_D_86002F58_004_000* temp_s1;
     s32 arg0_unk000 = arg0->unk_000;
+    f32 unk_190;
 
     for (i = 0; i < 10; i++) {
         D_86208280 = &D_86204720[arg0_unk000][i];
+        temp_s1 = &D_86208280->unk_004;
         D_86208280->unk_000 = 0;
+        unk_190 = arg0->unk_190;
+        temp_fs1 = D_86203BA0[D_8620471C][i] * 10.44f * 1.7f;
 
-        temp_fs1 = D_86203BA0[D_8620471C][i];
-        sp64 = temp_fs1 * 10.44f * 1.7f - 30.0f;
-        temp_s1 = &D_86204720[arg0_unk000][i].unk_004;
+        if (((temp_fs1 - 30.0f) <= unk_190) && (unk_190 <= ((temp_fs1 - 30.0f) + 67.64706f))) {
 
-        if ((sp64 < arg0->unk_190) && (arg0->unk_190 < (sp64 + 67.64706f))) {
             switch (D_86208280->unk_002) {
                 case 0:
-                    if ((arg0->unk_190 - sp64) < 5.0f) {
+                    if ((unk_190 - (temp_fs1 - 30.0f)) < 5.0f) {
                         D_86208280->unk_002 = 1;
                         func_8001BC34(temp_s1, 0, 0xB0, D_86203E34->unk_08->unk_00[arg0_unk000]);
                     }
@@ -738,7 +738,7 @@ void func_86201900(RattataPlayerState* arg0) {
                     break;
             }
 
-            if ((D_86208280->unk_002 > 0) && ((arg0->unk_190 - sp64) > 64.70588f)) {
+            if ((D_86208280->unk_002 > 0) && ((unk_190 - (temp_fs1 - 30.0f)) > 64.70588f)) {
                 D_86208280->unk_002 = 0;
                 func_8001BCF0(temp_s1);
             }
@@ -751,7 +751,7 @@ void func_86201900(RattataPlayerState* arg0) {
                 }
             }
 
-            temp_v0 = ((arg0->unk_190 - temp_fs1 * 10.44f * 1.7f) + 30.0f) * 1.7f * 65536.0f;
+            temp_v0 = ((unk_190 - temp_fs1) + 30.0f) * 1.7f * 65536.0f;
             temp_s1->unk_040.unk_08 = (D_86208280->unk_16C + temp_v0) >> 1;
             D_86208280->unk_16C = temp_v0;
 
@@ -769,6 +769,8 @@ void func_86201900(RattataPlayerState* arg0) {
             D_86208280->unk_000 = 1;
         }
     }
+
+    if (arg0) {}
 }
 
 s16 func_86201CD8(void) {
@@ -967,12 +969,12 @@ void func_862023F8(void) {
     s16 temp_s1_2;
     s16 var_s3;
     unk_D_86002F58_004_000* var_s2;
-    RattataPlayerState* temp_s1;
+    unk_D_86203E50* temp_s1;
     s16 var_v0_2;
     s16 sp8C;
-    RattataPlayerState* temp_v1;
-    RattataPlayerState* sp78[4];
-    RattataPlayerState* var_s0_3;
+    unk_D_86203E50* temp_v1;
+    unk_D_86203E50* sp78[4];
+    unk_D_86203E50* var_s0_3;
 
     spA4 = 1;
 
@@ -982,7 +984,7 @@ void func_862023F8(void) {
 
         func_8001BD04(var_s2, 1);
         func_80017788(var_s2);
-        var_s2->unk_040.unk_08 = (Minigame_Random(5) * 0x3) << 0x10;
+        var_s2->unk_040.unk_08 = (func_878001E8(5) * 0x3) << 0x10;
         func_862015C8(temp_s1);
         temp_s1->unk_1C8 = 0;
         temp_s1->unk_1B2 = 4;
@@ -1157,7 +1159,6 @@ void func_862023F8(void) {
     }
 }
 
-#ifdef NON_MATCHING
 void func_86202C7C(void) {
     s32 i;
 
@@ -1165,19 +1166,15 @@ void func_86202C7C(void) {
         D_86204590 = &D_86203E50[i];
         D_86204594 = &D_86204590->unk_008;
 
-        if (D_86204590->unk_19E > 0) {
-            if (D_86204590->unk_1C8 == 1) {
-                continue;
-            }
+        if ((D_86204590->unk_19E > 0) && (D_86204590->unk_1C8 == 1)) {
+            continue;
         }
 
-        if (func_80017514(D_86204594, 5) == 0) {
-            if (D_86204594->unk_040.unk_08 < 0x340000) {
-                continue;
-            }
+        if ((func_80017514(D_86204594) == 0) && (D_86204594->unk_040.unk_08 < 0x340000)) {
+            continue;
         }
 
-        func_8001BD04(D_86204594, 0);
+        func_8001BD04(D_86204594, 5);
         D_86204594->unk_040.unk_08 = 0x270000;
     }
 }
@@ -1276,7 +1273,7 @@ void RattataMinigame_Init(void) {
     unk_D_86002F58_004_000* temp_s0;
 
     D_86203E38 = process_geo_layout(temp_v0, &D_86203D0C);
-    func_80002D60(temp_v0);
+    MainPool_FreeWithResize(temp_v0);
     func_8001BB20();
     func_8001987C();
     D_8620470E = 0xFF;
@@ -1335,7 +1332,7 @@ void func_86203380(void) {
 
     D_86208298 = 0;
     D_8620470A = 0;
-    D_8620471C = Minigame_Random(3);
+    D_8620471C = func_878001E8(3);
 
     for (i = 0; i < 4; i++) {
         D_86204590 = &D_86203E50[i];
@@ -1378,7 +1375,7 @@ void func_86203380(void) {
 }
 
 void RattataMinigame_Entry(s32 arg0, UNUSED s32 arg1) {
-    RenderContext* sp24;
+    unk_func_80007444* sp24;
 
     if (arg0 == 1) {
         D_86204718 = 1;
@@ -1398,7 +1395,7 @@ void RattataMinigame_Entry(s32 arg0, UNUSED s32 arg1) {
     ASSET_LOAD(D_04000000, run_rattata_run_flag_gfx, 0);
     FRAGMENT_LOAD(fragment31);
 
-    func_80004454((((u32)&D_8D000000 & 0x0FF00000) >> 0x14) - 0x10, _5C7A70_ROM_START, _5C7A70_ROM_END);
+    Memmap_LoadAndInitFragment((((u32)&D_8D000000 & 0x0FF00000) >> 0x14) - 0x10, _5C7A70_ROM_START, _5C7A70_ROM_END);
 
     RattataMinigame_Init();
     func_878029C0();

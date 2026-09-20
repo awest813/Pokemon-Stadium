@@ -750,11 +750,11 @@ void ClefairyMinigame_Update(s32 arg0) {
     GFX_ClearDepth(&gDisplayListHead, 0, 0, 0x140, 0xF0);
 
     if (D_8780FC94 == 0) {
-        func_80015348();
+        SceneGraph_IncrementAnimFrame();
     }
 
     func_878025D0();
-    func_80015094(D_86105484);
+    SceneGraph_ProcessRoot(D_86105484);
 
     gDisplayListHead = func_87A0002C(gDisplayListHead);
 
@@ -1823,11 +1823,11 @@ void func_8610426C(void) {
     Vec3f sp48;
 
     Stage_ActivateFramebuffer();
-    func_80015348();
-    func_80015094(D_86105484);
+    SceneGraph_IncrementAnimFrame();
+    SceneGraph_ProcessRoot(D_86105484);
 
     for (i = 0; i < 12; i++) {
-        if (func_80015390(&D_86105D38, (s16)(i + 1), &sp48) != 0) {
+        if (SceneGraph_FindObjectPoint(&D_86105D38, (s16)(i + 1), &sp48) != 0) {
             D_86105BC8 = &D_86106450[i].unk_004;
             D_86105BC8->unk_024.x = sp48.x / 10.0f;
             D_86105BC8->unk_024.y = sp48.y / 10.0f;

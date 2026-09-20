@@ -13,6 +13,14 @@
  *     - Implements recursive child node processing (SceneGraph_VisitChildren)
  *     - Links common RSP matrix utilities to scene entities
  *
+ * Naming:
+ *     Processor names follow pret’s D_8006F0A4 order and SM64
+ *     rendering_graph_node.c (geo_process_ortho, geo_process_object,
+ *     geo_process_switch, geo_process_shadow) where the control flow matches.
+ *     Stadium-only nodes keep honest structural names (Z-range, attached DL,
+ *     object point list). VisitChildren is 0x80013330; 0x80014124 is the
+ *     translucent node.
+ *
  * Verified:
  *     - Coordinates the high-level rendering loop for all game states
  *     - Manages the Matrix stack for node-local coordinate spaces
@@ -37,51 +45,41 @@
 #include "src/util.h"
 
 void SceneGraph_VisitChildren(GraphNode* arg0);
+void SceneGraph_ProcessNodeVariant(GraphNode* arg0);
 void GraphNode_ProcessCamera(GraphNode* arg0);
 void GraphNode_ProcessPerspective(GraphNode* arg0);
 void GraphNode_ProcessScene(GraphNode* arg0);
-void GraphNode_ProcessTransform(GraphNode* arg0);
-void GraphNode_ProcessBillboard(GraphNode* arg0);
+void GraphNode_ProcessOrtho(GraphNode* arg0);
+void GraphNode_ProcessProjection(GraphNode* arg0);
 void GraphNode_ProcessBackground(GraphNode* arg0);
 void GraphNode_ProcessClearDepth(UNUSED GraphNode* arg0);
-void GraphNode_ProcessMaster(GraphNode* arg0);
-void GraphNode_ProcessViewportChild(GraphNode* arg0);
-void GraphNode_ProcessTranslationRotation(GraphNode* arg0);
-void GraphNode_ProcessMasterChild(GraphNode* arg0);
+void GraphNode_ProcessMaster(UNUSED GraphNode* arg0);
+void GraphNode_ProcessFog(GraphNode* arg0);
+void GraphNode_ProcessLight(GraphNode* arg0);
+void GraphNode_ProcessDisplayListSetup(UNUSED GraphNode* arg0);
 void GraphNode_ProcessDisplayList(GraphNode* arg0);
+void RenderGraph_HandleTranslucentNode(GraphNode* arg0);
+void GraphNode_ProcessShadow(GraphNode* arg0);
+void GraphNode_ProcessZRange(GraphNode* arg0);
+void GraphNode_ProcessSwitch(GraphNode* arg0);
+void GraphNode_ProcessRotation(GraphNode* arg0);
+void GraphNode_ProcessTranslation(GraphNode* arg0);
+void GraphNode_ProcessBillboard(GraphNode* arg0);
+void GraphNode_ProcessAttachedDisplayList(GraphNode* arg0);
+void GraphNode_ProcessObject(GraphNode* arg0);
+void GraphNode_ProcessMatrix(GraphNode* arg0);
+void GraphNode_ProcessCameraRelative(GraphNode* arg0);
+void GraphNode_ProcessGfx(GraphNode* arg0);
+void GraphNode_ProcessGeneratedList(GraphNode* arg0);
+void GraphNode_ProcessObjectPoint(GraphNode* arg0);
+void GraphNode_VisitOnly(GraphNode* arg0);
+void SceneGraph_UpdateAndProcessNode(GraphNode* arg0);
 void Renderer_SetMatrix(s16 arg0, MtxF* arg1);
 void Renderer_SetDisplayList(Gfx* arg0, s32 arg1);
 void Renderer_SetColor(Color_RGBA8_u32 arg0, u8 arg1, u32 arg2);
 void Renderer_SetViewport(s32 arg0, s32 arg1);
 void Renderer_ResetViewport(void);
-void RenderGraph_HandleTranslucentNode(GraphNode* arg0);
-void SceneGraph_ProcessNodeVariant(GraphNode* arg0);
-void SceneGraph_HandleCallbackAndVisitChildren(GraphNode* arg0);
-void SceneGraph_UpdateAndProcessNode(GraphNode* arg0);
-void func_8001638C(s32 arg0, s32 arg1);
-void func_8001660C(void);
 void func_8000E990(Vec3f* arg0, Vec3s* arg1);
-void func_800122B4(MtxF* arg0);
-void func_80012344(Vec3f* arg0);
-MtxF* func_800123D4(s32 arg0);
-MtxF* func_80012400(s32 arg0);
-void func_80012458(Vec3f* arg0);
-void func_80013330(GraphNode* arg0);
-void func_800133D8(GraphNode* arg0);
-void func_80013464(GraphNode* arg0);
-void func_80013764(GraphNode* arg0);
-void func_8001378C(GraphNode* arg0);
-void func_800138F0(GraphNode* arg0);
-void func_8001395C(GraphNode* arg0);
-void func_800139E8(GraphNode* arg0);
-void func_80013AF8(GraphNode* arg0);
-void func_80013B8C(UNUSED GraphNode* arg0);
-void func_80013C14(UNUSED GraphNode* arg0);
-void func_80013C1C(GraphNode* arg0);
-void func_80013D34(GraphNode* arg0);
-void func_80013F7C(UNUSED GraphNode* arg0);
-void func_80013F84(GraphNode* arg0);
-void func_80014124(GraphNode* arg0);
 
 typedef void (*func_D_8006F0A4)(GraphNode* arg0);
 
@@ -101,12 +99,13 @@ unk_D_86002F34_00C* D_8006F094 = NULL;
 unk_D_86002F34_alt1* D_8006F098 = NULL;
 unk_D_86002F58_004_000* D_8006F09C = NULL;
 unk_D_86002F34_alt11* D_8006F0A0 = NULL;
+/* Same order as pret D_8006F0A4 (func_80013330 … func_80014D50). */
 static func_D_8006F0A4 D_8006F0A4[] = {
-    SceneGraph_VisitChildren, SceneGraph_ProcessNodeVariant, GraphNode_ProcessCamera, GraphNode_ProcessPerspective, GraphNode_ProcessScene, GraphNode_ProcessTransform, GraphNode_ProcessBillboard,
-    GraphNode_ProcessBackground, GraphNode_ProcessClearDepth, GraphNode_ProcessMaster, GraphNode_ProcessViewportChild, GraphNode_ProcessTranslationRotation, GraphNode_ProcessMasterChild, GraphNode_ProcessDisplayList,
-    RenderGraph_HandleTranslucentNode, func_80014D70, func_80014214, func_800142BC, func_80014334, func_80014384, func_800143C0,
-    func_80014624, func_80014690, func_800148D8, func_80014980, func_80014A60, func_80014AEC, func_80014D24,
-    func_80014D50, NULL,          NULL,
+    SceneGraph_VisitChildren, SceneGraph_ProcessNodeVariant, GraphNode_ProcessCamera, GraphNode_ProcessPerspective, GraphNode_ProcessScene, GraphNode_ProcessOrtho, GraphNode_ProcessProjection,
+    GraphNode_ProcessBackground, GraphNode_ProcessClearDepth, GraphNode_ProcessMaster, GraphNode_ProcessFog, GraphNode_ProcessLight, GraphNode_ProcessDisplayListSetup, GraphNode_ProcessDisplayList,
+    RenderGraph_HandleTranslucentNode, GraphNode_ProcessShadow, GraphNode_ProcessZRange, GraphNode_ProcessSwitch, GraphNode_ProcessRotation, GraphNode_ProcessTranslation, GraphNode_ProcessBillboard,
+    GraphNode_ProcessAttachedDisplayList, GraphNode_ProcessObject, GraphNode_ProcessMatrix, GraphNode_ProcessCameraRelative, GraphNode_ProcessGfx, GraphNode_ProcessGeneratedList, GraphNode_ProcessObjectPoint,
+    GraphNode_VisitOnly, NULL,          NULL,
 };
 
 static s32 D_8006F120 = 0;
@@ -482,7 +481,7 @@ void SceneGraph_ProcessNodeVariant(GraphNode* arg0) {
         D_8006F0A4[temp_a1->unk_00](temp_a1);
     }
 
-    SceneGraph_HandleCallbackAndVisitChildren(arg0);
+    SceneGraph_VisitChildren(arg0);
 }
 
 void GraphNode_ProcessCamera(GraphNode* arg0) {
@@ -519,7 +518,7 @@ void GraphNode_ProcessCamera(GraphNode* arg0) {
 
     D_8006F088 = arg;
     if ((arg->unk_CC.unk_00 != 1) && (arg->unk_00.unk_0C != NULL)) {
-        SceneGraph_HandleCallbackAndVisitChildren(&arg->unk_00);
+        SceneGraph_VisitChildren(&arg->unk_00);
     }
     RenderGraph_HandlePrimitiveNode(&arg->unk_CC, temp_s2);
     GFX_RestoreScissor(&gDisplayListHead);
@@ -528,7 +527,7 @@ void GraphNode_ProcessCamera(GraphNode* arg0) {
 
 void GraphNode_ProcessPerspective(GraphNode* arg0) {
     D_8006F08C = arg0;
-    SceneGraph_HandleCallbackAndVisitChildren(arg0);
+    SceneGraph_VisitChildren(arg0);
     D_8006F08C = NULL;
 }
 
@@ -559,7 +558,7 @@ void GraphNode_ProcessScene(GraphNode* arg0) {
                   G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_MODELVIEW);
 
         D_8006F090 = arg;
-        SceneGraph_HandleCallbackAndVisitChildren(arg0);
+        SceneGraph_VisitChildren(arg0);
         D_8006F090 = NULL;
     }
 
@@ -571,16 +570,43 @@ void SceneGraph_UpdateAndProcessNode(GraphNode* arg0) {
 
     if ((D_8006F094 == NULL) && (arg->unk_00.unk_0C != NULL)) {
         D_8006F094 = arg;
-        func_8001638C(arg->unk_00.unk_02 & 3, D_8006F080);
-        SceneGraph_HandleCallbackAndVisitChildren(arg0);
-        func_8001660C();
+        Renderer_SetViewport(arg->unk_00.unk_02 & 3, D_8006F080);
+        SceneGraph_VisitChildren(arg0);
+        Renderer_ResetViewport();
         D_8006F094 = NULL;
     }
 }
 
 
 
-void GraphNode_ProcessTransform(GraphNode* arg0) {
+/*
+ * GraphNode_ProcessOrtho
+ * Original symbol: func_8001395C
+ * SM64 analogue: geo_process_ortho
+ *
+ * Verified:
+ *     Loads the camera ortho matrix (unk_40) as projection, then
+ *     SceneGraph_UpdateAndProcessNode.
+ */
+void GraphNode_ProcessOrtho(GraphNode* arg0) {
+    if ((D_8006F094 == NULL) && (arg0->unk_0C != NULL)) {
+        gSPPerspNormalize(gDisplayListHead++, 0xFFFF);
+        gSPMatrix(gDisplayListHead++, (u32)D_8006F088->unk_40.mtx & 0x1FFFFFFF,
+                  G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_PROJECTION);
+
+        SceneGraph_UpdateAndProcessNode(arg0);
+    }
+}
+
+/*
+ * GraphNode_ProcessProjection
+ * Original symbol: func_800139E8
+ *
+ * Verified:
+ *     LookAt + perspective projection matrices, then
+ *     SceneGraph_UpdateAndProcessNode.
+ */
+void GraphNode_ProcessProjection(GraphNode* arg0) {
     if ((D_8006F094 == NULL) && (arg0->unk_0C != NULL)) {
         gSPLookAt(gDisplayListHead++, (u32)&D_8006F088->unk_60.lookat->l & 0x1FFFFFFF);
 
@@ -614,9 +640,20 @@ void GraphNode_ProcessClearDepth(UNUSED GraphNode* arg0) {
     gDPSetCycleType(gDisplayListHead++, G_CYC_2CYCLE);
 }
 
+/*
+ * GraphNode_ProcessMaster
+ * Original symbol: func_80013C14
+ *
+ * Verified:
+ *     Empty node processor (dispatch slot 9).
+ */
 void GraphNode_ProcessMaster(UNUSED GraphNode* arg0) {
 }
 
+/*
+ * GraphNode_ProcessFog
+ * Original symbol: func_80013C1C
+ */
 void GraphNode_ProcessFog(GraphNode* arg0) {
     unk_D_86002F34_alt3* arg = (unk_D_86002F34_alt3*)arg0;
 
@@ -629,6 +666,10 @@ void GraphNode_ProcessFog(GraphNode* arg0) {
 }
 
 #ifdef NON_MATCHING
+/*
+ * GraphNode_ProcessLight
+ * Original symbol: func_80013D34
+ */
 void GraphNode_ProcessLight(GraphNode* arg0) {
     unk_D_86002F34_alt4* arg = (unk_D_86002F34_alt4*)arg0;
     Lights7* lights;
@@ -704,6 +745,14 @@ void GraphNode_ProcessDisplayList(GraphNode* arg0) {
     gSPLight(gDisplayListHead++, D_8006F090->lights, i + 1);
 }
 
+/*
+ * RenderGraph_HandleTranslucentNode
+ * Original symbol: func_80014124
+ *
+ * Verified:
+ *     Optional ground-plane billboard (flag 2), then VisitChildren.
+ *     This is pret's translucent graph node, not VisitChildren.
+ */
 void RenderGraph_HandleTranslucentNode(GraphNode* arg0) {
     unk_D_86002F34_alt11* arg = (unk_D_86002F34_alt11*)arg0;
     MtxF* temp_v0 = &D_800AA8C8.unk_0000[D_800AA8C8.unk_10A0];
@@ -725,11 +774,19 @@ void RenderGraph_HandleTranslucentNode(GraphNode* arg0) {
     }
 
     D_8006F0A0 = arg;
-    SceneGraph_HandleCallbackAndVisitChildren(arg0);
+    SceneGraph_VisitChildren(arg0);
     D_8006F0A0 = NULL;
 }
 
-void func_80014214(GraphNode* arg0) {
+/*
+ * GraphNode_ProcessZRange
+ * Original symbol: func_80014214
+ *
+ * Verified:
+ *     Camera-space Z of the current matrix translation vs [unk_18, unk_1A).
+ *     Visits children only when that Z is inside the range.
+ */
+void GraphNode_ProcessZRange(GraphNode* arg0) {
     unk_D_86002F34_alt3* arg = (unk_D_86002F34_alt3*)arg0;
     MtxF* mtx2 = &D_8006F088->unk_60.mtxf;
     f32 a = D_800AA8C8.unk_0000[D_800AA8C8.unk_10A0].mf[3][0];
@@ -738,11 +795,19 @@ void func_80014214(GraphNode* arg0) {
     s16 temp_ft5 = ((a * mtx2->mf[0][2]) + (b * mtx2->mf[1][2]) + (c * mtx2->mf[2][2])) + mtx2->mf[3][2];
 
     if ((temp_ft5 >= arg->unk_18) && (temp_ft5 < arg->unk_1A)) {
-        SceneGraph_HandleCallbackAndVisitChildren(arg0);
+        SceneGraph_VisitChildren(arg0);
     }
 }
 
-void func_800142BC(GraphNode* arg0) {
+/*
+ * GraphNode_ProcessSwitch
+ * Original symbol: func_800142BC
+ *
+ * Verified:
+ *     Walks unk_1A siblings from child unk_0C, then dispatches that one node
+ *     through D_8006F0A4 if flag bit 0x01 is set. Does not visit all children.
+ */
+void GraphNode_ProcessSwitch(GraphNode* arg0) {
     unk_D_86002F34_alt3* arg = (unk_D_86002F34_alt3*)arg0;
     s32 i;
     GraphNode* var_a1 = arg->unk_00.unk_0C;
@@ -758,26 +823,48 @@ void func_800142BC(GraphNode* arg0) {
     }
 }
 
+/*
+ * GraphNode_ProcessRotation
+ * Original symbol: func_80014334
+ *
+ * Verified:
+ *     Push pos+rot matrix, visit children, pop matrix stack index.
+ */
 void GraphNode_ProcessRotation(GraphNode* arg0) {
     MtxF sp20;
     unk_D_86002F34_alt5* arg = (unk_D_86002F34_alt5*)arg0;
 
     MtxF_FromPosRot(&sp20, &arg->unk_18, &arg->unk_24);
     SceneGraph_MulMatrixStack(&sp20);
-    SceneGraph_HandleCallbackAndVisitChildren(arg0);
+    SceneGraph_VisitChildren(arg0);
 
     D_800AA8C8.unk_10A0--;
 }
 
+/*
+ * GraphNode_ProcessTranslation
+ * Original symbol: func_80014384
+ *
+ * Verified:
+ *     Push translation, visit children, pop matrix stack index.
+ */
 void GraphNode_ProcessTranslation(GraphNode* arg0) {
     unk_D_86002F34_alt5* arg = (unk_D_86002F34_alt5*)arg0;
 
     SceneGraph_MulVec3fMatrixStack(&arg->unk_18);
-    SceneGraph_HandleCallbackAndVisitChildren(arg0);
+    SceneGraph_VisitChildren(arg0);
 
     D_800AA8C8.unk_10A0--;
 }
 
+/*
+ * GraphNode_ProcessBillboard
+ * Original symbol: func_800143C0
+ *
+ * Verified:
+ *     Camera-facing transform (flag bits on unk_31). Stores the resulting
+ *     matrix pointer in D_800AA6C8[unk_30] for attached display lists.
+ */
 void GraphNode_ProcessBillboard(GraphNode* arg0) {
     Vec3s sp90;
     Vec3f sp84;
@@ -821,7 +908,7 @@ void GraphNode_ProcessBillboard(GraphNode* arg0) {
     }
 
     D_800AA6C8[arg->unk_30] = D_800AA8C8.unk_1000[D_800AA8C8.unk_10A0];
-    SceneGraph_HandleCallbackAndVisitChildren(arg0);
+    SceneGraph_VisitChildren(arg0);
     D_800AA6C8[arg->unk_30] = NULL;
     D_800AA8C8.unk_10A0--;
 
@@ -830,7 +917,15 @@ void GraphNode_ProcessBillboard(GraphNode* arg0) {
     }
 }
 
-void func_80014624(GraphNode* arg0) {
+/*
+ * GraphNode_ProcessAttachedDisplayList
+ * Original symbol: func_80014624
+ *
+ * Verified:
+ *     If unk_18 is a Gfx*, bind D_800AA6C8[unk_1C] and submit that list,
+ *     then visit children. Used with GraphNode_ProcessBillboard slots.
+ */
+void GraphNode_ProcessAttachedDisplayList(GraphNode* arg0) {
     unk_D_86002F34_alt7* arg = (unk_D_86002F34_alt7*)arg0;
 
     if (arg->unk_18 != NULL) {
@@ -838,10 +933,20 @@ void func_80014624(GraphNode* arg0) {
         Renderer_SetDisplayList(arg->unk_18, (arg->unk_00.unk_02 & 4) != 0);
     }
 
-    SceneGraph_HandleCallbackAndVisitChildren(arg0);
+    SceneGraph_VisitChildren(arg0);
 }
 
-void func_80014690(GraphNode* arg0) {
+/*
+ * GraphNode_ProcessObject
+ * Original symbol: func_80014690
+ * SM64 analogue: geo_process_object
+ *
+ * Verified:
+ *     Type 0x16. If scene id unk_018 matches, apply pos/rot/throw-matrix flags,
+ *     scale, animation (func_80017090 / func_800175E8), set D_8006F09C, visit
+ *     children, then pop. Current-object pointer used by shadow and object points.
+ */
+void GraphNode_ProcessObject(GraphNode* arg0) {
     MtxF sp38;
     Color_RGBA8_u32 sp34;
     unk_D_86002F58_004_000* arg = (unk_D_86002F58_004_000*)arg0;
@@ -893,10 +998,19 @@ void func_80014690(GraphNode* arg0) {
     }
 }
 
-void func_800148D8(GraphNode* arg0) {
+/*
+ * GraphNode_ProcessMatrix
+ * Original symbol: func_800148D8
+ * SM64 analogue: geo_process_scale (push mtx, optional DL, children, pop)
+ *
+ * Verified:
+ *     Push unk_1C (MtxF) via SceneGraph_MulMatrixStack, submit unk_18 Gfx* if present,
+ *     visit children, pop matrix stack.
+ */
+void GraphNode_ProcessMatrix(GraphNode* arg0) {
     unk_D_86002F34_alt8* arg = (unk_D_86002F34_alt8*)arg0;
 
-    func_800122B4(&arg->unk_1C);
+    SceneGraph_MulMatrixStack(&arg->unk_1C);
 
     if ((arg->unk_18 != NULL) || (arg->unk_00.unk_10 != NULL)) {
         Renderer_SetMatrix(arg->unk_00.unk_03, D_800AA8C8.unk_1000[D_800AA8C8.unk_10A0]);
@@ -905,11 +1019,19 @@ void func_800148D8(GraphNode* arg0) {
         }
         Renderer_SetDisplayList(arg->unk_18, (arg->unk_00.unk_02 & 4) != 0);
     }
-    SceneGraph_HandleCallbackAndVisitChildren(arg0);
+    SceneGraph_VisitChildren(arg0);
     D_800AA8C8.unk_10A0--;
 }
 
-void func_80014980(GraphNode* arg0) {
+/*
+ * GraphNode_ProcessCameraRelative
+ * Original symbol: func_80014980
+ *
+ * Verified:
+ *     Combine camera look mtx with translation unk_1C and scale unk_28,
+ *     then same optional Gfx* submit as GraphNode_ProcessGfx.
+ */
+void GraphNode_ProcessCameraRelative(GraphNode* arg0) {
     MtxF sp30;
     unk_D_86002F34_alt9* arg = (unk_D_86002F34_alt9*)arg0;
 
@@ -926,11 +1048,19 @@ void func_80014980(GraphNode* arg0) {
         Renderer_SetDisplayList(arg->unk_18, (arg->unk_00.unk_02 & 4) != 0);
     }
 
-    SceneGraph_HandleCallbackAndVisitChildren(arg0);
+    SceneGraph_VisitChildren(arg0);
     D_800AA8C8.unk_10A0--;
 }
 
-void func_80014A60(GraphNode* arg0) {
+/*
+ * GraphNode_ProcessGfx
+ * Original symbol: func_80014A60
+ * SM64 analogue: geo_process_display_list
+ *
+ * Verified:
+ *     Submit Gfx* unk_18 at the current matrix; optional node callback (5, node).
+ */
+void GraphNode_ProcessGfx(GraphNode* arg0) {
     unk_D_86002F34_alt9* arg = (unk_D_86002F34_alt9*)arg0;
 
     if ((arg->unk_18 != NULL) || (arg->unk_00.unk_10 != NULL)) {
@@ -940,10 +1070,19 @@ void func_80014A60(GraphNode* arg0) {
         }
         Renderer_SetDisplayList(arg->unk_18, (arg->unk_00.unk_02 & 4) != 0);
     }
-    SceneGraph_HandleCallbackAndVisitChildren(arg0);
+    SceneGraph_VisitChildren(arg0);
 }
 
-void func_80014AEC(GraphNode* arg0) {
+/*
+ * GraphNode_ProcessGeneratedList
+ * Original symbol: func_80014AEC
+ * SM64 analogue: geo_process_generated_list
+ *
+ * Verified:
+ *     Builds a list through Renderer_SetPendingMaterial using D_8006F0A0 slots and the
+ *     current object's unk_03C color scale. Requires a translucent parent.
+ */
+void GraphNode_ProcessGeneratedList(GraphNode* arg0) {
     Color_RGBA8_u32 sp44;
     unk_D_86002F34_alt10* arg = (unk_D_86002F34_alt10*)arg0;
     unk_D_86002F34_alt11_018* sp3C;
@@ -975,11 +1114,18 @@ void func_80014AEC(GraphNode* arg0) {
     }
 
     func_800176DC(&sp3C, D_8006F0A0->unk_18, arg->unk_20);
-    func_80016364(arg->unk_22, sp44, sp3C, sp38, sp34);
-    SceneGraph_HandleCallbackAndVisitChildren(arg0);
+    Renderer_SetPendingMaterial(arg->unk_22, sp44, sp3C, sp38, sp34);
+    SceneGraph_VisitChildren(arg0);
 }
 
-void func_80014CB8(s32 arg0) {
+/*
+ * SceneGraph_RecordObjectPoint
+ * Original symbol: func_80014CB8
+ *
+ * Verified:
+ *     Appends (id, current mtx translation) to D_8006F09C->unk_0A8 (max 12).
+ */
+void SceneGraph_RecordObjectPoint(s32 arg0) {
     MtxF* temp_a1;
     unk_D_86002F58_004_000_0A8* ptr;
 
@@ -996,18 +1142,42 @@ void func_80014CB8(s32 arg0) {
     }
 }
 
-void func_80014D24(GraphNode* arg0) {
+/*
+ * GraphNode_ProcessObjectPoint
+ * Original symbol: func_80014D24
+ *
+ * Verified:
+ *     Records this node's unk_18 id as an object point, then visits children.
+ */
+void GraphNode_ProcessObjectPoint(GraphNode* arg0) {
     unk_D_86002F34_alt3* arg = (unk_D_86002F34_alt3*)arg0;
 
-    func_80014CB8(arg->unk_18);
-    SceneGraph_HandleCallbackAndVisitChildren(arg0);
+    SceneGraph_RecordObjectPoint(arg->unk_18);
+    SceneGraph_VisitChildren(arg0);
 }
 
-void func_80014D50(GraphNode* arg0) {
-    SceneGraph_HandleCallbackAndVisitChildren(arg0);
+/*
+ * GraphNode_VisitOnly
+ * Original symbol: func_80014D50
+ *
+ * Verified:
+ *     Passthrough: only SceneGraph_VisitChildren.
+ */
+void GraphNode_VisitOnly(GraphNode* arg0) {
+    SceneGraph_VisitChildren(arg0);
 }
 
-void func_80014D70(GraphNode* arg0) {
+/*
+ * GraphNode_ProcessShadow
+ * Original symbol: func_80014D70
+ *
+ * Verified:
+ *     Ground-plane blob at Y=0 from the current translation. Scale/alpha
+ *     shrink with height. Submits D_1002480 or D_1002508 via a 2-Gfx temp.
+ * Likely:
+ *     Actor / object drop shadow; two DL templates, not a unique mesh.
+ */
+void GraphNode_ProcessShadow(GraphNode* arg0) {
     Vec3f sp9C;
     Vec3f sp90;
     Vec3f sp84;
@@ -1020,8 +1190,8 @@ void func_80014D70(GraphNode* arg0) {
     sp3C = &D_800AA8C8.unk_0000[D_800AA8C8.unk_10A0];
     temp_s1 = DLBuf_AllocTemp(sizeof(Gfx) * 2);
 
-    if (func_80015390(D_8006F09C, 0x64, NULL) == 0) {
-        func_80014CB8(0x64);
+    if (SceneGraph_FindObjectPoint(D_8006F09C, 0x64, NULL) == 0) {
+        SceneGraph_RecordObjectPoint(0x64);
     }
 
     Vec3f_Set(&sp9C, sp3C->mf[3][0], sp3C->mf[3][1] + arg->unk_1E, sp3C->mf[3][2]);
@@ -1065,13 +1235,22 @@ void func_80014D70(GraphNode* arg0) {
         gDPSetPrimColor(gDisplayListHead++, 0, D_8006F09C->unk_01D, 255, 255, 255, 255);
 
         Renderer_SetDisplayList(temp_s1, 1);
-        SceneGraph_HandleCallbackAndVisitChildren(arg0);
+        SceneGraph_VisitChildren(arg0);
 
         D_800AA8C8.unk_10A0--;
     }
 }
 
-void func_80015094(GraphNode* arg0) {
+/*
+ * SceneGraph_ProcessRoot
+ * Original symbol: func_80015094
+ * SM64 analogue: geo_process_root
+ *
+ * Verified:
+ *     If flag bit 0x01, reset RDP texture state, set D_8006F08C, visit children.
+ *     Called from battle, minigames, and menus as the graph draw entry.
+ */
+void SceneGraph_ProcessRoot(GraphNode* arg0) {
     unk_D_86002F34_alt1* arg = (unk_D_86002F34_alt1*)arg0;
 
     if (arg0->unk_01 & 1) {
@@ -1089,14 +1268,23 @@ void func_80015094(GraphNode* arg0) {
         gDPSetAlphaDither(gDisplayListHead++, G_AD_PATTERN);
 
         D_8006F08C = arg;
-        SceneGraph_HandleCallbackAndVisitChildren(arg0);
+        SceneGraph_VisitChildren(arg0);
         D_8006F08C = NULL;
     }
 
     D_8006F080 = 0;
 }
 
-void func_80015220(GraphNode* arg0, s32 arg1) {
+/*
+ * SceneGraph_CallNodeCallbacks
+ * Original symbol: func_80015220
+ * SM64 analogue: geo_call_global_function_nodes
+ *
+ * Verified:
+ *     Walk siblings; invoke unk_10(context, node). While visiting children,
+ *     stash camera (type 2), scene (4), type-6, or object (0x16) into globals.
+ */
+void SceneGraph_CallNodeCallbacks(GraphNode* arg0, s32 arg1) {
     GraphNode* var_s1 = arg0;
     GraphNode** var_s0;
 
@@ -1143,15 +1331,15 @@ void func_80015220(GraphNode* arg0, s32 arg1) {
     } while (var_s1 != arg0);
 }
 
-void func_8001533C(s32 arg0) {
+void SceneGraph_SetRenderPass(s32 arg0) {
     D_8006F080 = arg0;
 }
 
-void func_80015348(void) {
+void SceneGraph_IncrementAnimFrame(void) {
     D_8006F084++;
 }
 
-s32 func_80015360(void) {
+s32 SceneGraph_AnimFrameMatchesScene(void) {
     s32 var_v1 = 1;
 
     if (D_8006F090 != NULL) {
@@ -1160,7 +1348,14 @@ s32 func_80015360(void) {
     return var_v1;
 }
 
-Vec3f* func_80015390(unk_D_86002F58_004_000* arg0, s16 arg1, Vec3f* arg2) {
+/*
+ * SceneGraph_FindObjectPoint
+ * Original symbol: func_80015390
+ *
+ * Verified:
+ *     Linear search of recorded object points by id. Optional copy to arg2.
+ */
+Vec3f* SceneGraph_FindObjectPoint(unk_D_86002F58_004_000* arg0, s16 arg1, Vec3f* arg2) {
     s32 i;
     s32 var_v0;
     u8 temp_v1;
@@ -1178,7 +1373,15 @@ Vec3f* func_80015390(unk_D_86002F58_004_000* arg0, s16 arg1, Vec3f* arg2) {
     return NULL;
 }
 
-void func_80015400(Gfx* arg0, arg1_func_81407874_014_000_010* arg1) {
+/*
+ * Renderer_WriteCombineMode
+ * Original symbol: func_80015400
+ * OoT analogue: Gfx_SetupDL combine write
+ *
+ * Verified:
+ *     Emits gDPSetCombine from a 16-field CC table entry.
+ */
+void Renderer_WriteCombineMode(Gfx* arg0, arg1_func_81407874_014_000_010* arg1) {
     gDPSetCombine(arg0++,
                   GCCc0w0(arg1->unk_00, arg1->unk_02, arg1->unk_04, arg1->unk_06) | GCCc1w0(arg1->unk_08, arg1->unk_0A),
 
@@ -1186,7 +1389,14 @@ void func_80015400(Gfx* arg0, arg1_func_81407874_014_000_010* arg1) {
                       GCCc1w1(arg1->unk_09, arg1->unk_0C, arg1->unk_0E, arg1->unk_0B, arg1->unk_0D, arg1->unk_0F));
 }
 
-void func_8001550C(void) {
+/*
+ * Renderer_PipeSyncIfNeeded
+ * Original symbol: func_8001550C
+ *
+ * Verified:
+ *     One gDPPipeSync per dirty material batch (D_800ABB08 gate).
+ */
+void Renderer_PipeSyncIfNeeded(void) {
     if (D_800ABB08 == 0) {
         D_800ABB08 = 1;
 
@@ -1194,7 +1404,14 @@ void func_8001550C(void) {
     }
 }
 
-void func_8001554C(void) {
+/*
+ * Renderer_ApplyFogRenderMode
+ * Original symbol: func_8001554C
+ *
+ * Verified:
+ *     Sets fog color from the scene node and a layer render-mode from D_8006F124.
+ */
+void Renderer_ApplyFogRenderMode(void) {
     s32 var_v0 = D_8006F124[D_800ABB00][D_800ABCB8->unk_24];
 
     D_800ABB08 = 1;
@@ -1216,7 +1433,14 @@ void func_8001554C(void) {
     }
 }
 
-void func_80015684(void) {
+/*
+ * Renderer_ResetMaterial
+ * Original symbol: func_80015684
+ *
+ * Verified:
+ *     Default prim/combine/geometry for the current layer bucket.
+ */
+void Renderer_ResetMaterial(void) {
     Color_RGBA8_u32 sp1C;
 
     sp1C.rgba = D_800ABCB8->unk_10.rgba;
@@ -1232,7 +1456,7 @@ void func_80015684(void) {
     gDPSetTextureLUT(gDisplayListHead++, G_TT_NONE);
     gSPTexture(gDisplayListHead++, 0xFFFF, 0xFFFF, 0, G_TX_RENDERTILE, G_OFF);
 
-    func_80015400(gDisplayListHead++, D_8006F1B4[D_800ABCB8->unk_25]);
+    Renderer_WriteCombineMode(gDisplayListHead++, D_8006F1B4[D_800ABCB8->unk_25]);
 
     gSPSetGeometryMode(gDisplayListHead++, G_SHADE | G_CULL_BACK | G_SHADING_SMOOTH);
     gSPClearGeometryMode(gDisplayListHead++, G_FOG | G_TEXTURE_GEN);
@@ -1244,9 +1468,9 @@ void func_80015684(void) {
     }
 }
 
-void func_8001587C(unk_D_800ABB10* arg0) {
+void Renderer_SetFogColorIfChanged(unk_D_800ABB10* arg0) {
     if (arg0->unk_08.rgba != D_800ABCB8->unk_14.rgba) {
-        func_8001550C();
+        Renderer_PipeSyncIfNeeded();
 
         gDPSetColor(gDisplayListHead++, G_SETFOGCOLOR, arg0->unk_08.rgba);
         gDPSetRenderMode(gDisplayListHead++, D_8006F124[D_800ABB00][D_800ABCB8->unk_24], 0xC4000000);
@@ -1255,15 +1479,15 @@ void func_8001587C(unk_D_800ABB10* arg0) {
     }
 }
 
-void func_80015948(UNUSED unk_D_800ABB10* arg0) {
+void Renderer_RestoreFogRenderMode(UNUSED unk_D_800ABB10* arg0) {
     if (D_800ABCB8->unk_14.rgba & 0xFF) {
-        func_8001554C();
+        Renderer_ApplyFogRenderMode();
     }
 }
 
-void func_80015984(unk_D_800ABB10* arg0) {
+void Renderer_SetPrimColorIfChanged(unk_D_800ABB10* arg0) {
     if ((arg0->unk_04.rgba != D_800ABCB8->unk_10.rgba) || (arg0->unk_01 != D_800ABCB8->unk_26)) {
-        func_8001550C();
+        Renderer_PipeSyncIfNeeded();
 
         gDPSetPrimColor(gDisplayListHead++, 0, arg0->unk_01, arg0->unk_04.r, arg0->unk_04.g, arg0->unk_04.b,
                         arg0->unk_04.a);
@@ -1273,15 +1497,15 @@ void func_80015984(unk_D_800ABB10* arg0) {
     }
 }
 
-void func_80015A44(unk_D_800ABB10* arg0) {
+void Renderer_SetCombineIfChanged(unk_D_800ABB10* arg0) {
     if (arg0->unk_00 != D_800ABCB8->unk_25) {
-        func_8001550C();
-        func_80015400(gDisplayListHead++, D_8006F1B4[arg0->unk_00]);
+        Renderer_PipeSyncIfNeeded();
+        Renderer_WriteCombineMode(gDisplayListHead++, D_8006F1B4[arg0->unk_00]);
         D_800ABCB8->unk_25 = arg0->unk_00;
     }
 }
 
-void func_80015AC4(UNUSED unk_D_800ABB10* arg0) {
+void Renderer_ClearTexture(UNUSED unk_D_800ABB10* arg0) {
     if (D_800ABCB8->unk_18 != NULL) {
         gSPTexture(gDisplayListHead++, 0xFFFF, 0xFFFF, 0, G_TX_RENDERTILE, G_OFF);
     }
@@ -1291,7 +1515,7 @@ void func_80015AC4(UNUSED unk_D_800ABB10* arg0) {
     D_800ABCB8->unk_20 = NULL;
 }
 
-void func_80015B20(unk_D_800ABB10* arg0) {
+void Renderer_BindTextureIfChanged(unk_D_800ABB10* arg0) {
     unk_D_86002F34_alt11_018* temp_t0;
     s32 var_a3;
 
@@ -1335,7 +1559,7 @@ void func_80015B20(unk_D_800ABB10* arg0) {
     D_800ABCB8->unk_20 = arg0->unk_14;
 }
 
-void func_80015DD8(UNUSED unk_D_800ABB10* arg0) {
+void Renderer_EnableTexGen(UNUSED unk_D_800ABB10* arg0) {
     if (D_800ABCB8->unk_27 == 0) {
         gDPLoadTextureBlock(gDisplayListHead++, D_1001800, G_IM_FMT_RGBA, G_IM_SIZ_16b, 32, 32, 0,
                             G_TX_NOMIRROR | G_TX_WRAP, G_TX_NOMIRROR | G_TX_WRAP, 5, 5, 1, 1);
@@ -1349,7 +1573,15 @@ void func_80015DD8(UNUSED unk_D_800ABB10* arg0) {
     }
 }
 
-void func_80015F64(s16 arg0) {
+/*
+ * Renderer_SetLayer
+ * Original symbol: func_80015F64
+ * SM64 analogue: geo_append_display_list layer switch
+ *
+ * Verified:
+ *     Branches the live DL into D_800ABB28[arg0] (master-list buckets).
+ */
+void Renderer_SetLayer(s16 arg0) {
     if (arg0 == D_800ABCBC) {
         return;
     }
@@ -1368,7 +1600,7 @@ void func_80015F64(s16 arg0) {
     }
 }
 
-void func_80016010(s16 arg0) {
+void Renderer_SetTexGenFromLayer(s16 arg0) {
     if (((arg0 > 0) && (arg0 < 4)) || (arg0 == 0x84) || (arg0 == 6)) {
         D_800ABB10.unk_03 = D_800ABB10.unk_02;
     } else {
@@ -1376,7 +1608,7 @@ void func_80016010(s16 arg0) {
     }
 }
 
-s16 func_80016060(s16 arg0) {
+s16 Renderer_MapLayerIndex(s16 arg0) {
     s16 var_v1 = arg0 & 0xF;
 
     if (D_800ABB10.unk_01 < 0xFF) {
@@ -1401,37 +1633,37 @@ s16 func_80016060(s16 arg0) {
 
 void Renderer_SetMatrix(s16 arg0, MtxF* arg1) {
     if ((D_8006F120 != 0) && !(D_800ABB04 & 2) && (D_800ABB10.unk_01 > 0)) {
-        func_80016010(arg0);
-        func_80015F64(func_80016060(arg0));
+        Renderer_SetTexGenFromLayer(arg0);
+        Renderer_SetLayer(Renderer_MapLayerIndex(arg0));
         D_800ABB08 = 0;
 
         if (D_800ABCB8->unk_00 == 0) {
-            func_8001554C();
-            func_80015684();
+            Renderer_ApplyFogRenderMode();
+            Renderer_ResetMaterial();
             D_800ABCB8->unk_00 = 1;
         }
 
         if (D_800ABB10.unk_08.rgba & 0xFF) {
-            func_8001587C(&D_800ABB10);
+            Renderer_SetFogColorIfChanged(&D_800ABB10);
         } else {
-            func_80015948(&D_800ABB10);
+            Renderer_RestoreFogRenderMode(&D_800ABB10);
         }
 
         if (D_800ABB10.unk_03 != 0) {
-            func_80015DD8(&D_800ABB10);
+            Renderer_EnableTexGen(&D_800ABB10);
         } else {
             if (D_800ABCB8->unk_27 == 1) {
-                func_80015684();
+                Renderer_ResetMaterial();
             }
 
             if (D_800ABB10.unk_0C != 0) {
-                func_80015B20(&D_800ABB10);
+                Renderer_BindTextureIfChanged(&D_800ABB10);
             } else {
-                func_80015AC4(&D_800ABB10);
+                Renderer_ClearTexture(&D_800ABB10);
             }
 
-            func_80015984(&D_800ABB10);
-            func_80015A44(&D_800ABB10);
+            Renderer_SetPrimColorIfChanged(&D_800ABB10);
+            Renderer_SetCombineIfChanged(&D_800ABB10);
         }
 
         if (arg1 != D_800ABCB8->unk_0C) {
@@ -1452,7 +1684,7 @@ void Renderer_SetDisplayList(Gfx* arg0, s32 arg1) {
         }
 
         if (arg1 != 0) {
-            func_80015684();
+            Renderer_ResetMaterial();
         }
     }
 }
@@ -1463,7 +1695,14 @@ void Renderer_SetColor(Color_RGBA8_u32 arg0, u8 arg1, u32 arg2) {
     D_800ABB10.unk_02 = arg2;
 }
 
-void func_80016364(s32 arg0, Color_RGBA8_u32 arg1, unk_D_86002F34_alt11_018* arg2, unk_D_86002F34_alt11_018* arg3,
+/*
+ * Renderer_SetPendingMaterial
+ * Original symbol: func_80016364
+ *
+ * Verified:
+ *     Fills D_800ABB10; Renderer_SetMatrix later applies texture/combine/prim.
+ */
+void Renderer_SetPendingMaterial(s32 arg0, Color_RGBA8_u32 arg1, unk_D_86002F34_alt11_018* arg2, unk_D_86002F34_alt11_018* arg3,
                    s32 arg4) {
     D_800ABB10.unk_00 = arg0;
     D_800ABB10.unk_04.rgba = arg1.rgba;
@@ -1531,7 +1770,7 @@ void Renderer_ResetViewport(void) {
     Gfx* temp_t0;
     s32 temp_v0;
 
-    func_80015F64(9);
+    Renderer_SetLayer(9);
 
     if (D_800ABB28[0].unk_08 != NULL) {
         while (sp1C < 9) {
@@ -1548,7 +1787,7 @@ void Renderer_ResetViewport(void) {
         }
     }
 
-    func_80015684();
+    Renderer_ResetMaterial();
 
     if (D_800ABB00 & 1) {
         gSPClearGeometryMode(gDisplayListHead++, G_ZBUFFER);

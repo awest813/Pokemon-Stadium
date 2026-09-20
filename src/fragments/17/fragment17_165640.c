@@ -826,8 +826,8 @@ void func_86B07DF4(void) {
         GFX_ClearScreen(&gDisplayListHead, 0xA6BF);
     }
 
-    func_80015348();
-    func_80015094(&D_87906050->unk_00);
+    SceneGraph_IncrementAnimFrame();
+    SceneGraph_ProcessRoot(&D_87906050->unk_00);
     func_86B075EC();
     func_87901C98();
     Stage_AdvanceFrame();
@@ -836,8 +836,8 @@ void func_86B07DF4(void) {
 void func_86B07EA0(void) {
     Stage_ActivateFramebuffer();
     GFX_ClearScreen(&gDisplayListHead, 1);
-    func_80015348();
-    func_80015094(&D_87906050->unk_00);
+    SceneGraph_IncrementAnimFrame();
+    SceneGraph_ProcessRoot(&D_87906050->unk_00);
     func_8001F504(0, 0, 0x140, 0xF0, 0, 0, 0, 0xFF);
     Stage_AdvanceFrame();
 }

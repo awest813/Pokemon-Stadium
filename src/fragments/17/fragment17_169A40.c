@@ -77,8 +77,8 @@ void func_86B0A30C(void) {
     Stage_ActivateFramebuffer();
     func_86B0A18C(D_86B10828);
     GFX_ClearDepth(&gDisplayListHead, 0, 0, 0x140, 0xF0);
-    func_80015348();
-    func_80015094(D_86B106B4);
+    SceneGraph_IncrementAnimFrame();
+    SceneGraph_ProcessRoot(D_86B106B4);
     func_86B0A0B0();
     Stage_AdvanceFrame();
 }

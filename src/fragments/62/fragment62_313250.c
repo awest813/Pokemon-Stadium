@@ -27,7 +27,7 @@ void func_84328A70(UNUSED unk_D_86002F34_00C* arg0) {
         D_84390010[1]->unk_000.unk_000.unk_01 &= ~1;
         func_84308654(D_84390010[0], 1, 0);
         func_800367A0(1, 0xFE, 0);
-        func_8432C68C(8, D_84390010[0], D_84390010[0], 0xFF, 0xFF);
+        BattleEvent_QueueOpen3(8, D_84390010[0], D_84390010[0], 0xFF, 0xFF);
         D_84390240.unk_00->unk_20 += 1;
     }
 }
@@ -39,7 +39,7 @@ void func_84328B30(UNUSED unk_D_86002F34_00C* arg0) {
         func_8432B808();
         func_800367A0(1, 1, 0);
         func_84308654(D_84390010[1], 1, 0);
-        func_8432C68C(0xA, D_84390010[1], D_84390010[1], 0xFF, 0xFF);
+        BattleEvent_QueueOpen3(0xA, D_84390010[1], D_84390010[1], 0xFF, 0xFF);
         D_84390240.unk_00->unk_20 += 1;
     }
 }
@@ -53,7 +53,7 @@ void func_84328BF0(unk_D_86002F34_00C* arg0) {
     if (D_84390010[1]->unk_4EC.unk_024.y == 0.0f) {
         arg0->unk_24.fovy = 30.0f;
         func_84308654(D_84390010[0], 2, 0);
-        func_8432C68C(0xB, D_84390010[0], D_84390010[0], 0xFF, 0xFF);
+        BattleEvent_QueueOpen3(0xB, D_84390010[0], D_84390010[0], 0xFF, 0xFF);
         func_8000E88C(&sp3C, -150.0f, 5.0f, 0.0f);
         func_8431BAB4(D_84390010[0], arg0, sp3C, 0, 0, 0.0f, 0.0f);
         func_8431BB80(arg0, sp3C, D_84390240.unk_00->unk_56 = 0x71C, 0x4000, D_84390240.unk_00->unk_84 = 300.0f, 0.0f);
@@ -95,7 +95,7 @@ void func_84328F2C(unk_D_86002F34_00C* arg0) {
     func_843074A0(D_84390010[0]);
     D_84390010[0]->unk_000.unk_000.unk_01 &= ~1;
     D_84390010[1]->unk_000.unk_000.unk_01 &= ~1;
-    func_8432C68C(3, D_84390010[0], D_84390010[0], 0xFF, 0xFF);
+    BattleEvent_QueueOpen3(3, D_84390010[0], D_84390010[0], 0xFF, 0xFF);
     D_84390010[0]->unk_000.unk_000.unk_01 |= 1;
     D_84390010[0]->unk_4EC.unk_000.unk_01 &= ~1;
     func_8431F420(D_84390010[0], arg0, 3);
@@ -132,7 +132,7 @@ void func_84329164(unk_D_86002F34_00C* arg0) {
     D_84390010[1]->unk_728.unk_000.unk_000.unk_01 |= 1;
     func_843074A0(D_84390010[1]);
     func_800367A0(2, 0, 0);
-    func_8432C68C(3, D_84390010[1], D_84390010[1], 0xFF, 0xFF);
+    BattleEvent_QueueOpen3(3, D_84390010[1], D_84390010[1], 0xFF, 0xFF);
     func_8431AE5C();
     D_84390010[1]->unk_000.unk_000.unk_01 |= 1;
     func_8431F420(D_84390010[1], arg0, 3);

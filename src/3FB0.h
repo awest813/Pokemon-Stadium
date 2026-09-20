@@ -4,7 +4,7 @@
 #include "global.h"
 #include "5580.h"
 #include "jpegutils.h"
-#include "CE80.h"
+#include "jpeg_decoder.h"
 #include "src/memmap.h"
 #include "src/memory.h"
 
@@ -62,7 +62,7 @@ typedef struct unk_func_800041C0 {
 } unk_func_800041C0; // size >= 0x8
 
 typedef struct unk_func_80003680_sp300 {
-    /* 0x00 */ u8 unk_00;
+    /* 0x00 */ u8 unk_00; // mode
     /* 0x01 */ u8 unk_01;
     /* 0x02 */ char unk02[0x2];
     /* 0x04 */ s16 width;
@@ -87,7 +87,7 @@ typedef void (*ret_func_80004454)(void);
 s32 JpegStream_ReadU16(u8* arg0);
 void JpegStream_ParseMarkers(unk_func_80003680_sp300* arg0, u8* arg1);
 void RSPTask_InitJpeg(RSPTask* arg0, unk_func_80003680_sp90* arg1);
-void Jpeg_SetHuffmanData(unk_func_80003680_sp27* arg0, JpegHuffmanTable* arg1, unk_func_80003680_sp300* arg2);
+void Jpeg_SetHuffmanData(JpegDecoder* arg0, JpegHuffmanTable* arg1, unk_func_80003680_sp300* arg2);
 void Jpeg_SetQuantizationData(unk_func_80003680_sp90* arg0, u8(arg1)[2][0x80], unk_func_80003680_sp300* arg2);
 s32 JPEG_Decompress(u32 addr, s32 arg1, u8* arg2);
 void func_80003860(void);

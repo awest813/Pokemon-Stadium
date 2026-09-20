@@ -148,18 +148,16 @@ void func_86800070(void) {
 }
 
 Gfx* func_868001A8(Gfx* arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
-    s32 sp34;
     unk_D_86806E20** var_a3;
-    unk_D_86806E20* ptr;
-    s32 var_s0;
     s32 var_v0;
     s32 var_v1;
+    s32 var_s0;
 
     var_s0 = (arg1 != 0) ? arg2 + 6 : arg2;
     var_v1 = arg3 + 24;
 
     while (arg4 > 0) {
-        sp34 = var_v1;
+        s32 sp34 = var_v1;
 
         if (arg4 < 5) {
             var_a3 = D_86806E20[arg4];
@@ -171,7 +169,7 @@ Gfx* func_868001A8(Gfx* arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
 
         var_v0 = var_s0;
         while (*var_a3 != NULL) {
-            ptr = *var_a3;
+            unk_D_86806E20* ptr = *var_a3;
             sp34 -= (ptr->height * 3) / 4;
 
             gDPLoadTextureBlock(arg0++, ptr->texture, G_IM_FMT_RGBA, G_IM_SIZ_16b, ptr->width, ptr->height, 0,
@@ -474,10 +472,10 @@ void func_86801644(void) {
     GFX_ClearDepth(&gDisplayListHead, 0, 0, 0x140, 0xF0);
 
     if (D_8780FC94 == 0) {
-        func_80015348();
+        SceneGraph_IncrementAnimFrame();
     }
 
-    func_80015094(D_86807500);
+    SceneGraph_ProcessRoot(D_86807500);
     func_87901C98();
 
     if (D_8780FC98 == 0) {

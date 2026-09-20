@@ -118,7 +118,7 @@ s32 func_81300020(s32 arg0, GraphNode* arg1) {
             gSPSegment(gDisplayListHead++, 0x0E, Memmap_GetSegmentVaddr(D_81303EF4[D_81304008[idx].unk_002]));
             gSPDisplayList(gDisplayListHead++, arg1->unk_14);
         }
-        func_80015684();
+        Renderer_ResetMaterial();
     }
     return 0;
 }
@@ -553,7 +553,7 @@ void func_813024C8(s32 arg0) {
     }
 
     func_81301E8C();
-    func_80015094(D_8130464C);
+    SceneGraph_ProcessRoot(D_8130464C);
     Stage_AdvanceFrame();
 }
 

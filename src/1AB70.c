@@ -249,12 +249,12 @@ void func_8001A714(unk_func_8001A024* arg0, s32 arg1) {
     func_8000E88C(&arg0->unk_10->unk_030, temp_s1->unk_08, temp_s1->unk_08, temp_s1->unk_08);
     func_80010354(&sp34->unk_60.at, &sp34->unk_60.eye, 1250.0f, 0x71C, temp_s1->unk_04);
     ColorBuffer_Activate(&gDisplayListHead, arg0->unk_08[arg1].unk_0C);
-    func_80015348();
-    func_8001533C(3);
-    func_80015094(arg0->unk_0C);
+    SceneGraph_IncrementAnimFrame();
+    SceneGraph_SetRenderPass(3);
+    SceneGraph_ProcessRoot(arg0->unk_0C);
     GFX_ClearScreen(&gDisplayListHead, arg0->unk_08[arg1].unk_02);
-    func_8001533C(1);
-    func_80015094(arg0->unk_0C);
+    SceneGraph_SetRenderPass(1);
+    SceneGraph_ProcessRoot(arg0->unk_0C);
 }
 
 s32 func_8001AA18(unk_func_8001A024* arg0, s32 arg1) {
@@ -412,8 +412,8 @@ void func_8001AEEC(unk_func_8001A024* arg0, s32 arg1) {
     if (arg1 == arg0->unk_03) {
         ColorBuffer_Activate(&gDisplayListHead, arg0->unk_08[arg1].unk_0C);
         GFX_ClearScreen(&gDisplayListHead, arg0->unk_08[arg1].unk_02);
-        func_8001533C(1);
-        func_80015094(arg0->unk_0C);
+        SceneGraph_SetRenderPass(1);
+        SceneGraph_ProcessRoot(arg0->unk_0C);
         return;
     }
     for (i = arg0->unk_01; i > 0; i--) {
@@ -699,8 +699,8 @@ u8* func_8001B9D4(unk_func_8001B1FC* arg0) {
     func_8001B778(arg0);
     ColorBuffer_Activate(&gDisplayListHead, arg0->unk_28);
     func_8001B834(arg0);
-    func_80015348();
-    func_80015094(arg0->unk_20);
+    SceneGraph_IncrementAnimFrame();
+    SceneGraph_ProcessRoot(arg0->unk_20);
 
     if (D_800AC834 > 0) {
         func_8001F3F4();

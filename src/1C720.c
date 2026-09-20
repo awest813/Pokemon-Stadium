@@ -12,6 +12,9 @@
 #include "hal_libc.h"
 #include "src/12D80.h"
 
+struct unk_D_86002F58_004_000_000 D_800AC840;
+struct unk_D_86002F58_004_000_000 D_800AC858;
+
 void func_8001BB20(void) {
     GraphNode_Create(0, &D_800AC840);
     GraphNode_Create(0, &D_800AC858);

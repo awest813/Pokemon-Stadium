@@ -1,15 +1,17 @@
 #include "global.h"
 #include "6A40.h"
 
-struct DLBuf {
+typedef struct DLBuf {
     u32* buf0;
     u32* buf1;
     u32 alloc_top;
     s32 size;
     s16 cur;
-};
+} DLBuf; // size = 0x12
 
-extern struct DLBuf D_800A7428;
+Gfx* gDisplayListHead;
+DLBuf D_800A7428;
+ScissorRect D_800A7440;
 
 void DLBuf_Swap(void);
 

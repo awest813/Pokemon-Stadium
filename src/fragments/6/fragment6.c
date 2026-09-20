@@ -485,11 +485,11 @@ void MagikarpMinigame_Update(s32 arg0) {
     func_87A00DB8(D_86002F50);
 
     if (D_8780FC94 != 1) {
-        func_80015348();
+        SceneGraph_IncrementAnimFrame();
     }
 
     func_878025D0();
-    func_80015094(D_86002F34);
+    SceneGraph_ProcessRoot(D_86002F34);
     gDisplayListHead = func_87A0002C(gDisplayListHead);
     func_86000C18();
 

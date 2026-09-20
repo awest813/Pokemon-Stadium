@@ -17,7 +17,7 @@ void func_84359000(u8 arg0, u8 arg1, u8 arg2, u8 arg3) {
 }
 
 void func_843590E0(unk_D_86002F34_00C* arg0) {
-    func_8432CF74(arg0);
+    BattleScene_RunDrawCallbacks(arg0);
     D_8140E620 = DLBuf_AllocTemp(sizeof(unk_D_8140E620));
     D_8140E624 = 0;
     D_843902A4 += 1;

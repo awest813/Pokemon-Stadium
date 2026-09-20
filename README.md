@@ -11,8 +11,10 @@ Note: To use this repository, you must already have a rom for the game.
 
 These documents are for human contributors and AI coding agents working on disassembly, naming, and promotion:
 
+* **[UPSTREAM_AUDIT_AND_PLAN.md](UPSTREAM_AUDIT_AND_PLAN.md)** — pret catch-up, fork audit, and ordered improvement plan.
 * **[AI_MIPS_HEADER_GUIDE.md](AI_MIPS_HEADER_GUIDE.md)** — How to write headers, comments, and metadata for N64/MIPS decomp work (certainty labels, address identity, overlay conventions).
 * **[POKEMON_STADIUM_USA_PARTIAL_SYSTEMS_BLOCKER_GUIDE.md](POKEMON_STADIUM_USA_PARTIAL_SYSTEMS_BLOCKER_GUIDE.md)** — Current frontier: Fragment 62 battle shell, `12D80.c` scene-graph traversal, and what still blocks cleaner promotion.
+* **[FRAGMENT_ROLES.md](FRAGMENT_ROLES.md)** — Overlay 1–77 roles from `GameState_*` / Kids Club / gallery load sites.
 
 # Decomp Progress
 
@@ -63,17 +65,22 @@ The decomp is structurally ready to begin preparing for [N64Recomp](https://gith
 
 ### Blockers (must fix first)
 
-1. **Restore a clean `make` path.**  
-   The IDO compile currently fails on at least one translation unit (`src/19840.c`) while trying to open `lib/ultralib/include/PR/gbi.h`.  A verified byte-identical `make` with no errors is required before any recomp work can start.
+See **[UPSTREAM_AUDIT_AND_PLAN.md](UPSTREAM_AUDIT_AND_PLAN.md)** for the pret catch-up (libnumus, matched `19840` / fragments / BSS maps), the fork audit, and the ordered improvement plan.
+
+1. **Verify a clean matching `make` on this merged tree.**  
+   pret matched `src/19840.c` and many other TUs after this fork diverged.  Confirm `make init && make` with a US 1.0 ROM; treat leftover IDO include failures as environment issues.
 
 2. **Produce and archive a known-good ELF.**  
    N64Recomp uses the ELF (not the raw ROM) as its metadata source.  `KEEP_MDEBUG ?= 1` is already set in the Makefile, which preserves debug info.  Once `make` is clean, archive `build/pokestadium-us.elf` and verify the symbol table is complete.
 
-3. **Name the 49 anonymous main-text C units.**  
-   Anonymous symbols degrade N64Recomp output quality and make patch work painful.  Priority targets: the scheduler, audio-manager startup, and the remaining scene-dispatch code.
+3. **Sync `symbol_addrs` with promoted C names.**  
+   Bulk rewrite is in `linker_scripts/us/symbol_addrs_code.txt` (`tools/sync_promoted_symbol_addrs.py`). Re-run after further C renames; keep `orig:func_*`.
 
-4. **Resolve 174 nonmatching functions.**  
-   Each `NONMATCH` stub means the corresponding symbol may not survive cleanly into the ELF.  Convert easy ones to normal C first; use `NON_MATCHING=1` build as a fallback only for the hardest cases.
+4. **Name remaining anonymous main-text C units.**  
+   Fragment 62 now has `BattleScene_SubstateDispatch` and related entry names; `12D80.c` names the remaining graph processors in `D_8006F0A4` that were still `func_80014xxx` / `func_800143xx`. See the [partial-systems guide](POKEMON_STADIUM_USA_PARTIAL_SYSTEMS_BLOCKER_GUIDE.md) and [fragment roles](FRAGMENT_ROLES.md).
+
+5. **Resolve remaining `GLOBAL_ASM` / NONMATCH stubs.**  
+   pret reduced this set substantially; re-count from `progress.py` after extract.  Convert easy ones to normal C first; use `NON_MATCHING=1` only for the hardest cases.
 
 ### Stadium-Specific Concerns
 

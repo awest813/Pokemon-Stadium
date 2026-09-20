@@ -35,8 +35,8 @@ static char** D_888267AC;
 static char** D_888267B0;
 static unk_D_86002F58_004_000 D_888267B8;
 static unk_func_8001B1FC* D_88826920;
-static RenderContext* D_88826924;
-static RenderContext* D_88826928;
+static unk_func_80007444* D_88826924;
+static unk_func_80007444* D_88826928;
 static unk_D_86002F58_004_000_010* D_8882692C;
 static s32 D_88826930;
 static s32 D_88826934;
@@ -719,7 +719,7 @@ void func_888031FC(unk_func_888044BC* arg0, s32 arg1, s32 arg2, u8* arg3, Memory
     unk_func_88001300_000* sp44;
     unk_func_88001300_000* sp40;
 
-    sp48 = Game_GetSelectedPlayer();
+    sp48 = func_80029080();
     ((func885007CC)Memmap_GetFragmentVaddr(func_885007CC))(&arg0->unk_00, sizeof(unk_func_888044BC));
     arg0->unk_00.unk_10.unk_00 = arg1;
     arg0->unk_00.unk_10.unk_02 = arg2;
@@ -829,7 +829,7 @@ s32 func_88803614(void) {
         }
 
         ((func8850BC94)Memmap_GetFragmentVaddr(func_8850BC94))(var_s0);
-        func_80015348();
+        SceneGraph_IncrementAnimFrame();
         Stage_ActivateFramebuffer();
         ((func885008C4)Memmap_GetFragmentVaddr(func_885008C4))(D_88826940);
         ((func88500828)Memmap_GetFragmentVaddr(func_88500828))(D_88826940, 0, 0);
@@ -841,12 +841,14 @@ s32 func_88803614(void) {
 #pragma GLOBAL_ASM("asm/us/nonmatchings/fragments/28/fragment28_214920/func_88803614.s")
 #endif
 
-#ifdef NON_MATCHING
-u8 func_888038E0(void) {
+s32 func_888038E0(void) {
     s32 var_s0;
-    u8 var_s1 = 2;
-    UNUSED s32 pad[2];
+    s32 var_s1;
+    s32 var_s3;
+    UNUSED s32 pad[1];
 
+
+    var_s1 = var_s3 = 2;
     ((func88500A6C)Memmap_GetFragmentVaddr(func_88500A6C))(D_88826940->unk_2C, 0);
     ((func88500A6C)Memmap_GetFragmentVaddr(func_88500A6C))(D_88826940->unk_30, 0);
     D_88826940->unk_50->unk_00.unk_28 |= 0x100;
@@ -875,7 +877,7 @@ u8 func_888038E0(void) {
                 } else {
                     switch (D_88826940->unk_40->unk_34->unk_38) {
                         case 0:
-                            var_s1 = 3u;
+                            var_s1 = 3;
                             func_8003D2B8(func_88801030(D_88826940->unk_38->unk_2C) + 1);
                             var_s0 |= 5;
                             break;
@@ -901,18 +903,16 @@ u8 func_888038E0(void) {
         }
 
         ((func8850BC94)Memmap_GetFragmentVaddr(func_8850BC94))(var_s0);
-        func_80015348();
+        SceneGraph_IncrementAnimFrame();
         Stage_ActivateFramebuffer();
         ((func885008C4)Memmap_GetFragmentVaddr(func_885008C4))(D_88826940);
         ((func88500828)Memmap_GetFragmentVaddr(func_88500828))(D_88826940, 0, 0);
         Stage_AdvanceFrame();
-    }
+        var_s3 = var_s1;
+    };
 
-    return var_s1;
+    return var_s3;
 }
-#else
-#pragma GLOBAL_ASM("asm/us/nonmatchings/fragments/28/fragment28_214920/func_888038E0.s")
-#endif
 
 void func_88803BCC(u8* arg0, s32 arg1) {
     unk_func_8001A024* sp1C;
@@ -6117,7 +6117,7 @@ s32 func_88803C74(void) {
     D_88826920 = func_8001B1FC(D_8882692C, 0x100, 0xC0, 0, 0, 0xF8, 0xC0, D_88808248);
     func_88802EC4(D_88826940->unk_4C->unk_2C, temp_s0);
     func_8880261C(D_88826940->unk_44->unk_2C, temp_s0);
-    func_88802DAC(D_88826940->unk_48, Game_GetSelectedPlayer(), temp_s0);
+    func_88802DAC(D_88826940->unk_48, func_80029080(), temp_s0);
     ((func88500A6C)Memmap_GetFragmentVaddr(func_88500A6C))(D_88826940->unk_2C, 1);
     ((func88500A6C)Memmap_GetFragmentVaddr(func_88500A6C))(D_88826940->unk_30, 1);
     D_88826940->unk_50->unk_00.unk_28 &= ~0x100;
@@ -6135,7 +6135,7 @@ s32 func_88803C74(void) {
             var_s1 = 1;
             func_80048B90(2);
         }
-        func_80015348();
+        SceneGraph_IncrementAnimFrame();
         Stage_ActivateFramebuffer();
         ((func885008C4)Memmap_GetFragmentVaddr(func_885008C4))(D_88826940);
         ((func88500828)Memmap_GetFragmentVaddr(func_88500828))(D_88826940, 0, 0);
@@ -6269,9 +6269,9 @@ void func_88804370(void) {
     u32 sp34;
     u32 sp30;
     u32 sp2C;
-    ColorBuffer* sp28;
+    unk_D_80068BB0* sp28;
 
-    sp28 = main_pool_alloc(sizeof(ColorBuffer), 0);
+    sp28 = main_pool_alloc(sizeof(unk_D_80068BB0), 0);
 
     sp34 = D_88826924->unk_18[0]->img_p;
     D_88826930 = D_88826924->unk_18[0]->img_p + 0x25800;
@@ -6279,21 +6279,21 @@ void func_88804370(void) {
     D_88826934 = D_88826924->unk_18[1]->img_p + 0x25800;
     sp2C = D_88826924->unk_18[1]->img_p + 0x70800;
 
-    D_88826928->unk_18[0] = main_pool_alloc(sizeof(ColorBuffer), 0);
-    D_88826928->unk_18[1] = main_pool_alloc(sizeof(ColorBuffer), 0);
+    D_88826928->unk_18[0] = main_pool_alloc(sizeof(unk_D_80068BB0), 0);
+    D_88826928->unk_18[1] = main_pool_alloc(sizeof(unk_D_80068BB0), 0);
 
-    ColorBuffer_Init(D_88826928->unk_18[0], 0, 2, 0x140, 0xF0, sp34);
-    ColorBuffer_Init(D_88826928->unk_18[1], 0, 2, 0x140, 0xF0, sp30);
-    ColorBuffer_Init(sp28, 0, 2, 0x140, 0xF0, sp2C);
-    ColorBuffer_AttachDepth(D_88826928->unk_18[0], sp28);
-    ColorBuffer_AttachDepth(D_88826928->unk_18[1], sp28);
+    func_800062E4(D_88826928->unk_18[0], 0, 2, 0x140, 0xF0, sp34);
+    func_800062E4(D_88826928->unk_18[1], 0, 2, 0x140, 0xF0, sp30);
+    func_800062E4(sp28, 0, 2, 0x140, 0xF0, sp2C);
+    func_80006414(D_88826928->unk_18[0], sp28);
+    func_80006414(D_88826928->unk_18[1], sp28);
 }
 
 s32 func_888044BC(UNUSED s32 arg0, UNUSED s32 arg1) {
     MemoryPool* sp2C;
     u8* sp28;
 
-    D_88826938 = Game_GetSelectedPlayer();
+    D_88826938 = func_80029080();
     D_8882693C = func_8880431C() - 1;
 
     main_pool_push_state('BOOK');
@@ -6323,7 +6323,7 @@ s32 func_888044BC(UNUSED s32 arg0, UNUSED s32 arg1) {
     D_888267A8 = func_8002D5AC(0xA);
     D_888267AC = func_8002D5AC(0x28);
     D_888267B0 = func_8002D5AC(9);
-    D_888269A0 = Game_GetSelectedPlayer();
+    D_888269A0 = func_80029080();
 
     if (D_888269A0 != -1) {
         func_8002D860(&D_888269A8, D_888269A0);

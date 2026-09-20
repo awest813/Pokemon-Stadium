@@ -81,7 +81,7 @@ void func_8431AED8(unk_D_84390010* arg0, Vec3f* arg1) {
 }
 
 void func_8431AF58(unk_D_84390010* arg0, Vec3f* arg1, s32 arg2) {
-    if (func_80015390(&arg0->unk_000, arg2, arg1) == NULL) {
+    if (SceneGraph_FindObjectPoint(&arg0->unk_000, arg2, arg1) == NULL) {
         func_843081F0(arg0, arg1);
         arg1->x = func_84307DE0(arg0);
         arg1->z = 0.0f;

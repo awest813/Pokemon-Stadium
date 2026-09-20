@@ -14,7 +14,6 @@ void func_8432D5B0(void) {
     D_8140E72C = 0;
 }
 
-#ifdef NON_MATCHING
 unk_D_8140E724* func_8432D61C(void) {
     s32 i;
     s32 var_v0 = D_8140E730;
@@ -36,20 +35,18 @@ unk_D_8140E724* func_8432D61C(void) {
     }
 
     if (i >= 300) {
-        return -1;
+        var_v1 = -1;
+    } else {
+        var_v1->unk_15 = 1;
+        
+        D_8140E730 = var_v0 + 1;
+        if (D_8140E730 >= 300) {
+            D_8140E730 = 0;
+        }
     }
 
-    var_v1->unk_15 = 1;
-
-    D_8140E730 = var_v0 + 1;
-    if (D_8140E730 >= 300) {
-        D_8140E730 = 0;
-    }
     return var_v1;
 }
-#else
-#pragma GLOBAL_ASM("asm/us/nonmatchings/fragments/62/fragment62_317E70/func_8432D61C.s")
-#endif
 
 void func_8432D6B0(unk_D_8140E724* arg0) {
     arg0->unk_0E = 0;
@@ -449,7 +446,7 @@ void func_8432E4B0(unk_D_8140E724* arg0) {
             break;
 
         case 25:
-            func_8432C768(arg0->unk_19);
+            BattleEvent_QueueExtra(arg0->unk_19);
             break;
 
         case 26:
@@ -656,8 +653,8 @@ unk_D_8140E724* func_8432EB64(s32 arg0, s32 arg1, s8 arg2, func_unk_D_8140E724 a
         sp1C->unk_19 = arg9;
         sp1C->unk_1A = argB;
         sp1C->unk_1B = argA;
-        sp1C->unk_17 = func_8432C518();
-        sp1C->unk_18 = func_8432C538();
+        sp1C->unk_17 = BattleEvent_GetScriptMode();
+        sp1C->unk_18 = BattleEvent_GetAuxScriptMode();
     }
     return sp1C;
 }
@@ -784,10 +781,16 @@ unk_D_8140E724* func_8432F93C(s32 arg0, u8 arg1) {
     return func_8432EB64(arg0, 0, 1, NULL, NULL, D_843902E8, 0, 0, 0x19, arg1, 0, 0);
 }
 
-void func_8432F998(void) {
+/*
+ * BattleEvent_OpenNop / BattleEvent_CloseNop
+ * Original symbols: func_8432F998 / func_8432F9A0
+ *
+ * Empty handlers for unused BattleEvent_OpenOps / CloseOps slots.
+ */
+void BattleEvent_OpenNop(void) {
 }
 
-void func_8432F9A0(void) {
+void BattleEvent_CloseNop(void) {
 }
 
 void func_8432F9A8(s32 arg0) {
@@ -824,14 +827,14 @@ void func_8432FA54(unk_D_84390010* arg0, s16 arg1, Vec3f* arg2) {
 
     if (arg0 != NULL) {
         if (arg1 == 0x64) {
-            if (func_80015390(&arg0->unk_000, 0xA, arg2) != NULL) {
+            if (SceneGraph_FindObjectPoint(&arg0->unk_000, 0xA, arg2) != NULL) {
                 sp24 = 1;
-            } else if (func_80015390(&arg0->unk_000, 0x64, arg2) != NULL) {
+            } else if (SceneGraph_FindObjectPoint(&arg0->unk_000, 0x64, arg2) != NULL) {
                 sp24 = 2;
             }
         } else {
-            if (func_80015390(&arg0->unk_000, arg1, arg2) == NULL) {
-                if (func_80015390(&arg0->unk_000, 0x64, arg2) != NULL) {
+            if (SceneGraph_FindObjectPoint(&arg0->unk_000, arg1, arg2) == NULL) {
+                if (SceneGraph_FindObjectPoint(&arg0->unk_000, 0x64, arg2) != NULL) {
                     sp24 = 3;
                 }
             } else {

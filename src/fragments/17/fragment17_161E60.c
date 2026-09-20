@@ -863,7 +863,7 @@ void func_86B02908(void) {
 void func_86B02928(void) {
     Vec3f sp1C;
 
-    if (func_80015390(&D_86B0EBDC->unk_008, 1, &sp1C) != NULL) {
+    if (SceneGraph_FindObjectPoint(&D_86B0EBDC->unk_008, 1, &sp1C) != NULL) {
         D_86B0EBDC->unk_170.unk_024.x = sp1C.x;
         D_86B0EBDC->unk_170.unk_024.y = D_86B0EBDC->unk_2FC + sp1C.y;
         D_86B0EBDC->unk_170.unk_024.z = D_86B0EBDC->unk_300 + sp1C.z;
@@ -1553,8 +1553,8 @@ void func_86B04C9C(void) {
 void func_86B04CF4(UNUSED s32 arg0) {
     Stage_ActivateFramebuffer();
     GFX_ClearScreen(&gDisplayListHead, 1);
-    func_80015348();
-    func_80015094(D_86B0EBC0);
+    SceneGraph_IncrementAnimFrame();
+    SceneGraph_ProcessRoot(D_86B0EBC0);
     func_86B04C9C();
     Stage_AdvanceFrame();
 }

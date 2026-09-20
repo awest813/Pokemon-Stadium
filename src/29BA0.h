@@ -156,6 +156,7 @@ typedef struct BattleContext {
     /* 0x11F6 */ u16 battleFlowFlagsOut;
 } BattleContext; // size = 0x11F8
 
+extern u16 D_80073660[16][256];
 extern s32 gCurrentGameState;
 extern DeferredFragment gDeferredFragment;
 extern BattleContext D_800AE540;
