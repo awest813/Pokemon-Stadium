@@ -3,7 +3,6 @@
 #include "dp_intro.h"
 #include "sections.h"
 #include "memory.h"
-#include "dp_intro.h"
 #include "3FB0.h"
 #include "5580.h"
 #include "util.h"

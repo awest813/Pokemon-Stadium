@@ -32,9 +32,12 @@ Confidence: **Verified** where a load sits in a named `GameState_*` or named dis
 | 20 | Metapod minigame | `MetapodMinigame_Entry` |
 | 21 | Sandshrew minigame | `SandshrewMinigame_Entry` |
 | 22 | Lab / GB-Tower menu shell | Loads 23 / 28; `2E460.c`, fragment 30 |
-| 23 | Lab / GB-Tower sub-shell | Loaded from fragment 22; loads 25/27 |
+| 23 | Lab / GB-Tower sub-shell | Loaded from fragment 22; loads 24, 25, 27, 29 |
+| 24 | Lab / GB-Tower helper | `FRAGMENT_LOAD_AND_CALL2(fragment24, 1, 0)` from fragment 23; loads fragment 29 |
 | 25–27 | Lab / GB-Tower helpers | Loaded from 22/23/24/28 |
 | 28 | Lab / GB-Tower sub-shell | Loaded from fragment 22 |
+| 29 | Lab / GB-Tower helper | Loaded from fragments 23 and 24; misc assets also from 22/28 |
+| 30 | Unused pokelab wrapper | `func_88A00020` only loads fragment 22; comment in source says unused |
 | 31 | Shared 3D / stage helper | Loaded from many overlays (not a game state) |
 | 32 | Helper called from `Game_Thread` | `FRAGMENT_LOAD_AND_CALL(fragment32, …)` |
 | 33 | GB Tower gate / setup | `GameState_GBTower`; fragment 51 wrapper |
@@ -48,7 +51,10 @@ Confidence: **Verified** where a load sits in a named `GameState_*` or named dis
 | 41 | Menu helper | `2E460.c` |
 | 42, 44–47, 49 | Gallery submenus | `func_8002FA40` (`GameState_Gallery`) |
 | 43 | Shared submenu / gallery chrome | Gallery; `GameState_FastIntro` |
+| 48 | Gallery submenu (likely) | Overlay entry `func_839004F4` loads `gallery_ui`, pool tag `'GLDB'`; not in the `GameState_Gallery` switch |
 | 50 | Victory Palace | `GameState_VictoryPalace` |
+| 51 | GB Tower thin wrapper | `func_82800020` only `FRAGMENT_LOAD_AND_CALL(fragment33, …)` |
+| 52 | GB Tower companion UI (likely) | Includes fragment 51; uses geo / scene graph / stage loader |
 | 53 | GB Tower session companion | `GameState_GBTower` before `GBTower_Start` |
 | 54, 58–61 | Battle setup / rule shells | Gate `BattleShell_Begin` |
 | 55 | Setup helper | Loaded from fragment 54 / 38 |
@@ -76,4 +82,4 @@ Gym Leader Castle loop (verified): fragment 54 → 65 → 61, then the same batt
 
 Kids Club funnel (verified): fragment 2 + 39 hub → helper 3/4/5 + minigame 6–21.
 
-Unlisted numbers (24, 29, 30, 48, 51, 52, …) are still only known as load sites from other overlays. Do not fill them from file size.
+Unlisted numbers are gone for the first pass. Remaining uncertainty is **role**, not load-site, for 48 and 52 (likely gallery / GB Tower UI). Do not invent names from file size.

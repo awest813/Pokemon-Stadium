@@ -11,93 +11,76 @@ Note: To use this repository, you must already have a rom for the game.
 
 These documents are for human contributors and AI coding agents working on disassembly, naming, and promotion:
 
-* **[UPSTREAM_AUDIT_AND_PLAN.md](UPSTREAM_AUDIT_AND_PLAN.md)** — pret catch-up, fork audit, and ordered improvement plan.
+* **[UPSTREAM_AUDIT_AND_PLAN.md](UPSTREAM_AUDIT_AND_PLAN.md)** — Current audit, pret catch-up notes, and ordered major-gaps plan.
 * **[AI_MIPS_HEADER_GUIDE.md](AI_MIPS_HEADER_GUIDE.md)** — How to write headers, comments, and metadata for N64/MIPS decomp work (certainty labels, address identity, overlay conventions).
-* **[POKEMON_STADIUM_USA_PARTIAL_SYSTEMS_BLOCKER_GUIDE.md](POKEMON_STADIUM_USA_PARTIAL_SYSTEMS_BLOCKER_GUIDE.md)** — Current frontier: Fragment 62 battle shell, `12D80.c` scene-graph traversal, and what still blocks cleaner promotion.
+* **[POKEMON_STADIUM_USA_PARTIAL_SYSTEMS_BLOCKER_GUIDE.md](POKEMON_STADIUM_USA_PARTIAL_SYSTEMS_BLOCKER_GUIDE.md)** — Current frontier: Fragment 62 battle *body*, `12D80.c` remaining stubs/structs.
 * **[FRAGMENT_ROLES.md](FRAGMENT_ROLES.md)** — Overlay 1–77 roles from `GameState_*` / Kids Club / gallery load sites.
 
 # Decomp Progress
 
-## Current State
+Source recount: 2026-09-20. Full tables and the ordered work list are in **[UPSTREAM_AUDIT_AND_PLAN.md](UPSTREAM_AUDIT_AND_PLAN.md)**.
 
-The repository uses [splat](https://github.com/ethteck/splat) for ROM splitting and IDO 7.1 as the matching compiler.  The ROM is fully split into C translation units — no raw asm blobs remain for game code — and the build reproduces the original binary byte-for-byte when `NON_MATCHING=0`.
+The repository uses [splat](https://github.com/ethteck/splat) for ROM splitting and IDO 7.1 as the matching compiler. Game code is split into C translation units. A matching `make` (`NON_MATCHING=0`) is intended to reproduce the original ROM; that has **not** been re-verified in the current Cloud Agent workspace (no US 1.0 baserom).
 
 ### Code Segment Breakdown
 
 | Area | Status |
 |---|---|
-| Named core C files (src root) | **24** fully-named translation units — `main`, `rsp`, `dma`, `dp_intro`, `memmap`, `memory_main`, `memory`, `util`, `reset`, `controller`, `crash_screen`, `profiler`, `math_util`, `hal_libc`, `gb_tower`, `gb_mbc`, `jpegutils`, `geo_layout`, `stage_loader`, and several others |
-| Anonymous main-text C units | **49** units still named only by ROM address (e.g. `3FB0.c`, `5580.c`) — content is split correctly but function/purpose not yet identified |
-| Address-named C files (src root) | **56** files with hex-address names — split and decompiled but not yet renamed |
-| Overlay fragments | **77 fragments** (fragment01–fragment77) across **209 C files** — all split and compiled, none yet given descriptive names |
-| Nonmatching functions | **174** `NONMATCH`/`GLOBAL_ASM` stubs across **56 C files** — these compile and link but do not yet match the original assembly |
-| Libnaudio (audio driver) | **28 C files** present and compiling |
-| Libleo (64DD driver) | **37 C files** present and compiling |
-| Assets | All asset blocks (textures, models, UI, sound, GB Tower ROMs) remain as **`bin`** — no asset format decomp has started |
+| Named core C files (src root) | **22** TUs with descriptive filenames (`main`, `rsp`, `dma`, `dp_intro`, `memmap`, `memory_main`, `memory`, `util`, `reset`, `controller`, `crash_screen`, `profiler`, `math_util`, `hal_libc`, `gb_tower`, `gb_mbc`, `jpegutils`, `jpeg_decoder`, `geo_layout`, `stage_loader`, `heap`, `bss_pad`) |
+| Hex-named src-root C files | **55** — many already have named *functions* (`Sched_*` in `5580.c`, `SceneGraph_*` in `12D80.c`, `GameState_*` in `29BA0.c`, …) but the files themselves are still address-named |
+| Overlay fragments | **77 fragments**, **210 C files** — all split; roles catalogued in [FRAGMENT_ROLES.md](FRAGMENT_ROLES.md) |
+| Nonmatching functions | **93** `GLOBAL_ASM` stubs in **38** C files (was documented as 174). Largest piles: fragment 1 GB emulator, `33FE0.c`, audio (`3D140.c` / `4A3E0.c`), fragment 23, fragment 62 |
+| Libnaudio / libnumus / libleo | Present and compiling (`src/libnaudio`, `src/libnumus`, `src/libleo`) |
+| Assets | Still **`bin`** — Yay0 / PRESJPEG / FRAGMENT magics are documented; no format extractors merged |
 
 ### Key Systems Status
 
 | System | Status |
 |---|---|
-| Boot / entry / idle thread | ✅ Named and documented |
-| Memory pool / allocation | ✅ Named (`memory.c`, `memory_main.c`) |
-| DMA transfers | ✅ Named (`dma.c`) |
-| Math / matrix utilities | ✅ Named (`math_util.c`, `F420.c`) |
-| Controller | ✅ Named (`controller.c`) |
-| Crash screen | ✅ Named (`crash_screen.c`) |
-| Soft reset | ✅ Named (`reset.c`) |
-| Stage / overlay loader | ✅ Named (`stage_loader.c`) |
-| RSP task dispatch (graphics) | ✅ Named (`rsp.c`, `main.c`) |
-| GB Tower / MBC | ✅ Named (`gb_tower.c`, `gb_mbc.c`) |
-| Yay0 / JPEG decoders | ✅ Named (`jpegutils.c`, hasm stubs) |
-| Profiler | ✅ Named (`profiler.c`) |
-| Geometry / scene graph | ✅ Named (`geo_layout.c`) |
-| Scheduler / audio manager start | ⚠️ Split but still unnamed (`6A40.c` area) |
-| Fragment load/unload engine | ⚠️ Split across fragments, relocation understood, not yet renamed |
-| Battle / minigame logic | ⚠️ Partially named; see [partial-systems / promotion guide](POKEMON_STADIUM_USA_PARTIAL_SYSTEMS_BLOCKER_GUIDE.md) (Fragment 62 focus) |
-| Asset formats (textures, models, sound) | ❌ All binary blobs — no extraction tooling merged yet |
+| Boot / entry / idle / `Game_Thread` | ✅ Named (`main.c`, `29BA0.c`) |
+| Memory pool / allocation | ✅ Named (`memory.c`, `memory_main.c`, `heap.c`) |
+| DMA | ✅ Named (`dma.c`; extra ROM DMA API still in `4B940.c`) |
+| Math / matrix | ✅ Named (`math_util.c`, `F420.c`) |
+| Controller / crash / reset / profiler | ✅ Named |
+| Stage / overlay loader | ✅ Named (`stage_loader.c`); fragment reloc still hex-file (`19840.c`) |
+| Scheduler / RSP tasks / VI / display lists | ⚠️ Functions named (`Sched_*`, `RSPTask_*`, `DLBuf_*`, `VI_SetMode`); TUs still hex (`5580.c`, `6A40.c`, `dp_intro.c`) |
+| Audio | ⚠️ Split API: `Audio_StartThread` (`DDC0.c`) vs `Audio_Init` / libnumus (`373A0.c`) |
+| GB Tower / MBC | ✅ Named (`gb_tower.c`, `gb_mbc.c`, `E1C0.c` thread) |
+| JPEG / Yay0 | ✅ Named (`jpegutils.c`, `jpeg_decoder.c`, `3FB0.c` stream parse, `51740.c` Yay0) |
+| Scene graph | ⚠️ Traversal skeleton named in `12D80.c`; 2 `GLOBAL_ASM` left; node structs still `unk_*` |
+| Battle engine (Fragment 62) | ⚠️ Shell named (`BattleScene_*` / `BattleTurn_*` / `BattleAI_*` / `BattleEvent_*` / `BattleEffect_*`); ~1926 `func_843*` defs remain |
+| RSP microcode | ✅ Fixed F3DEX2 + JPEG `njpgdsp` + audio `aspMain`. No RSP overlays |
+| Asset formats | ❌ Binary blobs |
 
 ---
 
 ## Next Phase: N64Recomp Readiness
 
-The decomp is structurally ready to begin preparing for [N64Recomp](https://github.com/N64Recomp/N64Recomp).  The following items must be completed in order:
+Do **not** start Recomp TOML or asset extractors before a green matching `make`. Order of work is in **[UPSTREAM_AUDIT_AND_PLAN.md](UPSTREAM_AUDIT_AND_PLAN.md)**.
 
 ### Blockers (must fix first)
 
-See **[UPSTREAM_AUDIT_AND_PLAN.md](UPSTREAM_AUDIT_AND_PLAN.md)** for the pret catch-up (libnumus, matched `19840` / fragments / BSS maps), the fork audit, and the ordered improvement plan.
+1. **Matching `make` with US 1.0 `baseroms/us/baserom.z64`.** Treat leftover IDO include failures as environment issues.
 
-1. **Verify a clean matching `make` on this merged tree.**  
-   pret matched `src/19840.c` and many other TUs after this fork diverged.  Confirm `make init && make` with a US 1.0 ROM; treat leftover IDO include failures as environment issues.
+2. **Archive a known-good ELF.** N64Recomp uses the ELF, not the ROM. `KEEP_MDEBUG ?= 1` is already set. Keep `build/pokestadium-us.elf` + `.map` out of git.
 
-2. **Produce and archive a known-good ELF.**  
-   N64Recomp uses the ELF (not the raw ROM) as its metadata source.  `KEEP_MDEBUG ?= 1` is already set in the Makefile, which preserves debug info.  Once `make` is clean, archive `build/pokestadium-us.elf` and verify the symbol table is complete.
+3. **Keep `symbol_addrs` in sync.** `tools/sync_promoted_symbol_addrs.py`; preserve `orig:func_*`.
 
-3. **Sync `symbol_addrs` with promoted C names.**  
-   Bulk rewrite is in `linker_scripts/us/symbol_addrs_code.txt` (`tools/sync_promoted_symbol_addrs.py`). Re-run after further C renames; keep `orig:func_*`.
+4. **Finish Fragment 62 / `12D80.c` mid-level names**, then rename the hex TUs that already have named APIs. See the [partial-systems guide](POKEMON_STADIUM_USA_PARTIAL_SYSTEMS_BLOCKER_GUIDE.md) and [fragment roles](FRAGMENT_ROLES.md).
 
-4. **Name remaining anonymous main-text C units.**  
-   Fragment 62 now has `BattleScene_SubstateDispatch` and related entry names; `12D80.c` names the remaining graph processors in `D_8006F0A4` that were still `func_80014xxx` / `func_800143xx`. See the [partial-systems guide](POKEMON_STADIUM_USA_PARTIAL_SYSTEMS_BLOCKER_GUIDE.md) and [fragment roles](FRAGMENT_ROLES.md).
+5. **Knock down `GLOBAL_ASM` starting with the two `12D80.c` stubs**, then fragment 62, then fragment 1 / `33FE0.c` / audio.
 
-5. **Resolve remaining `GLOBAL_ASM` / NONMATCH stubs.**  
-   pret reduced this set substantially; re-count from `progress.py` after extract.  Convert easy ones to normal C first; use `NON_MATCHING=1` only for the hardest cases.
+### Stadium-specific (recomp)
 
-### Stadium-Specific Concerns
+- Overlays: 77 relocatable fragments; load funnel is documented. N64Recomp supports this; keep relocation/load behavior intact.
+- RSP: no overlay-style RSP loads (see the audit). N64Recomp’s RSP-overlay gap does not apply.
+- Runtime glue still needed on the project side: VI/RDP output, input callbacks, audio output. N64ModernRuntime covers threads, queues, PI DMA, overlays.
 
-5. **Fragment / overlay audit.**  
-   All 77 fragments use N64-style relocatable overlays.  N64Recomp supports statically linked and relocatable overlays, but fragment load/unload logic and relocation tables need to be clearly understood and documented before recomp patching can begin.
+### Nice-to-have (after P0–P1)
 
-6. **RSP microcode audit.**  
-   The repo uses fixed RSP microcode blobs (`rsp.c`, `main.c`).  Confirm that no overlay-style RSP loading occurs — N64Recomp does not yet support RSP overlays.
-
-7. **Runtime glue planning.**  
-   `N64ModernRuntime` covers threads, controllers, audio queues, VI timing, PI DMA, and overlay handling — most of Stadium's OS usage is covered.  Project-side glue still needed: renderer setup (VI/RDP output), input callbacks, and audio output driver.
-
-### Nice-to-Have (after blockers cleared)
-
-- Name all 77 overlay fragments by game system (battle, minigame type, etc.).
-- Add a script to generate a first-pass N64Recomp TOML and symbol dump from the clean ELF.
-- Begin asset format documentation (Yay0-compressed textures, PRESJPEG, FRAGMENT header format).
+- Rename hex TUs (`5580.c` → `sched.c`, `12D80.c` → `scene_graph.c`, …).
+- Script: overlay bounds + named functions → first-pass N64Recomp TOML.
+- Asset format notes beyond the existing Yay0 / PRESJPEG / FRAGMENT magics.
 
 ---
 

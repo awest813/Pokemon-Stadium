@@ -9,7 +9,6 @@
 #include "src/50860.h"
 #include "src/490A0.h"
 #include "src/4BA90.h"
-#include "src/4BDC0.h"
 
 typedef struct unk_D_800A8480 {
   /* 0x0000 */ OSThread thread;
@@ -121,6 +120,7 @@ void AudioThread_Main(void* unused) {
     }
 }
 
+/* Create the audio thread. Distinct from Audio_Init in 373A0.c (MusInitialize / banks). */
 void Audio_StartThread(void) {
     osCreateThread(&D_800A8480.thread, 4, AudioThread_Main, NULL, &D_800AA660, 0x50);
     osStartThread(&D_800A8480.thread);

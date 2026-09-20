@@ -6,7 +6,6 @@
 #include "src/util.h"
 #include <PR/os_internal_reg.h>
 #include <PR/leo.h>
-#include "src/memory.h"
 
 typedef struct ret_func_unk_D_800ABE10 {
     /* 0x00 */ char unk00[0x3];

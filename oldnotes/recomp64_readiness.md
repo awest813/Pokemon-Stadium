@@ -1,58 +1,37 @@
 # Pokemon Stadium Recomp Readiness
 
-Last updated: 2026-04-04
+Last updated: 2026-09-20
+
+Living plan: [UPSTREAM_AUDIT_AND_PLAN.md](../UPSTREAM_AUDIT_AND_PLAN.md).
 
 ## Current fit
 
-This repo is already a strong candidate for a future N64Recomp port because it has:
+This repo is a strong N64Recomp candidate because it has:
 
-- A working splat/decomp layout with named C translation units and linker scripts.
-- A build that is intended to produce an ELF and map file.
-- `KEEP_MDEBUG ?= 1` in the Makefile already, which is useful because current N64Recomp workflows rely on ELF metadata.
-- Explicit fragment/overlay structure in `src/fragments/`, which maps well to N64Recomp's overlay support.
+- A splat/decomp layout with named C APIs, linker scripts, and 77 relocatable fragments.
+- `KEEP_MDEBUG ?= 1` in the Makefile (N64Recomp wants ELF metadata).
+- Fixed RSP microcode only (F3DEX2, `njpgdspMain`, `aspMain`, `rspboot`). No RSP overlays.
 
 ## Immediate blockers
 
-1. Get the normal WSL decomp build healthy again.
-   The first hard blocker is not recomp-specific: `make build/src/19840.o` currently reaches the host syntax pass, but the IDO compile dies while trying to open `lib/ultralib/include/PR/gbi.h`.
+1. **Matching `make` with a US 1.0 ROM.** There is no `baseroms/us/baserom.z64` in the Cloud Agent workspace. The old `19840.c` / `gbi.h` IDO include failure was an environment issue; pret has since matched `19840.c`. Re-verify rather than assuming it is still broken.
 
-2. Preserve a clean ELF-producing path.
-   Current N64Recomp still expects an ELF as the metadata source, so "clean ROM build -> stable ELF -> stable map" needs to work reliably before deeper recomp work starts.
+2. **Archive a clean ELF + map** (`build/pokestadium-us.elf`) out of git.
 
-3. Reduce anonymous code in overlay-heavy areas.
-   Remaining `GLOBAL_ASM` and large unnamed fragment code will make symbol generation and later patch work much more painful, even if the recompiler can technically operate on unnamed symbols.
+3. **Anonymous overlay bodies.** Fragment 62’s shell is named; ~1926 `func_843*` functions and 93 `GLOBAL_ASM` stubs still make symbol generation noisy.
 
 ## Stadium-specific concerns
 
-1. Overlays/fragments
-   Pokemon Stadium is fragment-heavy. This is workable because N64Recomp supports statically linked and relocatable overlays, but it means we should keep fragment boundaries, relocation info, and load/unload behavior well understood.
+1. **Overlays/fragments** — relocatable, documented in `FRAGMENT_ROLES.md`. Keep load/unload and reloc tables intact.
 
-2. Runtime glue
-   N64ModernRuntime covers libultra-style threads, controllers, audio, message queues, timers, RSP task handling, and VI timing. `librecomp` also covers overlay handling, PI DMA, and save backends. Stadium will still need project-side glue for renderer setup, input callbacks, and audio output.
+2. **Runtime glue** — N64ModernRuntime covers threads, controllers, audio queues, timers, RSP tasks, VI timing, overlay handling, PI DMA, save backends. Project-side: renderer setup, input callbacks, audio output.
 
-3. RSP code
-   N64Recomp can handle RSP microcode, but current upstream notes say RSP overlays are not supported yet. If Stadium only uses fixed microcode blobs, that is fine. If it relies on overlay-style RSP loading anywhere, that needs an early audit.
+3. **RSP** — audited; no overlay-style RSP loads. N64Recomp’s RSP-overlay gap does not apply.
 
 ## Practical next steps
 
-1. Fix the WSL/IDO include failure and restore a clean `make` path.
-2. Keep converting easy `NON_MATCHING` functions into normal C so more symbol names survive into the ELF cleanly.
-3. Produce and archive one known-good `build/pokestadium-us.elf`
-4. [IN PROGRESS] Naming pass on critical systems:
-   - [DONE] Memory pool / Allocation (memory.c)
-   - [DONE] Math / Matrix utilities (F420.c)
-   - [ ] Scheduler / RSP task submission
-   - [ ] Audio manager startup
-5. [ ] Add a small script or note for generating a first-pass N64Recomp TOML and symbol dump from that ELF.
-6. Prioritize naming around:
-   - fragment loader / relocator paths
-   - DMA and ROM reads
-   - scheduler + RSP task submission
-   - framebuffer / VI ownership
-   - audio manager startup
-
-## Nice signs already present
-
-- `src/fragments/` separation should help when mapping overlays.
-- The decomp already distinguishes game code, assets, and generated asm cleanly.
-- The Makefile is already Linux/WSL-oriented, which matches the most practical N64Recomp workflow.
+1. `make init && make` with US 1.0 baserom.
+2. Match the two remaining `12D80.c` `GLOBAL_ASM` functions; continue Fragment 62 structural names.
+3. Archive `build/pokestadium-us.elf`.
+4. Optional: script overlay bounds + named functions → first-pass N64Recomp TOML.
+5. Do not start asset format decomp until P0–P1 in the audit plan are done.

@@ -105,6 +105,7 @@ s32 func_80037234(s32 arg0, u32 arg1);
 void func_8003733C(void);
 void Audio_BuildTask(void* arg0);
 void Audio_RelocateOffsets(u32* arg0, u32 arg1, s32 arg2);
+/* Load banks and call MusInitialize. Distinct from Audio_StartThread in DDC0.c. */
 s32 Audio_Init(void);
 
 #endif // _373A0_H_
